@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/brand.svg" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <!-- Google Search Console — إثبات ملكية الموقع لمحركات بحث جوجل -->
+  <meta
+    name="google-site-verification"
+    content="Szu5peq6UiVrV4iN4ijFXXlrdULjkBWK3POwgJcFrRw"
+  />
+  <meta
+    name="description"
+    content="HA Drip Boys — متجر ملابس وأزياء الرجال في الجزائر: تي شيرت أوفرسايز، سراويل واسعة، أطقم وأحذية. أسعار بالدينار وتوصيل لـ 58 ولاية."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap"
+    rel="stylesheet"
+  />
+  <title>HA Drip Boys — ملابس وأزياء الرجال في الجزائر</title>
+  <style>
+    /* Boot screen shown until React takes over. Id selectors so Tailwind
+       utilities injected afterwards can never override it. */
+    #boot-splash {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px;
+      text-align: center;
+      background: #fafafa;
+      color: #0a0a0a;
+      font-family: "Cairo", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+    #boot-brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.42em;
+    }
+    #boot-sub {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: #8a8a8a;
+    }
+    #boot-status {
+      margin-top: 6px;
+      max-width: 34rem;
+      font-size: 11px;
+      line-height: 1.9;
+      color: #8a8a8a;
+      white-space: pre-wrap;
+      word-break: break-word;
+      animation: boot-pulse 1.6s ease-in-out infinite;
+    }
+    #boot-status.is-error {
+      color: #b91c1c;
+      animation: none;
+    }
+    #boot-retry {
+      margin-top: 10px;
+      border: 1px solid #0a0a0a;
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 10px 20px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    @keyframes boot-pulse {
+      0%,
+      100% {
+        opacity: 0.55;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+  <div id="root">
+    <!--
+      Boot screen: React replaces this content the moment it renders, so the
+      store is never a blank white page — not while loading, and not if
+      anything fails before React even starts.
+    -->
+    <div id="boot-splash">
+      <div id="boot-brand">HA DRIP BOYS</div>
+      <div id="boot-sub">MAN'S FASHION · BOUTIQUE BOYS</div>
+      <div id="boot-status">…جارٍ تحميل المتجر / Loading the store</div>
+    </div>
+  </div>
+  <script>
+    /* Runs before any module: reports a startup failure on screen instead of
+       leaving an empty page. Silenced as soon as the app reports it mounted. */
+    (function () {
+      var TIMEOUT_MS = 12000;
+
+      function report(message) {
+        if (document.documentElement.dataset.appMounted === "1") return;
+        var status = document.getElementById("boot-status");
+        if (!status) return;
+        status.className = "is-error";
+        status.textContent =
+          "تعذر تشغيل المتجر / The store could not start\n\n" + message;
+        if (!document.getElementById("boot-retry")) {
+          var button = document.createElement("button");
+          button.id = "boot-retry";
+          button.type = "button";
+          button.textContent = "إعادة المحاولة / Retry";
+          button.onclick = function () {
+            window.location.reload();
+          };
+          status.parentNode.appendChild(button);
+        }
+      }
+
+      window.addEventListener(
+        "error",
+        function (event) {
+          var target = event.target;
+          if (target && target !== window && target !== document) {
+            var tag = target.tagName;
+            /* Only scripts and stylesheets matter for booting. */
+            if (tag === "SCRIPT" || tag === "LINK") {
+              report(
+                "failed to load " + (target.src || target.href || "resource"),
+              );
+            }
+            return;
+          }
+          report(
+            (event.message || "unknown error") +
+              (event.filename
+                ? "\n" + event.filename + ":" + (event.lineno || 0)
+                : ""),
+          );
+        },
+        true,
+      );
+
+      window.addEventListener("unhandledrejection", function (event) {
+        var reason = event.reason;
+        report(
+          (reason && (reason.message || String(reason))) ||
+            "unhandled promise rejection",
+        );
+      });
+
+      /* If the app still has not mounted, say so rather than staying blank. */
+      window.setTimeout(function () {
+        if (document.documentElement.dataset.appMounted === "1") return;
+        report("the app did not start within " + TIMEOUT_MS / 1000 + " seconds");
+      }, TIMEOUT_MS);
+    })();
+  </script>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

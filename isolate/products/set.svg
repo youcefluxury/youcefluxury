@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="setBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f6f5" />
+      <stop offset="1" stop-color="#e0e0dd" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#setBg)" />
+  <circle cx="660" cy="240" r="200" fill="#0a0a0a" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <path d="M290 130 L235 152 L160 262 L215 318 L258 264 L258 470 L542 470 L542 264 L585 318 L640 262 L565 152 L510 130 C492 190 308 190 290 130 Z" fill="#191919" />
+  <path d="M290 130 C308 190 492 190 510 130" fill="none" stroke="#3d3d3d" stroke-width="4" />
+  <path d="M258 240 h284" stroke="#ffffff" stroke-opacity="0.1" stroke-width="3" />
+  <path d="M400 470 v0" stroke="#ffffff" stroke-opacity="0.1" stroke-width="3" />
+
+  <path d="M272 530 L528 530 L552 880 L428 880 L400 680 L372 880 L248 880 Z" fill="#1d1d1d" />
+  <rect x="268" y="530" width="264" height="42" rx="6" fill="#2c2c2c" />
+  <path d="M540 560 l-120 300" stroke="#ffffff" stroke-opacity="0.16" stroke-width="4" />
+  <path d="M262 560 l120 300" stroke="#ffffff" stroke-opacity="0.16" stroke-width="4" />
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#0a0a0a" fill-opacity="0.4">FULL SET 2 PCS</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="T-shirt blanc avec lettrage graffiti noir">
+  <defs>
+    <linearGradient id="s3bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#2e2e2c" />
+      <stop offset="0.55" stop-color="#141413" />
+      <stop offset="1" stop-color="#050505" />
+    </linearGradient>
+    <linearGradient id="s3cloth" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="0.55" stop-color="#e6e4e0" />
+      <stop offset="1" stop-color="#c9c7c2" />
+    </linearGradient>
+    <filter id="s3soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="85" />
+    </filter>
+    <filter id="s3drop" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#s3bg)" />
+  <ellipse cx="800" cy="360" rx="620" ry="420" fill="#8f8d88" opacity="0.22" filter="url(#s3soft)" />
+  <ellipse cx="800" cy="880" rx="560" ry="110" fill="#000000" opacity="0.5" filter="url(#s3soft)" />
+
+  <g filter="url(#s3drop)">
+    <path d="M320 250 L480 150 Q800 60 1120 150 L1280 250 L1430 520 L1220 600 L1170 470 L1170 900 L430 900 L430 470 L380 600 L170 520 Z" fill="url(#s3cloth)" />
+    <path d="M480 150 Q800 60 1120 150" fill="none" stroke="#b9b7b2" stroke-width="5" />
+    <path d="M640 118 Q800 80 960 118 Q930 248 800 266 Q670 248 640 118 Z" fill="#dcdad5" />
+    <path d="M648 126 Q800 94 952 126" fill="none" stroke="#a9a7a2" stroke-width="4" />
+    <path d="M430 470 L380 600 L170 520" fill="none" stroke="#a9a7a2" stroke-width="4" />
+    <path d="M1170 470 L1220 600 L1430 520" fill="none" stroke="#a9a7a2" stroke-width="4" />
+    <path d="M430 840 H1170" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="6" />
+  </g>
+
+  <g fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-linecap="round">
+    <path d="M540 620 C660 700 730 770 770 880" stroke-width="9" />
+    <path d="M1060 600 C960 700 920 780 910 880" stroke-width="8" />
+  </g>
+
+  <!-- Graffiti print -->
+  <g transform="rotate(6 800 520)" fill="none" stroke="#0a0a0a" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke-width="64" opacity="0.95">
+      <path d="M490 330 V690" />
+      <path d="M490 510 H640" />
+      <path d="M640 330 V690" />
+      <path d="M730 690 L830 330 L930 690" />
+    </g>
+    <path d="M778 582 H900" stroke-width="44" opacity="0.92" />
+    <g stroke-width="48" opacity="0.92">
+      <path d="M1000 690 C1060 520 1110 380 1170 360" />
+      <path d="M1010 430 C1090 480 1160 520 1220 540" />
+    </g>
+    <path d="M450 800 C640 720 880 860 1140 770" stroke-width="34" opacity="0.9" />
+    <path d="M600 280 C800 236 980 262 1150 306" stroke-width="22" opacity="0.7" />
+    <g stroke-width="22" opacity="0.85">
+      <path d="M480 470 L540 400" />
+      <path d="M500 790 L580 700" />
+      <path d="M880 830 L960 862" />
+    </g>
+  </g>
+
+  <defs>
+    <radialGradient id="s3vig" cx="50%" cy="46%" r="74%">
+      <stop offset="0.45" stop-color="#000000" stop-opacity="0" />
+      <stop offset="1" stop-color="#000000" stop-opacity="0.6" />
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#s3vig)" />
+</svg>

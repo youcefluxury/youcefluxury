@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="tee2Bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1a1a" />
+      <stop offset="1" stop-color="#0b0b0b" />
+    </linearGradient>
+    <linearGradient id="tee2Fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2a2a" />
+      <stop offset="1" stop-color="#161616" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#tee2Bg)" />
+  <circle cx="200" cy="780" r="260" fill="#ffffff" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1.5" />
+
+  <path d="M300 200 L240 225 L150 350 L220 420 L268 360 L268 820 L532 820 L532 360 L580 420 L650 350 L560 225 L500 200 C480 278 320 278 300 200 Z" fill="url(#tee2Fill)" stroke="#ffffff" stroke-opacity="0.14" stroke-width="2" />
+  <path d="M300 200 C320 278 480 278 500 200" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="4" />
+  <path d="M268 300h264" stroke="#ffffff" stroke-opacity="0.06" stroke-width="2" />
+  <text x="392" y="540" font-family="Helvetica, Arial, sans-serif" font-size="46" letter-spacing="10" text-anchor="middle" fill="#b08d57">HA</text>
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#ffffff" fill-opacity="0.45">DOS / BACK</text>
+</svg>

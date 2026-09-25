@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="hdBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f3f1" />
+      <stop offset="1" stop-color="#dedbd6" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#hdBg)" />
+  <circle cx="180" cy="300" r="220" fill="#0a0a0a" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <path d="M310 195 C310 130 490 130 490 195 C522 210 554 226 572 240 L658 348 L586 418 L536 356 L536 845 L264 845 L264 356 L214 418 L142 348 L228 240 C246 226 278 210 310 195 Z" fill="#1c1c1c" />
+  <path d="M310 195 C336 250 464 250 490 195" fill="none" stroke="#3d3d3d" stroke-width="4" />
+  <path d="M330 640 h140 v90 h-140 z" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="3" />
+  <path d="M400 640 v90" stroke="#ffffff" stroke-opacity="0.14" stroke-width="3" />
+  <path d="M370 200 l10 90 M430 200 l-10 90" stroke="#ffffff" stroke-opacity="0.5" stroke-width="4" />
+  <text x="400" y="530" font-family="Helvetica, Arial, sans-serif" font-size="44" letter-spacing="10" text-anchor="middle" fill="#ffffff" fill-opacity="0.85">HA</text>
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#0a0a0a" fill-opacity="0.4">HEAVY HOODIE</text>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="cpBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f4f3" />
+      <stop offset="1" stop-color="#dfdfdc" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#cpBg)" />
+  <circle cx="200" cy="280" r="210" fill="#0a0a0a" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <path d="M235 620 C235 460 320 370 415 370 C510 370 595 460 595 620 Z" fill="#161616" />
+  <path d="M595 578 L752 622 C766 668 726 696 678 678 L595 650 Z" fill="#1d1d1d" />
+  <circle cx="415" cy="372" r="14" fill="#2d2d2d" />
+  <path d="M415 400 v220" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3" />
+  <path d="M300 470 C330 430 380 410 415 410" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3" />
+  <text x="415" y="560" font-family="Helvetica, Arial, sans-serif" font-size="52" letter-spacing="8" text-anchor="middle" fill="#ffffff" fill-opacity="0.88">HA</text>
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#0a0a0a" fill-opacity="0.4">HA DRIP CAP</text>
+</svg>

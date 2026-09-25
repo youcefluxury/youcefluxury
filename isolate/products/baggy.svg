@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3efe8" />
+      <stop offset="1" stop-color="#ded7cb" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg2)" />
+  <circle cx="620" cy="700" r="240" fill="#0a0a0a" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <path d="M255 165 L545 165 L578 860 L424 860 L400 520 L376 860 L222 860 Z" fill="#1d1d1d" />
+  <rect x="250" y="165" width="300" height="48" rx="6" fill="#2b2b2b" />
+  <path d="M255 165 L545 165" stroke="#ffffff" stroke-opacity="0.18" stroke-width="3" />
+  <rect x="252" y="620" width="96" height="120" rx="8" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="3" />
+  <rect x="452" y="620" width="96" height="120" rx="8" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="3" />
+  <path d="M270 230 v48 M530 230 v48" stroke="#ffffff" stroke-opacity="0.5" stroke-width="4" />
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#0a0a0a" fill-opacity="0.4">BAGGY CARGO</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="twBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#232323" />
+      <stop offset="1" stop-color="#0e0e0e" />
+    </linearGradient>
+    <linearGradient id="twFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#dcdcda" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#twBg)" />
+  <circle cx="600" cy="260" r="240" fill="#ffffff" opacity="0.05" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1.5" />
+
+  <path d="M300 180 L240 205 L150 330 L220 400 L268 340 L268 835 L532 835 L532 340 L580 400 L650 330 L560 205 L500 180 C480 258 320 258 300 180 Z" fill="url(#twFill)" />
+  <path d="M300 180 C320 258 480 258 500 180" fill="none" stroke="#9a9a97" stroke-width="4" />
+  <path d="M268 300h264" stroke="#0a0a0a" stroke-opacity="0.06" stroke-width="2" />
+  <text x="392" y="520" font-family="Helvetica, Arial, sans-serif" font-size="58" letter-spacing="8" text-anchor="middle" fill="#0a0a0a" fill-opacity="0.85">HA</text>
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#ffffff" fill-opacity="0.45">BLANC / WHITE</text>
+</svg>

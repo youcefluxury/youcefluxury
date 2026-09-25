@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="snBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f7f6" />
+      <stop offset="1" stop-color="#e3e3e0" />
+    </linearGradient>
+    <linearGradient id="snUpper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#e6e6e3" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#snBg)" />
+  <circle cx="600" cy="700" r="220" fill="#0a0a0a" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <path d="M120 620 C120 545 190 505 275 496 L372 480 C440 388 545 372 640 414 L690 480 C726 508 738 560 726 620 Z" fill="url(#snUpper)" stroke="#0a0a0a" stroke-opacity="0.12" stroke-width="3" />
+  <rect x="112" y="620" width="622" height="60" rx="18" fill="#141414" />
+  <path d="M330 500 L470 470" stroke="#0a0a0a" stroke-opacity="0.18" stroke-width="3" />
+  <path d="M360 545 L520 512" stroke="#0a0a0a" stroke-opacity="0.18" stroke-width="3" />
+  <path d="M395 590 L565 556" stroke="#0a0a0a" stroke-opacity="0.18" stroke-width="3" />
+  <circle cx="250" cy="560" r="16" fill="none" stroke="#0a0a0a" stroke-opacity="0.2" stroke-width="3" />
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#0a0a0a" fill-opacity="0.4">CLASSIC SNEAKERS</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="teeBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f5f3" />
+      <stop offset="1" stop-color="#e2e0dc" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#teeBg)" />
+  <circle cx="620" cy="240" r="230" fill="#0a0a0a" opacity="0.04" />
+  <rect x="30" y="30" width="740" height="940" fill="none" stroke="#0a0a0a" stroke-opacity="0.08" stroke-width="1.5" />
+
+  <path d="M300 180 L240 205 L150 330 L220 400 L268 340 L268 835 L532 835 L532 340 L580 400 L650 330 L560 205 L500 180 C480 258 320 258 300 180 Z" fill="#141414" />
+  <path d="M300 180 C320 258 480 258 500 180" fill="none" stroke="#3a3a3a" stroke-width="4" />
+  <path d="M268 780h264" stroke="#ffffff" stroke-opacity="0.08" stroke-width="3" />
+  <text x="392" y="520" font-family="Helvetica, Arial, sans-serif" font-size="60" letter-spacing="8" text-anchor="middle" fill="#ffffff" fill-opacity="0.9">HA</text>
+
+  <text x="700" y="950" font-family="Helvetica, Arial, sans-serif" font-size="22" letter-spacing="6" text-anchor="end" fill="#0a0a0a" fill-opacity="0.4">OVERSIZE TEE</text>
+</svg>
