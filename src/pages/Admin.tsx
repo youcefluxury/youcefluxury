@@ -2550,7 +2550,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-muted/30">
-      <header className="bg-foreground text-background">
+      <header className="on-ink bg-foreground text-background">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
             <Brand onDark />

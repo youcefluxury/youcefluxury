@@ -223,5 +223,10 @@
     --foreground: var(--paper);
     --card-foreground: var(--paper);
     --popover-foreground: var(--paper);
+    /*
+     * Muted copy has to be redirected too: left alone it keeps its light-mode
+     * mid-grey and reads as nothing at all on a black band.
+     */
+    --muted-foreground: color-mix(in oklab, var(--paper) 72%, transparent);
   }
 }
