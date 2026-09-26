@@ -21,25 +21,29 @@ export function StoreFooter() {
   const { phone, display } = useStorePhone();
   // Live identity — social links, store name and description, editable by the
   // admin from the icons themselves or from the dashboard's design tab.
-  const { instagram, facebook, name } = useStoreBrand();
+  const { instagram, facebook, name, footerAbout } = useStoreBrand();
 
   // Live category list — admin edits appear here immediately.
   const categoryRows = useQuery(api.catalog.listCategories);
   const categories = categoryRows ?? [];
   const heading = cn(
-    "text-[10px] text-chrome-faint",
+    "text-[10px] text-foreground/40",
     isAr ? "tracking-[0.2em]" : "tracking-[0.3em] uppercase",
   );
 
   return (
-    /* Fixed black chrome: no theme can turn the footer white. */
-    <footer className="bg-chrome text-chrome-foreground mt-24">
+    /*
+     * The footer sits on the palette's darkest tone, so it follows the chosen
+     * design while staying the deepest band on the page.
+     */
+    <footer className="bg-ink text-foreground mt-24">
       <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
           <div>
-            <Brand onBlack />
-            <p className="mt-5 max-w-sm text-sm leading-7 text-chrome-muted">
-              {t("footer.about")}
+            <Brand onDark />
+            <p className="mt-5 max-w-sm text-sm leading-7 text-foreground/60">
+              {/* What the admin typed in the design tab, or the default. */}
+              {footerAbout || t("footer.about")}
             </p>
             <div className="mt-6 flex items-center gap-3">
               <span className="relative">
@@ -48,7 +52,7 @@ export function StoreFooter() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={t("common.instagram")}
-                  className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
+                  className="grid size-10 place-items-center rounded-full border border-foreground/15 transition-colors hover:bg-foreground/10"
                 >
                   <InstagramIcon className="size-5" />
                 </a>
@@ -61,7 +65,7 @@ export function StoreFooter() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={t("common.facebook")}
-                  className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
+                  className="grid size-10 place-items-center rounded-full border border-foreground/15 transition-colors hover:bg-foreground/10"
                 >
                   <Facebook className="size-5 text-[#1877F2]" />
                 </a>
@@ -72,7 +76,7 @@ export function StoreFooter() {
                 <a
                   href={`tel:${phone}`}
                   aria-label={t("common.phone")}
-                  className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
+                  className="grid size-10 place-items-center rounded-full border border-foreground/15 transition-colors hover:bg-foreground/10"
                 >
                   <Phone className="size-5" />
                 </a>
@@ -88,7 +92,7 @@ export function StoreFooter() {
               <li>
                 <Link
                   to="/shop"
-                  className="text-chrome-muted hover:text-chrome-foreground"
+                  className="text-foreground/70 hover:text-foreground"
                 >
                   {t("common.allProducts")}
                 </Link>
@@ -97,7 +101,7 @@ export function StoreFooter() {
                 <li key={category._id}>
                   <Link
                     to={`/category/${category.slug}`}
-                    className="text-chrome-muted hover:text-chrome-foreground"
+                    className="text-foreground/70 hover:text-foreground"
                   >
                     {categoryName(category, lang)}
                   </Link>
@@ -108,14 +112,14 @@ export function StoreFooter() {
 
           <div>
             <h3 className={heading}>{t("footer.service")}</h3>
-            <ul className="mt-5 space-y-4 text-sm text-chrome-muted">
+            <ul className="mt-5 space-y-4 text-sm text-foreground/70">
               <li className="flex items-start gap-3">
                 <Truck className="mt-0.5 size-4 shrink-0" />
                 {/* Opens the per-wilaya price list. */}
                 <Link
                   to="/delivery"
                   title={t("footer.deliveryPrices")}
-                  className="hover:text-chrome-foreground"
+                  className="hover:text-foreground"
                 >
                   {t("footer.delivery")}
                 </Link>
@@ -129,11 +133,11 @@ export function StoreFooter() {
 
           <div>
             <h3 className={heading}>{t("footer.contact")}</h3>
-            <ul className="mt-5 space-y-3 text-sm text-chrome-muted">
+            <ul className="mt-5 space-y-3 text-sm text-foreground/70">
               <li>
                 <a
                   href={`tel:${phone}`}
-                  className="hover:text-chrome-foreground"
+                  className="hover:text-foreground"
                 >
                   {display}
                 </a>
@@ -143,7 +147,7 @@ export function StoreFooter() {
                   href={whatsappLink(undefined, phone)}
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-chrome-foreground"
+                  className="hover:text-foreground"
                 >
                   {t("common.whatsapp")}
                 </a>
@@ -152,14 +156,14 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-chrome-border pt-6 text-[11px] tracking-wide text-chrome-faint sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-foreground/10 pt-6 text-[11px] tracking-wide text-foreground/40 sm:flex-row sm:items-center sm:justify-between">
           <span>
             {t("footer.rights", {
               year: new Date().getFullYear(),
               store: name,
             })}
           </span>
-          <Link to="/admin" className="hover:text-chrome-muted">
+          <Link to="/admin" className="hover:text-foreground/70">
             {t("footer.admin")}
           </Link>
         </div>

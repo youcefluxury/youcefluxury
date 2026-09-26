@@ -177,10 +177,10 @@ export function AdminNotifications({
         className="w-[min(23rem,calc(100vw-2rem))] gap-0 overflow-hidden rounded-2xl p-0 shadow-xl"
       >
         {/* Panel header — title, unread count and today's numbers */}
-        <div className="bg-chrome text-chrome-foreground px-4 pt-3.5 pb-4">
+        <div className="bg-ink text-foreground px-4 pt-3.5 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-full bg-chrome-hover">
+              <span className="grid size-7 place-items-center rounded-full bg-foreground/10">
                 <Bell className="size-3.5" />
               </span>
               <p className="text-sm font-semibold">{t("notif.title")}</p>
@@ -193,19 +193,19 @@ export function AdminNotifications({
                 {t("notif.unread", { n: unseen.length })}
               </span>
             ) : (
-              <span className="text-[10px] text-chrome-muted">
+              <span className="text-[10px] text-foreground/60">
                 {t("notif.allRead")}
               </span>
             )}
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <div className="rounded-xl border border-chrome-border bg-chrome-hover px-3 py-2">
-              <p className="text-[10px] text-chrome-muted">{t("notif.todayOrders")}</p>
+            <div className="rounded-xl border border-foreground/10 bg-foreground/5 px-3 py-2">
+              <p className="text-[10px] text-foreground/60">{t("notif.todayOrders")}</p>
               <p className="mt-0.5 text-sm font-semibold">{today.count}</p>
             </div>
-            <div className="rounded-xl border border-chrome-border bg-chrome-hover px-3 py-2">
-              <p className="text-[10px] text-chrome-muted">{t("notif.todaySales")}</p>
+            <div className="rounded-xl border border-foreground/10 bg-foreground/5 px-3 py-2">
+              <p className="text-[10px] text-foreground/60">{t("notif.todaySales")}</p>
               <p className="mt-0.5 text-sm font-semibold">{formatDA(today.sales)}</p>
             </div>
           </div>

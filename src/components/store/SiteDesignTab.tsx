@@ -247,6 +247,7 @@ function StoreIdentityPanel() {
   const [tagline, setTagline] = useState(brand.tagline);
   const [description, setDescription] = useState(brand.description);
   const [map, setMap] = useState(brand.mapEmbedUrl);
+  const [footerAbout, setFooterAbout] = useState(brand.footerAbout);
   const [logo, setLogo] = useState(brand.logo === "/brand.svg" ? "" : brand.logo);
   const [busy, setBusy] = useState(false);
 
@@ -286,6 +287,7 @@ function StoreIdentityPanel() {
         tagline: tagline.trim(),
         description: description.trim(),
         map: map.trim() ? (mapCoordinates(map) ?? "") : "",
+        footerAbout: footerAbout.trim(),
         logo,
       });
       toast.success(t("admin.identitySaved"));
@@ -308,6 +310,7 @@ function StoreIdentityPanel() {
         description: "",
         map: "",
         logo: "",
+        footerAbout: "",
       });
       setName(STORE.name);
       setTagline("");
@@ -382,6 +385,20 @@ function StoreIdentityPanel() {
       </div>
 
       <div className={fieldClass}>
+        <div className="grid gap-2">
+          <Label htmlFor="storeFooterAbout">{t("admin.footerAbout")}</Label>
+          <Textarea
+            id="storeFooterAbout"
+            rows={3}
+            value={footerAbout}
+            onChange={(event) => setFooterAbout(event.target.value)}
+            placeholder={t("footer.about")}
+          />
+          <p className="text-muted-foreground text-[10px] leading-4">
+            {t("admin.footerAboutHint")}
+          </p>
+        </div>
+
         <Label htmlFor="storeMap">{t("admin.mapCoordinates")}</Label>
         <Input
           id="storeMap"

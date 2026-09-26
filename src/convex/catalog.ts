@@ -22,6 +22,8 @@ const productFields = {
   price: v.number(),
   oldPrice: v.optional(v.number()),
   category: v.string(),
+  /** Manual placement: a higher number is shown first. */
+  sort: v.optional(v.number()),
   images: v.array(v.string()),
   /**
    * One colour per photo, index-aligned with `images` ("" = no colour).
@@ -50,11 +52,20 @@ const productFields = {
 export const listProducts = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const rows = await ctx.db
       .query("products")
       .withIndex("by_created")
       .order("desc")
       .collect();
+
+    // The admin's manual placement wins; without a number a product sinks
+    // below every placed one, and the newest wins inside each group.
+    return rows.sort((left, right) => {
+      const a = left.sort ?? Number.NEGATIVE_INFINITY;
+      const b = right.sort ?? Number.NEGATIVE_INFINITY;
+      if (a !== b) return b - a;
+      return right._creationTime - left._creationTime;
+    });
   },
 });
 
@@ -343,6 +354,8 @@ export const getStoreSettings = query({
       facebook: map.get("facebook") ?? "",
       /** Whatever the admin pasted — coordinates or a Google Maps link. */
       mapEmbedUrl: map.get("map") ?? "",
+      /** The paragraph under the brand in the footer, editable by the admin. */
+      footerAbout: map.get("footerAbout") ?? "",
     };
   },
 });
@@ -356,6 +369,7 @@ const identityKeys = [
   "instagram",
   "facebook",
   "map",
+  "footerAbout",
 ] as const;
 
 /** Keys that must be a usable link once they are not empty. */
@@ -373,6 +387,7 @@ export const setStoreSetting = mutation({
       v.literal("instagram"),
       v.literal("facebook"),
       v.literal("map"),
+      v.literal("footerAbout"),
     ),
     value: v.string(),
   },

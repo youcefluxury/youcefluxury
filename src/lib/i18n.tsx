@@ -634,6 +634,11 @@ const STRINGS = {
   },
   "admin.deliveryShort": { ar: "توصيل: {fee}", en: "Delivery: {fee}" },
   "admin.price": { ar: "السعر (دج)", en: "Price (DZD)" },
+  "admin.sort": { ar: "الترتيب", en: "Ordering" },
+  "admin.sortHint": {
+    ar: "الرقم الأكبر يظهر أولاً في المتجر. اتركه فارغاً ليظهر المنتج بعد كل المنتجات المرتّبة.",
+    en: "A higher number appears first in the shop. Leave it empty to place the product after every ordered one.",
+  },
   "admin.oldPrice": { ar: "السعر قبل التخفيض (اختياري)", en: "Price before discount (optional)" },
   "admin.discountOn": { ar: "التخفيض مفعّل — يوفر الزبون {save}", en: "Discount on — customer saves {save}" },
   "admin.discountOff": {
@@ -852,6 +857,11 @@ const STRINGS = {
     en: "Map link or coordinates",
   },
   "admin.mapCoordinates": { ar: "موقع المتجر", en: "Shop location" },
+  "admin.footerAbout": { ar: "نص الفوتر", en: "Footer text" },
+  "admin.footerAboutHint": {
+    ar: "الجملة التي تظهر في ذيل الموقع تحت اسم المتجر. اتركها فارغة للعودة إلى النص الافتراضي.",
+    en: "The paragraph shown at the bottom of the site under the store name. Leave it empty to fall back to the default text.",
+  },
   "admin.mapCoordinatesHint": {
     ar: `الصق الإحداثيات فقط: بالدرجات (35.180678,1.493835) أو بالشكل 35°22'02.7"N 1°19'24.0"E — وستنتقل الخريطة مباشرة إلى هذا المكان. الروابط غير مقبولة.`,
     en: `Paste the coordinates only: decimal (35.180678,1.493835) or 35°22'02.7"N 1°19'24.0"E — the map jumps straight to that spot. Links are not accepted.`,

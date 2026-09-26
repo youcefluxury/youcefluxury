@@ -39,6 +39,12 @@ const schema = defineSchema(
       price: v.number(),
       oldPrice: v.optional(v.number()),
       category: v.string(),
+      /**
+       * Manual placement in the storefront. A higher number is shown
+       * first; products saved before this field existed sort last, behind
+       * anything the admin has placed.
+       */
+      sort: v.optional(v.number()),
       images: v.array(v.string()),
       /**
        * One colour per photo, aligned by index with `images`: a shopper who

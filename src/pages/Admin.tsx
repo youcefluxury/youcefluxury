@@ -74,6 +74,8 @@ const EMPTY_PRODUCT_FORM = {
   nameAr: "",
   price: "",
   oldPrice: "",
+  /** Manual placement in the storefront; empty leaves it unplaced. */
+  sort: "",
   /** Empty → the product form defaults to the first live category. */
   category: "",
   images: "",
@@ -808,6 +810,7 @@ function ProductsManager({
       nameAr: product.nameAr,
       price: String(product.price),
       oldPrice: product.oldPrice ? String(product.oldPrice) : "",
+      sort: product.sort === undefined ? "" : String(product.sort),
       category: product.category,
       images: product.images.join("\n"),
       // Row 1 lists every size the piece comes in, row 2 marks the sold-out ones.
@@ -854,6 +857,8 @@ function ProductsManager({
         nameEn: form.nameAr.trim(),
         price: Number(form.price),
         oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
+        // Left undefined the product simply stays unplaced.
+        sort: form.sort.trim() === "" ? undefined : Number(form.sort),
         category: form.category,
         images: splitList(form.images),
         // One entry per picked size — a sold-out size stays a single row.
@@ -993,6 +998,21 @@ function ProductsManager({
               onChange={(event) => update("price", event.target.value)}
               placeholder="0"
             />
+          </div>
+          <div className={fieldClass}>
+            <Label htmlFor="sort">{t("admin.sort")}</Label>
+            <Input
+              id="sort"
+              type="number"
+              inputMode="numeric"
+              dir="ltr"
+              value={form.sort}
+              onChange={(event) => update("sort", event.target.value)}
+              placeholder="0"
+            />
+            <p className="text-muted-foreground text-[10px] leading-4">
+              {t("admin.sortHint")}
+            </p>
           </div>
           <div className={fieldClass}>
             <Label htmlFor="oldPrice">{t("admin.oldPrice")}</Label>
@@ -2397,11 +2417,11 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-muted/30">
-      <header className="bg-chrome text-chrome-foreground">
+      <header className="bg-ink text-foreground">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
-            <Brand onBlack />
-            <span className="hidden text-[10px] tracking-[0.24em] text-chrome-faint uppercase sm:block">
+            <Brand onDark />
+            <span className="hidden text-[10px] tracking-[0.24em] text-foreground/40 uppercase sm:block">
               {t("admin.dashboard")}
             </span>
           </div>
@@ -2411,7 +2431,7 @@ export default function Admin() {
               asChild
               variant="outline"
               size="sm"
-              className="border-chrome-border bg-transparent text-chrome-foreground hover:bg-chrome-hover hover:text-chrome-foreground"
+              className="border-foreground/20 bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground"
             >
               <Link to="/">
                 <ExternalLink className="size-4" />

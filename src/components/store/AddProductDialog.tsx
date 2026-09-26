@@ -95,6 +95,8 @@ export function ProductFormDialog({
   const [price, setPrice] = useState("");
   const [oldPrice, setOldPrice] = useState("");
   const [category, setCategory] = useState(defaultCategory);
+  /** Manual placement in the storefront; empty means "not placed". */
+  const [sort, setSort] = useState("");
   const [images, setImages] = useState<string[]>([]);
   /** One colour per photo, index-aligned with `images`. */
   const [imageColors, setImageColors] = useState<string[]>([]);
@@ -118,6 +120,7 @@ export function ProductFormDialog({
     if (!open) return;
     if (product) {
       setCategory(product.category);
+      setSort(product.sort === undefined ? "" : String(product.sort));
       setNameAr(product.nameAr);
       setPrice(String(product.price));
       setOldPrice(product.oldPrice ? String(product.oldPrice) : "");
@@ -240,6 +243,8 @@ export function ProductFormDialog({
         price: Number(price),
         oldPrice: oldPrice ? Number(oldPrice) : undefined,
         category,
+        // Undefined keeps the product unplaced instead of storing 0.
+        sort: sort.trim() === "" ? undefined : Number(sort),
         images,
         imageColors: images.map((_, index) => photoColorAt(index)),
         sizes: sizes.map((label) => ({
@@ -304,9 +309,21 @@ export function ProductFormDialog({
         </div>
 
         <form dir="rtl" onSubmit={submit} className="mt-5 grid gap-4">
-          {rows.length > 0 ? (
+          {/*
+            A product cannot exist without a category, and a shop cannot have
+            a product before it has a category at all — so an empty category
+            list blocks the form instead of offering a category-less product.
+          */}
+          {rows.length === 0 ? (
+            <p className="border-destructive/40 bg-destructive/10 text-destructive rounded-xl border px-3 py-2.5 text-[11px] leading-5">
+              {t("admin.noCategoriesForProduct")}
+            </p>
+          ) : (
             <div className="grid gap-2">
-              <Label>{t("admin.category")}</Label>
+              <Label>
+                {t("admin.category")}
+                <span className="text-destructive ms-1">*</span>
+              </Label>
               {/* Same cards as the dashboard: category photo + name. */}
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {rows.map((row) => {
@@ -345,7 +362,23 @@ export function ProductFormDialog({
                 })}
               </div>
             </div>
-          ) : null}
+          )}
+
+          <div className="grid gap-2">
+            <Label htmlFor="addSort">{t("admin.sort")}</Label>
+            <Input
+              id="addSort"
+              type="number"
+              inputMode="numeric"
+              dir="ltr"
+              value={sort}
+              onChange={(event) => setSort(event.target.value)}
+              placeholder="0"
+            />
+            <p className="text-muted-foreground text-[10px] leading-4">
+              {t("admin.sortHint")}
+            </p>
+          </div>
 
           <div className="grid gap-2">
             <Label htmlFor="addNameAr">{t("admin.nameAr")}</Label>
@@ -659,7 +692,12 @@ export function ProductFormDialog({
           </div>
 
           <div className="flex gap-2">
-            <Button type="submit" className="h-11 flex-1" disabled={busy || uploading}>
+            <Button
+              type="submit"
+              className="h-11 flex-1"
+              /* No category chosen, or no category to choose from. */
+              disabled={busy || uploading || rows.length === 0 || !category}
+            >
               <Plus className="size-4" />
               {product ? t("admin.saveChanges") : t("admin.addProduct")}
             </Button>

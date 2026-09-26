@@ -16,6 +16,8 @@ export function useStoreBrand(): {
   instagram: string;
   facebook: string;
   mapEmbedUrl: string;
+  /** The paragraph under the brand in the footer. */
+  footerAbout: string;
 } {
   const settings = useQuery(api.catalog.getStoreSettings);
   const logo = settings?.logo?.trim() ?? "";
@@ -26,6 +28,7 @@ export function useStoreBrand(): {
   const facebook = settings?.facebook?.trim() ?? "";
   // A saved map is normalised to an embed URL; anything unreadable is ignored.
   const map = toMapEmbedUrl(settings?.mapEmbedUrl ?? "");
+  const footerAbout = settings?.footerAbout?.trim() ?? "";
 
   return {
     logo: logo.length > 0 ? logo : "/brand.svg",
@@ -35,5 +38,6 @@ export function useStoreBrand(): {
     instagram: instagram.length > 0 ? instagram : STORE.instagram,
     facebook: facebook.length > 0 ? facebook : STORE.facebook,
     mapEmbedUrl: map.length > 0 ? map : STORE.mapEmbedUrl,
+    footerAbout,
   };
 }
