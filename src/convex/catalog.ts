@@ -151,7 +151,10 @@ export const createProduct = mutation({
       // A product created already sold out starts its 24-hour countdown now.
       soldOutAt: product.soldOut ? Date.now() : undefined,
       // Empty string / 0 from the form → no product-specific fee.
-      deliveryFee: product.deliveryFee && product.deliveryFee > 0 ? product.deliveryFee : undefined,
+      deliveryFee:
+        product.deliveryFee && product.deliveryFee > 0
+          ? product.deliveryFee
+          : undefined,
       ...photos,
       // Drop empty rows and unknown colours so the storefront stays clean.
       soldOutByColor: (product.soldOutByColor ?? []).filter(
@@ -204,7 +207,10 @@ export const updateProduct = mutation({
     await ctx.db.patch(id, {
       ...product,
       soldOutAt,
-      deliveryFee: product.deliveryFee && product.deliveryFee > 0 ? product.deliveryFee : undefined,
+      deliveryFee:
+        product.deliveryFee && product.deliveryFee > 0
+          ? product.deliveryFee
+          : undefined,
       ...photos,
       soldOutByColor: (product.soldOutByColor ?? []).filter(
         (row) => row.color.trim() && row.sizes.length > 0,
@@ -427,6 +433,9 @@ export const setStoreSetting = mutation({
 /** Meta key holding the chosen site design. */
 const SITE_THEME_KEY = "site-theme";
 
+/** Meta key holding the light/dark choice for the chosen design. */
+const SITE_THEME_MODE_KEY = "site-theme-mode";
+
 /**
  * Every design the dashboard can apply, read straight from the design library
  * so a new colour can never be added to the UI yet rejected by the server.
@@ -443,8 +452,14 @@ export const getSiteTheme = query({
       .query("meta")
       .withIndex("by_key", (q) => q.eq("key", SITE_THEME_KEY))
       .unique();
+    const modeRow = await ctx.db
+      .query("meta")
+      .withIndex("by_key", (q) => q.eq("key", SITE_THEME_MODE_KEY))
+      .unique();
     const theme = row?.value ?? "original";
-    return { theme: SITE_THEME_IDS.includes(theme) ? theme : "original" };
+    // Narrowed here so the dashboard receives the literal union, not a string.
+    const mode: "light" | "dark" = modeRow?.value === "light" ? "light" : "dark";
+    return { theme: SITE_THEME_IDS.includes(theme) ? theme : "original", mode };
   },
 });
 
@@ -453,6 +468,7 @@ export const setSiteTheme = mutation({
   args: {
     adminKey: v.string(),
     theme: v.union(...SITE_THEME_IDS.map((id) => v.literal(id))),
+    mode: v.optional(v.union(v.literal("light"), v.literal("dark"))),
   },
   handler: async (ctx, args) => {
     if (!isValidAdminKey(args.adminKey)) {
@@ -466,6 +482,20 @@ export const setSiteTheme = mutation({
       await ctx.db.patch(existing._id, { value: args.theme });
     } else {
       await ctx.db.insert("meta", { key: SITE_THEME_KEY, value: args.theme });
+    }
+    // Omitting the mode only switches the colours, keeping the tone.
+    const nextMode = args.mode ?? "dark";
+    const modeRow = await ctx.db
+      .query("meta")
+      .withIndex("by_key", (q) => q.eq("key", SITE_THEME_MODE_KEY))
+      .unique();
+    if (modeRow) {
+      await ctx.db.patch(modeRow._id, { value: nextMode });
+    } else {
+      await ctx.db.insert("meta", {
+        key: SITE_THEME_MODE_KEY,
+        value: nextMode,
+      });
     }
     return args.theme;
   },
@@ -506,7 +536,12 @@ export const createCategory = mutation({
       .toLowerCase()
       .replace(/[^a-z0-9-]+/g, "-")
       .replace(/^-+|-+$/g, "");
-    if (!slug || !args.nameAr.trim() || !args.nameEn.trim() || !args.image.trim()) {
+    if (
+      !slug ||
+      !args.nameAr.trim() ||
+      !args.nameEn.trim() ||
+      !args.image.trim()
+    ) {
       throw new Error("INVALID_CATEGORY");
     }
     const existing = await ctx.db
@@ -548,14 +583,21 @@ export const updateCategory = mutation({
       .toLowerCase()
       .replace(/[^a-z0-9-]+/g, "-")
       .replace(/^-+|-+$/g, "");
-    if (!slug || !args.nameAr.trim() || !args.nameEn.trim() || !args.image.trim()) {
+    if (
+      !slug ||
+      !args.nameAr.trim() ||
+      !args.nameEn.trim() ||
+      !args.image.trim()
+    ) {
       throw new Error("INVALID_CATEGORY");
     }
     const all = await ctx.db
       .query("categories")
       .withIndex("by_created")
       .collect();
-    if (all.some((category) => category.slug === slug && category._id !== args.id)) {
+    if (
+      all.some((category) => category.slug === slug && category._id !== args.id)
+    ) {
       throw new Error("DUPLICATE_SLUG");
     }
     const before = await ctx.db.get(args.id);
@@ -801,7 +843,8 @@ const SEED_PRODUCTS = [
     colors: ["black", "white"],
     featured: false,
     descriptionAr: "كاب قطني مع تطريز HA، حزام خلفي قابل للتعديل.",
-    descriptionEn: "Cotton cap with embroidered HA monogram and an adjustable strap.",
+    descriptionEn:
+      "Cotton cap with embroidered HA monogram and an adjustable strap.",
   },
 ];
 

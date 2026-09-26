@@ -49,12 +49,16 @@ import {
 import { useCart } from "@/lib/store-state";
 import { cn } from "@/lib/utils";
 
-/** Black announcement bar: delivery note, in the active language only. */
+/**
+ * Delivery note strip. It always wears the opposite of the page it sits on:
+ * a black band with white writing on the light mode, a white band with black
+ * writing on the dark one.
+ */
 function AnnouncementBar() {
   const { t, isAr } = useI18n();
 
   return (
-    <div className="bg-card text-card-foreground">
+    <div className="bg-black text-white dark:bg-white dark:text-black">
       <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-center gap-2 px-3 py-1 text-center">
         <span aria-hidden="true" className="text-[13px] leading-none">
           🇩🇿
@@ -271,7 +275,11 @@ export function StoreHeader() {
               onClick={() => setMobileSearch((open) => !open)}
               className={cn(iconButton, "md:hidden")}
             >
-              {mobileSearch ? <X className="size-5" /> : <Search className="size-5" />}
+              {mobileSearch ? (
+                <X className="size-5" />
+              ) : (
+                <Search className="size-5" />
+              )}
             </button>
 
             {/* Admin only: live order notifications, parked right of the bag. */}
@@ -298,7 +306,6 @@ export function StoreHeader() {
                 {count}
               </span>
             </button>
-
 
             <span className="relative">
               <a
@@ -381,7 +388,11 @@ export function StoreHeader() {
               onClick={() => setMenuOpen((open) => !open)}
               className={cn(iconButton, "lg:hidden")}
             >
-              {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              {menuOpen ? (
+                <X className="size-5" />
+              ) : (
+                <Menu className="size-5" />
+              )}
             </button>
           </div>
         </div>

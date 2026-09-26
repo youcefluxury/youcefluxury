@@ -77,6 +77,9 @@
   --sidebar-accent-foreground: oklch(0.95 0.016 70);
   --sidebar-border: oklch(1 0 0 / 13%);
   --sidebar-ring: oklch(0.6 0.07 70);
+  /* The inverted band pair, used by .on-ink and by the design swatches. */
+  --ink: #0a0a0a;
+  --paper: #fafafa;
 }
 
 .dark {
@@ -144,8 +147,7 @@
 @theme {
   --font-sans:
     "Cairo", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display:
-    "Playfair Display", "Cairo", ui-serif, Georgia, serif;
+  --font-display: "Playfair Display", "Cairo", ui-serif, Georgia, serif;
 
   /* Quiet neutrals + one refined accent */
   --color-ink: #0a0a0a;
@@ -237,6 +239,15 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  /*
+   * A deliberately black band (the footer, the dashboard header, the
+   * notifications header). It always keeps light writing whichever mode the
+   * site is in, by pointing the text tokens at the design's own paper tone.
+   */
+  .on-ink {
+    --foreground: var(--paper);
+    --card-foreground: var(--paper);
+    --popover-foreground: var(--paper);
+  }
 }
-
-

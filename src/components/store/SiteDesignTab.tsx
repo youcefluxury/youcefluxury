@@ -4,8 +4,10 @@ import {
   HardDrive,
   Image as ImageIcon,
   MapPin,
+  Moon,
   Palette,
   RefreshCw,
+  Sun,
   Upload,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -21,9 +23,12 @@ import { useStoreBrand } from "@/hooks/use-store-brand";
 import { ADMIN_API_KEY } from "@/lib/admin-key";
 import { pickLang, useI18n } from "@/lib/i18n";
 import {
+  SITE_THEME_MODES,
   SITE_THEMES,
   applySiteTheme,
+  normalizeSiteMode,
   siteThemeById,
+  type SiteThemeMode,
   type SiteThemePreset,
 } from "@/lib/site-theme";
 import {
@@ -47,11 +52,19 @@ const ORIGINAL_SWATCHES = {
 };
 
 /** Three dots that show a design before it is applied. */
-function ThemeSwatches({ preset }: { preset: SiteThemePreset }) {
+function ThemeSwatches({
+  preset,
+  mode,
+}: {
+  preset: SiteThemePreset;
+  mode: SiteThemeMode;
+}) {
+  // The dots wear the palette the store is in right now.
+  const palette = preset.tokens[mode];
   const swatches = [
-    preset.tokens["--ink"] ?? ORIGINAL_SWATCHES.ink,
-    preset.tokens["--paper"] ?? ORIGINAL_SWATCHES.paper,
-    preset.tokens["--brand"] ?? ORIGINAL_SWATCHES.brand,
+    palette["--ink"] ?? ORIGINAL_SWATCHES.ink,
+    palette["--paper"] ?? ORIGINAL_SWATCHES.paper,
+    palette["--brand"] ?? ORIGINAL_SWATCHES.brand,
   ];
   return (
     <div className="flex items-center gap-1.5">
@@ -72,27 +85,43 @@ function ThemeSwatches({ preset }: { preset: SiteThemePreset }) {
  */
 function SiteDesignPanel() {
   const { t, lang } = useI18n();
-  const saved = useQuery(api.catalog.getSiteTheme)?.theme;
+  const stored = useQuery(api.catalog.getSiteTheme);
   const setSiteTheme = useMutation(api.catalog.setSiteTheme);
   const [pending, setPending] = useState<string | null>(null);
+  const [pendingMode, setPendingMode] = useState<SiteThemeMode | null>(null);
 
-  const current = saved ?? "original";
+  const current = stored?.theme ?? "original";
+  const currentMode = normalizeSiteMode(stored?.mode);
   const applied = siteThemeById(current);
+  const busy = pending !== null || pendingMode !== null;
 
-  async function apply(id: SiteThemePreset["id"]) {
-    if (id === current || pending) return;
+  /** Shows the new look at once, then saves it for every visitor. */
+  async function commit(id: string, mode: SiteThemeMode) {
     setPending(id);
+    setPendingMode(mode);
     // Instant preview: the store restyles before the write comes back.
-    applySiteTheme(id);
+    applySiteTheme(id, mode);
     try {
-      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id });
+      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id as never, mode });
       toast.success(t("admin.designSaved"));
     } catch {
-      applySiteTheme(current);
+      applySiteTheme(current, currentMode);
       toast.error(t("admin.designFailed"));
     } finally {
       setPending(null);
+      setPendingMode(null);
     }
+  }
+
+  function apply(id: SiteThemePreset["id"]) {
+    if (id === current || busy) return;
+    void commit(id, currentMode);
+  }
+
+  /** Same design, the other tone. */
+  function applyMode(mode: SiteThemeMode) {
+    if (mode === currentMode || busy) return;
+    void commit(current, mode);
   }
 
   return (
@@ -104,6 +133,12 @@ function SiteDesignPanel() {
             {t("admin.designCurrent")}:{" "}
             {pickLang(applied.nameAr, applied.nameEn, lang)}
           </p>
+          <p className="text-muted-foreground mt-1 text-[11px]">
+            {t("admin.modeTitle")}:{" "}
+            {currentMode === "light"
+              ? t("admin.modeLight")
+              : t("admin.modeDark")}
+          </p>
           <p className="text-muted-foreground mt-1 text-xs leading-5">
             {t("admin.designLead")}
           </p>
@@ -113,54 +148,83 @@ function SiteDesignPanel() {
         </div>
       </div>
 
-      <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {/* The built-in look is no longer offered as a choice. */}
-        {SITE_THEMES.filter((preset) => preset.id !== "original").map((preset) => {
-          const isCurrent = preset.id === current;
-          return (
-            <button
-              key={preset.id}
-              type="button"
-              disabled={pending !== null}
-              onClick={() => void apply(preset.id)}
-              className={cn(
-                "grid gap-3 rounded-xl border p-4 text-start transition-colors",
-                isCurrent
-                  ? "border-foreground bg-muted/40"
-                  : "border-border/70 hover:border-foreground/40",
-                pending === preset.id && "opacity-60",
-              )}
-            >
-              <div className="flex items-center justify-between gap-2">
-                <ThemeSwatches preset={preset} />
-                {isCurrent ? (
-                  <span className="bg-foreground text-background inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium">
-                    <Check className="size-3" />
-                    {t("admin.designApplied")}
-                  </span>
-                ) : preset.id === "original" ? (
-                  <span className="text-muted-foreground border border-border/70 px-2 py-0.5 text-[10px]">
-                    {t("admin.designOriginalBadge")}
-                  </span>
-                ) : preset.dark ? (
-                  <span className="text-muted-foreground border border-border/70 px-2 py-0.5 text-[10px]">
-                    {t("admin.designDarkBadge")}
-                  </span>
-                ) : null}
-              </div>
-              <div>
-                <p className="text-sm font-medium">
-                  {pickLang(preset.nameAr, preset.nameEn, lang)}
-                </p>
-                <p className="text-muted-foreground mt-1 text-[11px] leading-5">
-                  {pickLang(preset.blurbAr, preset.blurbEn, lang)}
-                </p>
-              </div>
-            </button>
-          );
-        })}
+      {/* The same design, worn on a bright page or a deep one. */}
+      <div className="mt-2 grid gap-3 rounded-xl border border-border/70 p-3 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div className="min-w-0">
+          <p className="text-xs font-medium">{t("admin.modeTitle")}</p>
+          <p className="text-muted-foreground mt-1 text-[10px] leading-5">
+            {t("admin.modeHint")}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-1 rounded-lg border border-border/70 bg-background p-1">
+          {SITE_THEME_MODES.map((mode) => {
+            const active = currentMode === mode;
+            return (
+              <button
+                key={mode}
+                type="button"
+                disabled={busy}
+                onClick={() => applyMode(mode)}
+                className={cn(
+                  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-4 text-xs font-medium transition-colors disabled:opacity-50",
+                  active
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:bg-muted",
+                )}
+              >
+                {mode === "light" ? (
+                  <Sun className="size-3.5" />
+                ) : (
+                  <Moon className="size-3.5" />
+                )}
+                {mode === "light" ? t("admin.modeLight") : t("admin.modeDark")}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
+      <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {/* The built-in look is no longer offered as a choice. */}
+        {SITE_THEMES.filter((preset) => preset.id !== "original").map(
+          (preset) => {
+            const isCurrent = preset.id === current;
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                disabled={busy}
+                onClick={() => void apply(preset.id)}
+                className={cn(
+                  "grid gap-3 rounded-xl border p-4 text-start transition-colors",
+                  isCurrent
+                    ? "border-foreground bg-muted/40"
+                    : "border-border/70 hover:border-foreground/40",
+                  pending === preset.id && "opacity-60",
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <ThemeSwatches preset={preset} mode={currentMode} />
+                  {isCurrent ? (
+                    <span className="bg-foreground text-background inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium">
+                      <Check className="size-3" />
+                      {t("admin.designApplied")}
+                    </span>
+                  ) : null}
+                </div>
+                <div>
+                  <p className="text-sm font-medium">
+                    {pickLang(preset.nameAr, preset.nameEn, lang)}
+                  </p>
+                  <p className="text-muted-foreground mt-1 text-[11px] leading-5">
+                    {pickLang(preset.blurbAr, preset.blurbEn, lang)}
+                  </p>
+                </div>
+              </button>
+            );
+          },
+        )}
+      </div>
     </div>
   );
 }
@@ -248,7 +312,9 @@ function StoreIdentityPanel() {
   const [description, setDescription] = useState(brand.description);
   const [map, setMap] = useState(brand.mapEmbedUrl);
   const [footerAbout, setFooterAbout] = useState(brand.footerAbout);
-  const [logo, setLogo] = useState(brand.logo === "/brand.svg" ? "" : brand.logo);
+  const [logo, setLogo] = useState(
+    brand.logo === "/brand.svg" ? "" : brand.logo,
+  );
   const [busy, setBusy] = useState(false);
 
   // The saved identity can arrive after this panel was first painted.
@@ -258,7 +324,13 @@ function StoreIdentityPanel() {
     setDescription(brand.description);
     setMap(brand.mapEmbedUrl);
     setLogo(brand.logo === "/brand.svg" ? "" : brand.logo);
-  }, [brand.name, brand.tagline, brand.description, brand.mapEmbedUrl, brand.logo]);
+  }, [
+    brand.name,
+    brand.tagline,
+    brand.description,
+    brand.mapEmbedUrl,
+    brand.logo,
+  ]);
 
   /* The short “35.180678,1.493835” line shown under the map field. */
   const coordinates = mapCoordinates(map);
@@ -518,9 +590,7 @@ function R2StoragePanel() {
       <p
         className={cn(
           "text-[10px] leading-4 break-all",
-          status.kind === "ok"
-            ? "text-emerald-600"
-            : "text-muted-foreground",
+          status.kind === "ok" ? "text-emerald-600" : "text-muted-foreground",
         )}
       >
         {status.kind === "idle" ? t("admin.r2Waiting") : status.detail}

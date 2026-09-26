@@ -36,7 +36,7 @@ export function StoreFooter() {
      * The footer sits on the palette's darkest tone, so it follows the chosen
      * design while staying the deepest band on the page.
      */
-    <footer className="bg-ink text-foreground mt-24">
+    <footer className="on-ink bg-ink mt-24">
       <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
           <div>
@@ -135,10 +135,7 @@ export function StoreFooter() {
             <h3 className={heading}>{t("footer.contact")}</h3>
             <ul className="mt-5 space-y-3 text-sm text-foreground/70">
               <li>
-                <a
-                  href={`tel:${phone}`}
-                  className="hover:text-foreground"
-                >
+                <a href={`tel:${phone}`} className="hover:text-foreground">
                   {display}
                 </a>
               </li>

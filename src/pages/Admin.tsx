@@ -33,7 +33,12 @@ import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { Brand, HaMonogram, LanguageToggle, ProductImage } from "@/components/store/bits";
+import {
+  Brand,
+  HaMonogram,
+  LanguageToggle,
+  ProductImage,
+} from "@/components/store/bits";
 import { SiteDesignTab } from "@/components/store/SiteDesignTab";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,7 +103,9 @@ type ProductFormState = typeof EMPTY_PRODUCT_FORM;
 
 /* Standard size catalogue offered as tappable chips in the product form. */
 const SIZE_LETTERS = ["S", "M", "L", "XL", "XXL", "3XL", "ONE SIZE"];
-const SIZE_NUMBERS = Array.from({ length: 19 }, (_, index) => String(28 + index));
+const SIZE_NUMBERS = Array.from({ length: 19 }, (_, index) =>
+  String(28 + index),
+);
 
 /**
  * Sizes are picked exactly like colours: one row of tappable icon chips, no
@@ -253,7 +260,8 @@ function ImagePickerField({
         onChange={(event) => void handleFiles(event.target.files)}
       />
     </div>
-  );}
+  );
+}
 
 /** In-app confirmation dialog — replaces the plain browser confirm(). */
 function ConfirmDialog({
@@ -269,10 +277,15 @@ function ConfirmDialog({
 }) {
   const { t } = useI18n();
   return (
-    <Dialog open={open} onOpenChange={(next) => (next ? undefined : onCancel())}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => (next ? undefined : onCancel())}
+    >
       <DialogContent className="w-[calc(100vw-2rem)] max-w-xs gap-0 rounded-none p-6 sm:rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-center text-base">{t("admin.confirmTitle")}</DialogTitle>
+          <DialogTitle className="text-center text-base">
+            {t("admin.confirmTitle")}
+          </DialogTitle>
           <DialogDescription className="text-muted-foreground mt-2 text-center text-xs leading-6">
             {message}
           </DialogDescription>
@@ -281,11 +294,7 @@ function ConfirmDialog({
           <Button variant="outline" className="h-10" onClick={onCancel}>
             {t("admin.cancel")}
           </Button>
-          <Button
-            variant="destructive"
-            className="h-10"
-            onClick={onConfirm}
-          >
+          <Button variant="destructive" className="h-10" onClick={onConfirm}>
             {t("admin.delete")}
           </Button>
         </div>
@@ -482,7 +491,11 @@ function AdminField({
             onClick={() => setReveal((current) => !current)}
             className="absolute top-1/2 end-2.5 grid size-7 -translate-y-1/2 place-items-center rounded-full text-white/40 transition-colors hover:text-white"
           >
-            {reveal ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+            {reveal ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
           </button>
         ) : null}
       </div>
@@ -571,7 +584,9 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
           TOO_SHORT: t("admin.pwTooShort"),
           SAME_PASSWORD: t("admin.pwSame"),
         };
-        setChangeError(reasons[result.reason ?? ""] ?? t("admin.pwChangeFailed"));
+        setChangeError(
+          reasons[result.reason ?? ""] ?? t("admin.pwChangeFailed"),
+        );
         return;
       }
       toast.success(t("admin.pwChanged"));
@@ -644,7 +659,9 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
               placeholder={t("admin.pwRepeatNew")}
             />
             {confirmPassword.length > 0 && newPassword !== confirmPassword ? (
-              <p className="text-[11px] text-red-300">{t("admin.pwMismatch")}</p>
+              <p className="text-[11px] text-red-300">
+                {t("admin.pwMismatch")}
+              </p>
             ) : null}
             {changeError ? (
               <p className="rounded-xl border border-red-400/30 bg-red-400/10 px-3 py-2 text-xs text-red-200">
@@ -889,7 +906,9 @@ function ProductsManager({
       resetForm();
     } catch (error) {
       toast.error(
-        error instanceof Error && error.message ? error.message : t("admin.saveFailed"),
+        error instanceof Error && error.message
+          ? error.message
+          : t("admin.saveFailed"),
       );
     } finally {
       setBusy(false);
@@ -908,7 +927,8 @@ function ProductsManager({
     }
   }
 
-  const headClass = "px-3 py-2.5 text-start text-[10px] tracking-[0.14em] uppercase sm:px-4 sm:py-3 sm:text-[11px]";
+  const headClass =
+    "px-3 py-2.5 text-start text-[10px] tracking-[0.14em] uppercase sm:px-4 sm:py-3 sm:text-[11px]";
   const fieldClass = "grid gap-2"; /* probe */
 
   const pickedSizes = splitList(form.availableSizes);
@@ -916,7 +936,10 @@ function ProductsManager({
 
   return (
     <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)] xl:gap-8">
-      <form onSubmit={submit} className="h-fit min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5">
+      <form
+        onSubmit={submit}
+        className="h-fit min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">
             {editingId ? t("admin.editProduct") : t("admin.newProduct")}
@@ -1028,7 +1051,10 @@ function ProductsManager({
               {form.oldPrice
                 ? t("admin.discountOn", {
                     save: formatDA(
-                      Math.max(0, Number(form.price || 0) - Number(form.oldPrice)),
+                      Math.max(
+                        0,
+                        Number(form.price || 0) - Number(form.oldPrice),
+                      ),
                     ),
                   })
                 : t("admin.discountOff")}
@@ -1042,7 +1068,10 @@ function ProductsManager({
               value=""
               multiple
               onMultiplePicked={(urls) =>
-                update("images", [...splitList(form.images), ...urls].join("\n"))
+                update(
+                  "images",
+                  [...splitList(form.images), ...urls].join("\n"),
+                )
               }
             />
             <p className="text-muted-foreground text-[10px] leading-4">
@@ -1117,7 +1146,9 @@ function ProductsManager({
                         update(
                           "soldOutSizes",
                           out
-                            ? soldOutList.filter((item) => item !== size).join(", ")
+                            ? soldOutList
+                                .filter((item) => item !== size)
+                                .join(", ")
                             : [...soldOutList, size].join(", "),
                         )
                       }
@@ -1152,7 +1183,9 @@ function ProductsManager({
                       update(
                         "colors",
                         selected
-                          ? splitList(form.colors).filter((item) => item !== key).join(", ")
+                          ? splitList(form.colors)
+                              .filter((item) => item !== key)
+                              .join(", ")
                           : [...splitList(form.colors), key].join(", "),
                       )
                     }
@@ -1185,13 +1218,18 @@ function ProductsManager({
               {splitList(form.colors).map((color) => {
                 const outForColor = form.colorStock[color] ?? [];
                 return (
-                  <div key={color} className="grid gap-1.5 rounded-xl border border-border/70 p-3">
+                  <div
+                    key={color}
+                    className="grid gap-1.5 rounded-xl border border-border/70 p-3"
+                  >
                     <div className="flex items-center gap-2">
                       <span
                         className="size-3.5 shrink-0 rounded-full border border-border/60"
                         style={{ background: colorSwatch(color) }}
                       />
-                      <p className="text-xs font-medium">{colorLabel(color, "ar")}</p>
+                      <p className="text-xs font-medium">
+                        {colorLabel(color, "ar")}
+                      </p>
                     </div>
                     <div className="flex max-w-full flex-wrap gap-1.5">
                       {pickedSizes.map((size) => {
@@ -1354,7 +1392,9 @@ function ProductsManager({
                   </span>
                 )}
                 {product.featured ? (
-                  <span className="text-brand w-fit">★ {t("admin.featured")}</span>
+                  <span className="text-brand w-fit">
+                    ★ {t("admin.featured")}
+                  </span>
                 ) : null}
               </div>
             </article>
@@ -1368,127 +1408,138 @@ function ProductsManager({
 
         {/* Tablet & desktop: unchanged scrolling table. */}
         <div className="hidden sm:block">
-        <SwipeTable minWidth={760} label={t("admin.currentProducts", { n: products?.length ?? 0 })}>
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-muted-foreground">
-              <tr>
-                <th className={headClass}>{t("admin.colProduct")}</th>
-                <th className={headClass}>{t("admin.colPrice")}</th>
-                <th className={headClass}>{t("admin.colSizes")}</th>
-                <th className={headClass}>{t("admin.colStatus")}</th>
-                <th className={cn(headClass, "text-end")}>{t("admin.colActions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(products ?? []).map((product) => (
-                <tr key={product._id} className="border-t border-border/70">
-                  <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="size-12 shrink-0 overflow-hidden rounded-lg bg-muted">
-                        <ProductImage
-                          src={product.images[0]}
-                          alt={pickLang(product.nameAr, product.nameEn, lang)}
-                          sizes="48px"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium">
-                          {pickLang(product.nameAr, product.nameEn, lang)}
-                        </p>
-                        <p className="text-muted-foreground text-[10px]">
-                          {liveCategoryLabel(categoryRows, product.category, lang)}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-2.5 py-2.5 sm:px-4 sm:py-3">
-                    {formatDA(product.price)}
-                    {product.oldPrice ? (
-                      <span className="text-muted-foreground block text-[11px] line-through">
-                        {formatDA(product.oldPrice)}
-                      </span>
-                    ) : null}
-                  </td>
-                  <td className="px-2.5 py-2.5 text-[11px] sm:px-4 sm:py-3">
-                    {(orderedSizes.get(product._id) ?? []).length > 0 ? (
-                      /* A customer picked a size: show ONLY those sizes. */
-                      <p className="font-semibold text-emerald-700">
-                        {t("admin.orderedSizes", {
-                          sizes: (orderedSizes.get(product._id) ?? [])
-                            .map((size) => sizeLabel(size, lang))
-                            .join(" · "),
-                        })}
-                      </p>
-                    ) : (
-                      /* Nothing ordered yet: show the sizes the product comes in. */
-                      <p className="text-muted-foreground">
-                        {t("admin.productSizes", {
-                          sizes:
-                            product.sizes
-                              .map((size) =>
-                                size.available
-                                  ? sizeLabel(size.label, lang)
-                                  : `${sizeLabel(size.label, lang)} (✕)`,
-                              )
-                              .join(" · ") || "—",
-                        })}
-                      </p>
-                    )}
-                  </td>
-                  <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
-                    <div className="flex flex-col gap-1 text-[10px]">
-                      {product.soldOut ? (
-                        <span className="bg-foreground text-background w-fit rounded-full px-2 py-1">
-                          {t("product.soldOut")}
-                        </span>
-                      ) : (
-                        <span className="w-fit rounded-full border border-border px-2 py-1">
-                          {t("admin.available")}
-                        </span>
-                      )}
-                      {product.featured ? (
-                        <span className="text-brand w-fit">★ {t("admin.featured")}</span>
-                      ) : null}
-                    </div>
-                  </td>
-                  <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={t("admin.edit")}
-                        onClick={() => startEdit(product)}
-                      >
-                        <Pencil className="size-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={t("admin.delete")}
-                        className="text-destructive"
-                        onClick={() => setConfirmId(product._id)}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {products && products.length === 0 ? (
+          <SwipeTable
+            minWidth={760}
+            label={t("admin.currentProducts", { n: products?.length ?? 0 })}
+          >
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-muted-foreground">
                 <tr>
-                  <td
-                    colSpan={5}
-                    className="text-muted-foreground px-4 py-10 text-center text-xs"
-                  >
-                    {t("admin.noProducts")}
-                  </td>
+                  <th className={headClass}>{t("admin.colProduct")}</th>
+                  <th className={headClass}>{t("admin.colPrice")}</th>
+                  <th className={headClass}>{t("admin.colSizes")}</th>
+                  <th className={headClass}>{t("admin.colStatus")}</th>
+                  <th className={cn(headClass, "text-end")}>
+                    {t("admin.colActions")}
+                  </th>
                 </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </SwipeTable>
+              </thead>
+              <tbody>
+                {(products ?? []).map((product) => (
+                  <tr key={product._id} className="border-t border-border/70">
+                    <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="size-12 shrink-0 overflow-hidden rounded-lg bg-muted">
+                          <ProductImage
+                            src={product.images[0]}
+                            alt={pickLang(product.nameAr, product.nameEn, lang)}
+                            sizes="48px"
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium">
+                            {pickLang(product.nameAr, product.nameEn, lang)}
+                          </p>
+                          <p className="text-muted-foreground text-[10px]">
+                            {liveCategoryLabel(
+                              categoryRows,
+                              product.category,
+                              lang,
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="whitespace-nowrap px-2.5 py-2.5 sm:px-4 sm:py-3">
+                      {formatDA(product.price)}
+                      {product.oldPrice ? (
+                        <span className="text-muted-foreground block text-[11px] line-through">
+                          {formatDA(product.oldPrice)}
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="px-2.5 py-2.5 text-[11px] sm:px-4 sm:py-3">
+                      {(orderedSizes.get(product._id) ?? []).length > 0 ? (
+                        /* A customer picked a size: show ONLY those sizes. */
+                        <p className="font-semibold text-emerald-700">
+                          {t("admin.orderedSizes", {
+                            sizes: (orderedSizes.get(product._id) ?? [])
+                              .map((size) => sizeLabel(size, lang))
+                              .join(" · "),
+                          })}
+                        </p>
+                      ) : (
+                        /* Nothing ordered yet: show the sizes the product comes in. */
+                        <p className="text-muted-foreground">
+                          {t("admin.productSizes", {
+                            sizes:
+                              product.sizes
+                                .map((size) =>
+                                  size.available
+                                    ? sizeLabel(size.label, lang)
+                                    : `${sizeLabel(size.label, lang)} (✕)`,
+                                )
+                                .join(" · ") || "—",
+                          })}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
+                      <div className="flex flex-col gap-1 text-[10px]">
+                        {product.soldOut ? (
+                          <span className="bg-foreground text-background w-fit rounded-full px-2 py-1">
+                            {t("product.soldOut")}
+                          </span>
+                        ) : (
+                          <span className="w-fit rounded-full border border-border px-2 py-1">
+                            {t("admin.available")}
+                          </span>
+                        )}
+                        {product.featured ? (
+                          <span className="text-brand w-fit">
+                            ★ {t("admin.featured")}
+                          </span>
+                        ) : null}
+                      </div>
+                    </td>
+                    <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={t("admin.edit")}
+                          onClick={() => startEdit(product)}
+                        >
+                          <Pencil className="size-4" />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={t("admin.delete")}
+                          className="text-destructive"
+                          onClick={() => setConfirmId(product._id)}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {products && products.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="text-muted-foreground px-4 py-10 text-center text-xs"
+                    >
+                      {t("admin.noProducts")}
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </SwipeTable>
         </div>
       </div>
 
@@ -1545,7 +1596,10 @@ function SliderManager({
   const [busy, setBusy] = useState(false);
   const [confirmId, setConfirmId] = useState<Id<"sliders"> | null>(null);
 
-  function update<K extends keyof SliderFormState>(key: K, value: SliderFormState[K]) {
+  function update<K extends keyof SliderFormState>(
+    key: K,
+    value: SliderFormState[K],
+  ) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
@@ -1554,7 +1608,12 @@ function SliderManager({
     setEditingId(null);
   }
 
-  function startEdit(slide: { _id: Id<"sliders">; image: string; titleAr: string; titleEn: string }) {
+  function startEdit(slide: {
+    _id: Id<"sliders">;
+    image: string;
+    titleAr: string;
+    titleEn: string;
+  }) {
     setEditingId(slide._id);
     setForm({
       image: slide.image,
@@ -1569,10 +1628,13 @@ function SliderManager({
     if (!sliders) return;
     const requested = editId ?? replaceId;
     if (requested) {
-      const isDbSlide = !requested.startsWith("fallback-") && !requested.startsWith("hero-");
+      const isDbSlide =
+        !requested.startsWith("fallback-") && !requested.startsWith("hero-");
       const target = isDbSlide
         ? sliders.find((slide) => slide._id === requested)
-        : sliders[Number(requested.split("-").pop()) % Math.max(sliders.length, 1)];
+        : sliders[
+            Number(requested.split("-").pop()) % Math.max(sliders.length, 1)
+          ];
       if (target) {
         startEdit(target);
         onDone?.();
@@ -1632,7 +1694,10 @@ function SliderManager({
 
   return (
     <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-8">
-      <form onSubmit={submit} className="h-fit min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5">
+      <form
+        onSubmit={submit}
+        className="h-fit min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">
             {editingId ? t("admin.editSlide") : t("admin.newSlide")}
@@ -1805,7 +1870,11 @@ function CategoriesManager({
     setEditingId(null);
   }
 
-  function startEdit(category: { _id: Id<"categories">; slug: string; image: string }) {
+  function startEdit(category: {
+    _id: Id<"categories">;
+    slug: string;
+    image: string;
+  }) {
     setEditingId(category._id);
     setForm({ slug: category.slug, image: category.image });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1846,7 +1915,9 @@ function CategoriesManager({
       resetForm();
     } catch (error) {
       toast.error(
-        error instanceof Error && error.message ? error.message : t("admin.saveFailed"),
+        error instanceof Error && error.message
+          ? error.message
+          : t("admin.saveFailed"),
       );
     } finally {
       setBusy(false);
@@ -1865,12 +1936,16 @@ function CategoriesManager({
     }
   }
 
-  const headClass = "px-3 py-2.5 text-start text-[10px] tracking-[0.14em] uppercase sm:px-4 sm:py-3 sm:text-[11px]";
+  const headClass =
+    "px-3 py-2.5 text-start text-[10px] tracking-[0.14em] uppercase sm:px-4 sm:py-3 sm:text-[11px]";
   const fieldClass = "grid gap-2";
 
   return (
     <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)] xl:gap-8">
-      <form onSubmit={submit} className="h-fit min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5">
+      <form
+        onSubmit={submit}
+        className="h-fit min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">
             {editingId ? t("admin.editCategory") : t("admin.newCategory")}
@@ -1915,13 +1990,18 @@ function CategoriesManager({
             {t("admin.currentCategories", { n: categories?.length ?? 0 })}
           </h2>
         </div>
-        <SwipeTable minWidth={480} label={t("admin.currentCategories", { n: categories?.length ?? 0 })}>
+        <SwipeTable
+          minWidth={480}
+          label={t("admin.currentCategories", { n: categories?.length ?? 0 })}
+        >
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-muted-foreground">
               <tr>
                 <th className={headClass}>{t("admin.colCategory")}</th>
                 <th className={headClass}>{t("admin.colImage")}</th>
-                <th className={cn(headClass, "text-end")}>{t("admin.colActions")}</th>
+                <th className={cn(headClass, "text-end")}>
+                  {t("admin.colActions")}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -1937,7 +2017,11 @@ function CategoriesManager({
                   </td>
                   <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
                     <div className="size-12 shrink-0 overflow-hidden rounded-lg bg-muted">
-                      <ProductImage src={category.image} alt={category.slug} sizes="48px" />
+                      <ProductImage
+                        src={category.image}
+                        alt={category.slug}
+                        sizes="48px"
+                      />
                     </div>
                   </td>
                   <td className="px-2.5 py-2.5 sm:px-4 sm:py-3">
@@ -2008,7 +2092,9 @@ function OrdersManager() {
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: list.length };
     for (const status of ORDER_STATUSES) {
-      map[status.code] = list.filter((order) => order.status === status.code).length;
+      map[status.code] = list.filter(
+        (order) => order.status === status.code,
+      ).length;
     }
     return map;
   }, [list]);
@@ -2037,11 +2123,13 @@ function OrdersManager() {
     (order) => order.status === "new" || order.status === "confirmed",
   ).length;
   const pieces = list.reduce(
-    (sum, order) => sum + order.items.reduce((count, item) => count + item.quantity, 0),
+    (sum, order) =>
+      sum + order.items.reduce((count, item) => count + item.quantity, 0),
     0,
   );
 
-  const statCard = "min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5";
+  const statCard =
+    "min-w-0 rounded-2xl border border-border/70 bg-card p-4 sm:p-5";
   const statLabel = "text-muted-foreground text-[10px]";
 
   async function updateStatus(id: Id<"orders">, status: string) {
@@ -2095,19 +2183,27 @@ function OrdersManager() {
       <div className="grid grid-cols-2 gap-3 min-[560px]:grid-cols-4">
         <div className={statCard}>
           <p className={statLabel}>{t("admin.orders")}</p>
-          <p className="mt-2 text-xl font-semibold sm:text-2xl">{list.length}</p>
+          <p className="mt-2 text-xl font-semibold sm:text-2xl">
+            {list.length}
+          </p>
         </div>
         <div className={statCard}>
           <p className={statLabel}>{t("admin.pendingCount")}</p>
-          <p className="mt-2 text-xl font-semibold sm:text-2xl">{pendingCount}</p>
+          <p className="mt-2 text-xl font-semibold sm:text-2xl">
+            {pendingCount}
+          </p>
         </div>
         <div className={statCard}>
           <p className={statLabel}>{t("admin.revenue")}</p>
-          <p className="mt-2 text-xl font-semibold sm:text-2xl">{formatDA(revenue)}</p>
+          <p className="mt-2 text-xl font-semibold sm:text-2xl">
+            {formatDA(revenue)}
+          </p>
         </div>
         <div className={statCard}>
           <p className={statLabel}>{t("admin.deliveredRevenue")}</p>
-          <p className="mt-2 text-xl font-semibold sm:text-2xl">{formatDA(deliveredRevenue)}</p>
+          <p className="mt-2 text-xl font-semibold sm:text-2xl">
+            {formatDA(deliveredRevenue)}
+          </p>
         </div>
       </div>
 
@@ -2189,7 +2285,9 @@ function OrdersManager() {
                         onClick={() =>
                           void updateStatus(
                             order._id,
-                            order.status === "delivered" ? "confirmed" : "delivered",
+                            order.status === "delivered"
+                              ? "confirmed"
+                              : "delivered",
                           )
                         }
                         className={cn(
@@ -2211,7 +2309,12 @@ function OrdersManager() {
                         {order.phone}
                       </a>
                       <span>
-                        {wilayaName(order.wilayaCode, lang, order.wilayaAr, order.wilayaFr)}
+                        {wilayaName(
+                          order.wilayaCode,
+                          lang,
+                          order.wilayaAr,
+                          order.wilayaFr,
+                        )}
                       </span>
                       <span>{formatDate(order.createdAt, lang)}</span>
                     </p>
@@ -2222,7 +2325,10 @@ function OrdersManager() {
                     </p>
                     <p className="text-muted-foreground text-[10px]">
                       {t("admin.orderItems", {
-                        n: order.items.reduce((count, item) => count + item.quantity, 0),
+                        n: order.items.reduce(
+                          (count, item) => count + item.quantity,
+                          0,
+                        ),
                       })}
                     </p>
                   </div>
@@ -2241,17 +2347,30 @@ function OrdersManager() {
                     }}
                   >
                     <ChevronDown
-                      className={cn("size-3.5 transition-transform", isOpen && "rotate-180")}
+                      className={cn(
+                        "size-3.5 transition-transform",
+                        isOpen && "rotate-180",
+                      )}
                     />
                     {isOpen ? t("admin.collapse") : t("admin.expand")}
                   </Button>
-                  <Button asChild variant="ghost" size="sm" className="h-8 gap-1.5 text-[11px]">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 gap-1.5 text-[11px]"
+                  >
                     <a href={`tel:${order.phone}`}>
                       <Phone className="size-3.5" />
                       {t("admin.callCustomer")}
                     </a>
                   </Button>
-                  <Button asChild variant="ghost" size="sm" className="h-8 gap-1.5 text-[11px]">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 gap-1.5 text-[11px]"
+                  >
                     <a
                       href={`https://wa.me/213${order.phone.replace(/^0/, "")}`}
                       target="_blank"
@@ -2293,8 +2412,13 @@ function OrdersManager() {
                           <button
                             key={status.code}
                             type="button"
-                            disabled={busyId === order._id || order.status === status.code}
-                            onClick={() => void updateStatus(order._id, status.code)}
+                            disabled={
+                              busyId === order._id ||
+                              order.status === status.code
+                            }
+                            onClick={() =>
+                              void updateStatus(order._id, status.code)
+                            }
                             className={cn(
                               "rounded-full border px-3 py-1.5 text-[11px] transition-colors disabled:opacity-45",
                               order.status === status.code
@@ -2327,8 +2451,12 @@ function OrdersManager() {
                               {pickLang(item.nameAr, item.nameEn, lang)}
                             </p>
                             <p className="text-muted-foreground text-[10px]">
-                              {t("admin.sizeShort", { size: sizeLabel(item.size, lang) })}
-                              {item.color !== "—" ? ` · ${colorLabel(item.color, lang)}` : ""}
+                              {t("admin.sizeShort", {
+                                size: sizeLabel(item.size, lang),
+                              })}
+                              {item.color !== "—"
+                                ? ` · ${colorLabel(item.color, lang)}`
+                                : ""}
                               {` · ×${item.quantity}`}
                               {item.deliveryFee
                                 ? ` · ${t("admin.deliveryShort", { fee: formatDA(item.deliveryFee) })}`
@@ -2344,7 +2472,9 @@ function OrdersManager() {
 
                     {/* Internal note */}
                     <div className="mt-4 grid gap-2">
-                      <Label htmlFor={`note-${order._id}`}>{t("admin.adminNote")}</Label>
+                      <Label htmlFor={`note-${order._id}`}>
+                        {t("admin.adminNote")}
+                      </Label>
                       <Textarea
                         id={`note-${order._id}`}
                         rows={2}
@@ -2417,7 +2547,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-muted/30">
-      <header className="bg-ink text-foreground">
+      <header className="on-ink bg-ink">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
             <Brand onDark />
@@ -2435,7 +2565,9 @@ export default function Admin() {
             >
               <Link to="/">
                 <ExternalLink className="size-4" />
-                <span className="hidden min-[420px]:inline">{t("admin.viewStore")}</span>
+                <span className="hidden min-[420px]:inline">
+                  {t("admin.viewStore")}
+                </span>
               </Link>
             </Button>
             <Button
@@ -2447,7 +2579,9 @@ export default function Admin() {
               }}
             >
               <LogOut className="size-4" />
-              <span className="hidden min-[420px]:inline">{t("admin.logout")}</span>
+              <span className="hidden min-[420px]:inline">
+                {t("admin.logout")}
+              </span>
             </Button>
           </div>
         </div>
@@ -2474,25 +2608,48 @@ export default function Admin() {
           }}
           className="gap-6"
         >
-          <TabsList className={cn("h-auto w-full justify-start gap-1 overflow-x-auto rounded-2xl bg-background p-1.5 sm:w-fit")}>
-            <TabsTrigger value="products" className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm">
+          <TabsList
+            className={cn(
+              "h-auto w-full justify-start gap-1 overflow-x-auto rounded-2xl bg-background p-1.5 sm:w-fit",
+            )}
+          >
+            <TabsTrigger
+              value="products"
+              className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+            >
               <Package className="size-4 shrink-0" />
-              <span className="whitespace-nowrap">{t("admin.tabProducts")}</span>
+              <span className="whitespace-nowrap">
+                {t("admin.tabProducts")}
+              </span>
             </TabsTrigger>
-            <TabsTrigger value="categories" className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm">
+            <TabsTrigger
+              value="categories"
+              className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+            >
               <Shapes className="size-4 shrink-0" />
-              <span className="whitespace-nowrap">{t("admin.tabCategories")}</span>
+              <span className="whitespace-nowrap">
+                {t("admin.tabCategories")}
+              </span>
             </TabsTrigger>
-            <TabsTrigger value="slider" className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm">
+            <TabsTrigger
+              value="slider"
+              className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+            >
               <ImageIcon className="size-4 shrink-0" />
               <span className="whitespace-nowrap">{t("admin.tabSlider")}</span>
             </TabsTrigger>
-            <TabsTrigger value="orders" className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm">
+            <TabsTrigger
+              value="orders"
+              className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+            >
               <Receipt className="size-4 shrink-0" />
               <span className="whitespace-nowrap">{t("admin.tabOrders")}</span>
             </TabsTrigger>
             {/* The design screen lives here in the panel, never in the navbar. */}
-            <TabsTrigger value="design" className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm">
+            <TabsTrigger
+              value="design"
+              className="gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+            >
               <Palette className="size-4 shrink-0" />
               <span className="whitespace-nowrap">{t("admin.tabDesign")}</span>
             </TabsTrigger>
@@ -2501,23 +2658,38 @@ export default function Admin() {
           <TabsContent value="products">
             <div className="mb-6 flex items-start gap-2.5 sm:gap-3">
               <Boxes className="size-5 shrink-0" />
-              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">{t("admin.productsLead")}</p>
+              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">
+                {t("admin.productsLead")}
+              </p>
             </div>
-            <ProductsManager editId={searchParams.get("edit")} deleteId={searchParams.get("delete")} categories={categories} onDone={clearDeepLink} />
+            <ProductsManager
+              editId={searchParams.get("edit")}
+              deleteId={searchParams.get("delete")}
+              categories={categories}
+              onDone={clearDeepLink}
+            />
           </TabsContent>
 
           <TabsContent value="categories">
             <div className="mb-6 flex items-start gap-2.5 sm:gap-3">
               <Shapes className="size-5 shrink-0" />
-              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">{t("admin.categoriesLead")}</p>
+              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">
+                {t("admin.categoriesLead")}
+              </p>
             </div>
-            <CategoriesManager editId={searchParams.get("edit")} deleteId={searchParams.get("delete")} onDone={clearDeepLink} />
+            <CategoriesManager
+              editId={searchParams.get("edit")}
+              deleteId={searchParams.get("delete")}
+              onDone={clearDeepLink}
+            />
           </TabsContent>
 
           <TabsContent value="slider">
             <div className="mb-6 flex items-start gap-2.5 sm:gap-3">
               <LayoutDashboard className="size-5 shrink-0" />
-              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">{t("admin.sliderLead")}</p>
+              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">
+                {t("admin.sliderLead")}
+              </p>
             </div>
             <SliderManager
               editId={searchParams.get("edit")}
@@ -2530,7 +2702,9 @@ export default function Admin() {
           <TabsContent value="orders">
             <div className="mb-6 flex items-start gap-2.5 sm:gap-3">
               <Receipt className="size-5 shrink-0" />
-              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">{t("admin.ordersLead")}</p>
+              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">
+                {t("admin.ordersLead")}
+              </p>
             </div>
             <OrdersManager />
           </TabsContent>
@@ -2538,7 +2712,9 @@ export default function Admin() {
           <TabsContent value="design">
             <div className="mb-6 flex items-start gap-2.5 sm:gap-3">
               <Palette className="size-5 shrink-0" />
-              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">{t("admin.designLead")}</p>
+              <p className="min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm">
+                {t("admin.designLead")}
+              </p>
             </div>
             <SiteDesignTab />
           </TabsContent>

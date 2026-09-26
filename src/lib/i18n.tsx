@@ -50,17 +50,32 @@ const STRINGS = {
   "card.deleteCategory": { ar: "حذف التصنيف", en: "Delete category" },
   "card.markSoldOut": { ar: "تعليم كنفذت الكمية", en: "Mark as sold out" },
   "card.markAvailable": { ar: "إرجاعه كمتوفر", en: "Mark as available" },
-  "card.markedSoldOut": { ar: "تم تعليم المنتج كنفذت الكمية", en: "Marked as sold out" },
-  "card.markedAvailable": { ar: "المنتج متوفر الآن", en: "Product is available again" },
-  "addProduct.open": { ar: "إضافة منتج في هذا التصنيف", en: "Add a product to this category" },
+  "card.markedSoldOut": {
+    ar: "تم تعليم المنتج كنفذت الكمية",
+    en: "Marked as sold out",
+  },
+  "card.markedAvailable": {
+    ar: "المنتج متوفر الآن",
+    en: "Product is available again",
+  },
+  "addProduct.open": {
+    ar: "إضافة منتج في هذا التصنيف",
+    en: "Add a product to this category",
+  },
   "addCategory.open": { ar: "إضافة تصنيف جديد", en: "Add a new category" },
-  "addSlide.open": { ar: "إضافة شريحة جديدة للسلايدر", en: "Add a new slider slide" },
+  "addSlide.open": {
+    ar: "إضافة شريحة جديدة للسلايدر",
+    en: "Add a new slider slide",
+  },
   "common.whatsapp": { ar: "واتساب", en: "WhatsApp" },
   "home.map.openInMaps": {
     ar: "افتح الموقع في خرائط جوجل",
     en: "Open the location in Google Maps",
   },
-  "common.whatsappAria": { ar: "اتصل بنا على واتساب", en: "Contact us on WhatsApp" },
+  "common.whatsappAria": {
+    ar: "اتصل بنا على واتساب",
+    en: "Contact us on WhatsApp",
+  },
   "common.phone": { ar: "الهاتف", en: "Phone" },
   "common.phoneAria": { ar: "اتصل بنا هاتفياً", en: "Call us" },
   "common.save": { ar: "حفظ", en: "Save" },
@@ -134,7 +149,10 @@ const STRINGS = {
   },
   "category.otherTitle": { ar: "تصنيفات أخرى", en: "Other categories" },
   "category.galleryEyebrow": { ar: "لقطات", en: "Snapshots" },
-  "category.galleryTitle": { ar: "صور من التصنيف", en: "Photos from this category" },
+  "category.galleryTitle": {
+    ar: "صور من التصنيف",
+    en: "Photos from this category",
+  },
   "category.galleryLead": {
     ar: "لمحة سريعة عن قطع هذا التصنيف.",
     en: "A quick look at the pieces in this category.",
@@ -148,13 +166,19 @@ const STRINGS = {
   "product.sizesAvailable": { ar: "{n} متوفر", en: "{n} in stock" },
   "product.notFound": { ar: "المنتج غير موجود", en: "Product not found" },
   "product.backToShop": { ar: "رجوع إلى المتجر", en: "Back to the shop" },
-  "product.chooseSize": { ar: "اختر المقاس أولاً", en: "Please choose a size first" },
+  "product.chooseSize": {
+    ar: "اختر المقاس أولاً",
+    en: "Please choose a size first",
+  },
   "product.added": { ar: "أضيف إلى السلة", en: "Added to your bag" },
   "product.color": { ar: "اللون", en: "Colour" },
   "product.size": { ar: "المقاس", en: "Size" },
   "product.addToCart": { ar: "أضف للسلة", en: "Add to bag" },
   "product.buyNow": { ar: "اشتري الآن", en: "Buy now" },
-  "product.buyNowTitle": { ar: "كيف تريد إتمام طلبك؟", en: "How do you want to order?" },
+  "product.buyNowTitle": {
+    ar: "كيف تريد إتمام طلبك؟",
+    en: "How do you want to order?",
+  },
   "product.viaInstagram": { ar: "عبر إنستغرام", en: "Via Instagram" },
   "product.viaInstagramNote": {
     ar: "رسالة طلبك جاهزة في محادثتنا — اضغط إرسال فقط",
@@ -174,7 +198,10 @@ const STRINGS = {
     en: "See the size guide below",
   },
   "product.sizeGuideTitle": { ar: "جدول المقاسات التوضيحي", en: "Size guide" },
-  "product.sizeGuideEyebrow": { ar: "القياسات بالسنتيمتر", en: "Measurements in cm" },
+  "product.sizeGuideEyebrow": {
+    ar: "القياسات بالسنتيمتر",
+    en: "Measurements in cm",
+  },
   "product.colSize": { ar: "المقاس", en: "Size" },
   "product.colWaist": { ar: "A — محيط الخصر", en: "A — Waist" },
   "product.colLength": { ar: "B — الطول الكلي", en: "B — Total length" },
@@ -186,7 +213,10 @@ const STRINGS = {
   "product.relatedEyebrow": { ar: "نفس الأسلوب", en: "Same style" },
   "product.imageAlt": { ar: "صورة {n}", en: "View {n}" },
   "product.addPhoto": { ar: "إضافة صورة أخرى", en: "Add another photo" },
-  "product.managePhotos": { ar: "صور هذا المنتج", en: "Photos of this product" },
+  "product.managePhotos": {
+    ar: "صور هذا المنتج",
+    en: "Photos of this product",
+  },
   "product.photosHint": {
     ar: "الصورة الأولى هي الغلاف في بطاقة المنتج. اختر لوناً واحداً لكل صورة، وعندما يضغط الزبون على هذا اللون تظهر له صورته مباشرة. ＋ لإضافة صورة و× لحذفها.",
     en: "The first photo is the card cover. Give each photo a single colour — tapping that colour shows the shopper that photo right away. ＋ adds a photo, × removes it.",
@@ -203,7 +233,10 @@ const STRINGS = {
   "product.previousPhoto": { ar: "الصورة السابقة", en: "Previous photo" },
   "product.nextPhoto": { ar: "الصورة التالية", en: "Next photo" },
   "product.coverTag": { ar: "الغلاف", en: "Cover" },
-  "product.photosSaved": { ar: "تم حفظ صور المنتج", en: "Product photos saved" },
+  "product.photosSaved": {
+    ar: "تم حفظ صور المنتج",
+    en: "Product photos saved",
+  },
   "product.photoRequired": {
     ar: "المنتج يحتاج صورة واحدة على الأقل",
     en: "The product needs at least one photo",
@@ -238,7 +271,10 @@ const STRINGS = {
   },
   "cart.checkout": { ar: "إتمام الطلب", en: "Checkout" },
   "cart.placeOrder": { ar: "اطلب الآن", en: "Place order" },
-  "cart.thanksTitle": { ar: "شكراً لك، تم استلام طلبك", en: "Thank you, your order is in" },
+  "cart.thanksTitle": {
+    ar: "شكراً لك، تم استلام طلبك",
+    en: "Thank you, your order is in",
+  },
   "cart.thanksBody": {
     ar: "سنتصل بك لتأكيد الطلب. رقم الطلب:",
     en: "We will call you to confirm. Your order number:",
@@ -261,12 +297,18 @@ const STRINGS = {
     ar: "مرحبا {store}، رقم طلبي هو {reference}",
     en: "Hello {store}, my order number is {reference}",
   },
-  "cart.confirmInstagram": { ar: "إرسال الطلب عبر إنستغرام", en: "Send order via Instagram" },
+  "cart.confirmInstagram": {
+    ar: "إرسال الطلب عبر إنستغرام",
+    en: "Send order via Instagram",
+  },
   "cart.openedInstagram": {
     ar: "فتحنا حسابنا على إنستغرام ونسخنا طلبك — الصقه في المحادثة وأرسله",
     en: "Our Instagram is open and your order is copied — paste it in the chat and send",
   },
-  "cart.channelTitle": { ar: "كيف تريد إتمام طلبك؟", en: "How do you want to order?" },
+  "cart.channelTitle": {
+    ar: "كيف تريد إتمام طلبك؟",
+    en: "How do you want to order?",
+  },
   "cart.channelSite": { ar: "من الموقع مباشرة", en: "Directly on the site" },
   "cart.channelSiteNote": {
     ar: "يُسجَّل طلبك ونتصل بك للتأكيد",
@@ -327,7 +369,10 @@ const STRINGS = {
   },
   "footer.service": { ar: "الخدمة", en: "Service" },
   "footer.contact": { ar: "تواصل", en: "Contact" },
-  "footer.delivery": { ar: "توصيل إلى 69 ولاية", en: "Delivery to all 69 wilayas" },
+  "footer.delivery": {
+    ar: "توصيل إلى 69 ولاية",
+    en: "Delivery to all 69 wilayas",
+  },
   "footer.deliveryPrices": {
     ar: "تعرّف على أسعار التوصيل لكل ولاية",
     en: "See the delivery price of every wilaya",
@@ -370,7 +415,10 @@ const STRINGS = {
     en: "Type the price in Algerian dinars, or 0 to put the wilaya back on the default price.",
   },
   "delivery.pricePlaceholder": { ar: "مثال: 700", en: "e.g. 700" },
-  "delivery.saved": { ar: "تم تحديث سعر التوصيل", en: "Delivery price updated" },
+  "delivery.saved": {
+    ar: "تم تحديث سعر التوصيل",
+    en: "Delivery price updated",
+  },
   "delivery.error": { ar: "تعذر حفظ السعر", en: "Could not save the price" },
   "delivery.editDefault": {
     ar: "تعديل السعر الافتراضي",
@@ -401,7 +449,10 @@ const STRINGS = {
   "notif.allRead": { ar: "لا جديد", en: "All read" },
   "notif.todayOrders": { ar: "طلبات اليوم", en: "Today's orders" },
   "notif.todaySales": { ar: "مبيعات اليوم", en: "Today's sales" },
-  "notif.newOrder": { ar: "طلب جديد #{reference}", en: "New order #{reference}" },
+  "notif.newOrder": {
+    ar: "طلب جديد #{reference}",
+    en: "New order #{reference}",
+  },
   "notif.empty": {
     ar: "لا توجد طلبات بعد — أول طلب يصلك سيظهر هنا فوراً",
     en: "No orders yet — your first order shows up here instantly",
@@ -435,7 +486,10 @@ const STRINGS = {
   "admin.username": { ar: "اسم المستخدم", en: "Username" },
   "admin.password": { ar: "كلمة المرور", en: "Password" },
   "admin.signIn": { ar: "دخول", en: "Sign in" },
-  "admin.invalid": { ar: "بيانات الدخول غير صحيحة", en: "Wrong username or password" },
+  "admin.invalid": {
+    ar: "بيانات الدخول غير صحيحة",
+    en: "Wrong username or password",
+  },
   "admin.backToStore": { ar: "رجوع إلى المتجر", en: "Back to the store" },
   "admin.viewStore": { ar: "عرض المتجر", en: "View store" },
   "admin.logout": { ar: "خروج", en: "Sign out" },
@@ -462,14 +516,23 @@ const STRINGS = {
     en: "Upload a new logo — it appears in the header, the footer and everywhere on the site, and the browser tab icon (favicon) plus the loading screen follow automatically.",
   },
   "admin.logoReset": { ar: "الشعار الأصلي", en: "Default logo" },
-  "admin.editInstagram": { ar: "تعديل رابط إنستغرام", en: "Edit the Instagram link" },
-  "admin.editFacebook": { ar: "تعديل رابط فايسبوك", en: "Edit the Facebook link" },
+  "admin.editInstagram": {
+    ar: "تعديل رابط إنستغرام",
+    en: "Edit the Instagram link",
+  },
+  "admin.editFacebook": {
+    ar: "تعديل رابط فايسبوك",
+    en: "Edit the Facebook link",
+  },
   "admin.facebookUrl": { ar: "رابط الصفحة", en: "Page link" },
   "admin.facebookHint": {
     ar: "الرابط الكامل لصفحتك على فايسبوك — يُستعمل في الشريط العلوي وتذييل الموقع.",
     en: "The full link to your Facebook page — used in the top bar and the footer.",
   },
-  "admin.editWhatsapp": { ar: "تعديل رقم واتساب", en: "Edit the WhatsApp number" },
+  "admin.editWhatsapp": {
+    ar: "تعديل رقم واتساب",
+    en: "Edit the WhatsApp number",
+  },
   "admin.whatsappHint": {
     ar: "نفس رقم المتجر يُستعمل لفتح محادثة واتساب مباشرة مع الزبون.",
     en: "The same store number opens a direct WhatsApp chat with customers.",
@@ -497,7 +560,10 @@ const STRINGS = {
     en: "Enter the slug and upload a category image",
   },
   "admin.addCategory": { ar: "إضافة التصنيف", en: "Add category" },
-  "admin.currentCategories": { ar: "التصنيفات الحالية ({n})", en: "Current categories ({n})" },
+  "admin.currentCategories": {
+    ar: "التصنيفات الحالية ({n})",
+    en: "Current categories ({n})",
+  },
   "admin.colCategory": { ar: "التصنيف", en: "Category" },
   "admin.colImage": { ar: "الصورة", en: "Image" },
   "admin.noCategories": {
@@ -517,9 +583,15 @@ const STRINGS = {
     ar: "سلايدر التذييل — صور تظهر تلقائياً أسفل كل صفحة",
     en: "Footer slider — images shown automatically at the bottom of every page",
   },
-  "admin.ordersLead": { ar: "طلبات الزبائن الواردة", en: "Incoming customer orders" },
+  "admin.ordersLead": {
+    ar: "طلبات الزبائن الواردة",
+    en: "Incoming customer orders",
+  },
   "admin.filterAll": { ar: "الكل", en: "All" },
-  "admin.searchOrders": { ar: "ابحث باسم الزبون أو الهاتف أو رقم الطلب…", en: "Search by name, phone or order number…" },
+  "admin.searchOrders": {
+    ar: "ابحث باسم الزبون أو الهاتف أو رقم الطلب…",
+    en: "Search by name, phone or order number…",
+  },
   "admin.changeStatus": { ar: "غيّر الحالة", en: "Change status" },
   "admin.markDelivered": {
     ar: "تم التعامل معه وتسليمه والدفع",
@@ -559,7 +631,10 @@ const STRINGS = {
   "admin.slugPlaceholder": { ar: "oversized-tee", en: "oversized-tee" },
   "admin.usernamePlaceholder": { ar: "اسم المستخدم", en: "Username" },
   "admin.passwordPlaceholder": { ar: "••••••••", en: "••••••••" },
-  "admin.currentPassword": { ar: "كلمة المرور الحالية", en: "Current password" },
+  "admin.currentPassword": {
+    ar: "كلمة المرور الحالية",
+    en: "Current password",
+  },
   "admin.newPassword": { ar: "كلمة المرور الجديدة", en: "New password" },
   "admin.confirmPassword": {
     ar: "تأكيد كلمة المرور الجديدة",
@@ -639,8 +714,14 @@ const STRINGS = {
     ar: "الرقم الأكبر يظهر أولاً في المتجر. اتركه فارغاً ليظهر المنتج بعد كل المنتجات المرتّبة.",
     en: "A higher number appears first in the shop. Leave it empty to place the product after every ordered one.",
   },
-  "admin.oldPrice": { ar: "السعر قبل التخفيض (اختياري)", en: "Price before discount (optional)" },
-  "admin.discountOn": { ar: "التخفيض مفعّل — يوفر الزبون {save}", en: "Discount on — customer saves {save}" },
+  "admin.oldPrice": {
+    ar: "السعر قبل التخفيض (اختياري)",
+    en: "Price before discount (optional)",
+  },
+  "admin.discountOn": {
+    ar: "التخفيض مفعّل — يوفر الزبون {save}",
+    en: "Discount on — customer saves {save}",
+  },
   "admin.discountOff": {
     ar: "اتركه فارغاً لعرض السعر بدون تخفيض",
     en: "Leave empty to show the price without a discount",
@@ -708,7 +789,10 @@ const STRINGS = {
   "admin.soldOutFlag": { ar: "نفذت الكمية", en: "Sold out" },
   "admin.saveChanges": { ar: "حفظ التعديلات", en: "Save changes" },
   "admin.addProduct": { ar: "إضافة المنتج", en: "Add product" },
-  "admin.currentProducts": { ar: "المنتجات الحالية ({n})", en: "Current products ({n})" },
+  "admin.currentProducts": {
+    ar: "المنتجات الحالية ({n})",
+    en: "Current products ({n})",
+  },
   "admin.colProduct": { ar: "المنتج", en: "Product" },
   "admin.colPrice": { ar: "السعر", en: "Price" },
   "admin.colSizes": { ar: "المقاسات", en: "Sizes" },
@@ -733,7 +817,10 @@ const STRINGS = {
     ar: "اسم المنتج مطلوب",
     en: "The product name is required",
   },
-  "admin.priceRequired": { ar: "أدخل سعراً صحيحاً بالدينار", en: "Enter a valid price in dinars" },
+  "admin.priceRequired": {
+    ar: "أدخل سعراً صحيحاً بالدينار",
+    en: "Enter a valid price in dinars",
+  },
   "admin.productUpdated": { ar: "تم تحديث المنتج", en: "Product updated" },
   "admin.productAdded": { ar: "تم إضافة المنتج", en: "Product added" },
   "admin.deleteProductConfirm": {
@@ -745,9 +832,15 @@ const STRINGS = {
   "admin.saveFailed": { ar: "تعذر الحفظ", en: "Could not save" },
   "admin.newSlide": { ar: "صورة جديدة للسلايدر", en: "New slider image" },
   "admin.imageUrl": { ar: "صورة الشريحة", en: "Slide image" },
-  "admin.imageUpload": { ar: "ارفع صورة من جهازك", en: "Upload an image from your device" },
+  "admin.imageUpload": {
+    ar: "ارفع صورة من جهازك",
+    en: "Upload an image from your device",
+  },
   "admin.uploading": { ar: "جارٍ رفع الصورة…", en: "Uploading image…" },
-  "admin.uploadFailed": { ar: "تعذر رفع الصورة", en: "Could not upload the image" },
+  "admin.uploadFailed": {
+    ar: "تعذر رفع الصورة",
+    en: "Could not upload the image",
+  },
   "admin.titleAr": { ar: "العنوان", en: "Title" },
   "admin.addSlide": { ar: "إضافة للسلايدر", en: "Add to the slider" },
   "admin.sliderHint": {
@@ -758,7 +851,10 @@ const STRINGS = {
     ar: "اكتب عنواناً قصيراً للصورة",
     en: "Write a short title for the photo",
   },
-  "admin.imageRequired": { ar: "ارفع صورة الشريحة", en: "Upload a slide image" },
+  "admin.imageRequired": {
+    ar: "ارفع صورة الشريحة",
+    en: "Upload a slide image",
+  },
   "admin.slideAdded": { ar: "تمت إضافة الصورة", en: "Image added" },
   "admin.slideUpdated": { ar: "تم تحديث الشريحة", en: "Slide updated" },
   "admin.editSlide": { ar: "تعديل شريحة", en: "Edit slide" },
@@ -766,7 +862,10 @@ const STRINGS = {
     ar: "رابط الشريحة عند الضغط عليها (اختياري)",
     en: "Slide link on click (optional)",
   },
-  "admin.slideDeleteConfirm": { ar: "حذف هذه الصورة؟", en: "Delete this image?" },
+  "admin.slideDeleteConfirm": {
+    ar: "حذف هذه الصورة؟",
+    en: "Delete this image?",
+  },
   "admin.slideDeleted": { ar: "تم الحذف", en: "Deleted" },
   "admin.noSlides": {
     ar: "لا توجد صور حالياً — أضف أول صورة للسلايدر.",
@@ -803,6 +902,16 @@ const STRINGS = {
   "admin.designApplied": { ar: "مطبّق حالياً", en: "Applied now" },
   "admin.designOriginalBadge": { ar: "الأصلي", en: "Original" },
   "admin.designDarkBadge": { ar: "داكن", en: "Dark" },
+  "admin.modeTitle": {
+    ar: "وضع الألوان",
+    en: "Colour mode",
+  },
+  "admin.modeHint": {
+    ar: "اختر فاتحاً أو داكناً — التغيير يظهر في الموقع كله فوراً.",
+    en: "Pick light or dark - the whole store follows at once.",
+  },
+  "admin.modeLight": { ar: "فاتح", en: "Light" },
+  "admin.modeDark": { ar: "داكن", en: "Dark" },
   "admin.designRestore": {
     ar: "استرجاع التصميم الأصلي",
     en: "Restore original design",
@@ -822,7 +931,10 @@ const STRINGS = {
     ar: "الاسم، الوصف، النص التعريفي، الشعار وموقع المحل — تُحدَّث فوراً في الشريط العلوي والتذييل وعنوان التبويب وشاشة التحميل.",
     en: "Name, description, tagline, logo and shop location — updated instantly in the header, the footer, the tab title and the loading screen.",
   },
-  "admin.identitySaved": { ar: "تم تحديث هوية المتجر", en: "Store identity updated" },
+  "admin.identitySaved": {
+    ar: "تم تحديث هوية المتجر",
+    en: "Store identity updated",
+  },
   "admin.identityReset": { ar: "استرجاع الأصلي", en: "Restore defaults" },
   "admin.editIdentity": {
     ar: "تعديل الشعار واسم المتجر",
@@ -944,9 +1056,8 @@ const contextHolder = globalThis as typeof globalThis & {
 
 const LanguageContext =
   contextHolder.__hadripLanguageContext__ ??
-  (contextHolder.__hadripLanguageContext__ = createContext<LanguageContextValue | null>(
-    null,
-  ));
+  (contextHolder.__hadripLanguageContext__ =
+    createContext<LanguageContextValue | null>(null));
 
 const STORAGE_KEY = "hadrip.lang.v1";
 
@@ -1005,7 +1116,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
   );
 }
 
