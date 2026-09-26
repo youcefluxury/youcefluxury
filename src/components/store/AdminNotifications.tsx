@@ -5,7 +5,7 @@ import { Link } from "react-router";
 
 import { api } from "@/convex/_generated/api";
 import { ADMIN_API_KEY } from "@/lib/admin-key";
-import { useIsAdminSession } from "@/components/store/bits";
+import { ProductImage, useIsAdminSession } from "@/components/store/bits";
 import {
   Popover,
   PopoverContent,
@@ -255,14 +255,20 @@ export function AdminNotifications({
 
                     <span className="bg-muted relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-full border border-border/70">
                       {order.items[0]?.image ? (
-                        <img
+                        <ProductImage
                           src={order.items[0].image}
                           alt=""
-                          className="size-full object-cover"
+                          sizes="44px"
+                          className="size-full"
                         />
                       ) : (
                         <ReceiptText className="text-muted-foreground size-4" />
                       )}
+                      {order.items.length > 1 ? (
+                        <span className="bg-foreground text-background absolute -bottom-0.5 -end-0.5 grid min-w-4 place-items-center rounded-full px-1 text-[9px] font-bold leading-4">
+                          {order.items.length}
+                        </span>
+                      ) : null}
                     </span>
 
                     <div className="min-w-0 flex-1">

@@ -153,14 +153,14 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-[11px] tracking-wide sm:flex-row sm:items-center sm:justify-between">
-          <span>
+        <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-[11px] tracking-wide text-foreground sm:flex-row sm:items-center sm:justify-between">
+          <span className="text-foreground">
             {t("footer.rights", {
               year: new Date().getFullYear(),
               store: name,
             })}
           </span>
-          <Link to="/admin" className="hover:text-foreground">
+          <Link to="/admin" className="text-foreground hover:opacity-70">
             {t("footer.admin")}
           </Link>
         </div>
