@@ -898,6 +898,14 @@ const STRINGS = {
     ar: "اضغط أي تصميم ليُطبَّق فوراً على المتجر كله، ويظهر لك هنا مباشرة قبل أن يراه الزبائن. تصميمك القديم محفوظ دائماً باسم «الأصلي».",
     en: "Tap any design to apply it to the whole store right away — you see it here before shoppers do. Your previous look is always saved as “Original”.",
   },
+  "admin.designPureGroup": {
+    ar: "ألوان صافية \u2014 بلا مزج",
+    en: "Unblended colours \u2014 no mixing",
+  },
+  "admin.designMixedGroup": {
+    ar: "ألوان مدمجة \u2014 بتدرجات لونية",
+    en: "Blended colours \u2014 toned palettes",
+  },
   "admin.designApply": { ar: "تطبيق هذا التصميم", en: "Apply this design" },
   "admin.designApplied": { ar: "مطبّق حالياً", en: "Applied now" },
   "admin.designOriginalBadge": { ar: "الأصلي", en: "Original" },

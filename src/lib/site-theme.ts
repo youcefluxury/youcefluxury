@@ -318,6 +318,10 @@ const PURE_BLURB_AR =
 const PURE_BLURB_EN =
   "Unblended colours: black stays perfectly black, white stays perfectly white.";
 
+/** Ids of the unblended designs, so the dashboard can list them first. */
+export const PURE_THEME_IDS: readonly string[] = PURE_SPECS.map(
+  (spec) => spec.id,
+);
 const PURE_THEMES: SiteThemePreset[] = PURE_SPECS.map((spec) => ({
   id: spec.id,
   nameAr: spec.nameAr,
@@ -331,6 +335,8 @@ const PURE_THEMES: SiteThemePreset[] = PURE_SPECS.map((spec) => ({
 }));
 
 export const SITE_THEMES: SiteThemePreset[] = [
+  // Unblended colours first: the pure black / pure white / spectrum designs.
+  ...PURE_THEMES,
   {
     id: "original",
     nameAr: "الأسود والذهبي",
@@ -601,7 +607,6 @@ export const SITE_THEMES: SiteThemePreset[] = [
       dark: vividTokens(V(0, 0.012, 82, 0.16, 82, 0.16, "0.375rem"), "dark"),
     },
   },
-  ...PURE_THEMES,
 ];
 
 /** Falls back to the original look for unknown/blank ids. */
