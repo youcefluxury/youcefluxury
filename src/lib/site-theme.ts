@@ -104,8 +104,8 @@ function vividTokens(
       "--foreground": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue})`,
       "--card-foreground": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue})`,
       "--popover-foreground": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue})`,
-      /* The action colour stays vivid, with light writing on top. */
-      "--primary": `oklch(0.62 ${s.actionChroma.toFixed(4)} ${s.actionHue})`,
+      /* The action colour is the deepest tone: a true black button. */
+      "--primary": `oklch(0.2 ${s.actionChroma.toFixed(4)} ${s.hue})`,
       "--primary-foreground": `oklch(0.99 ${(c * 0.12).toFixed(4)} ${s.hue})`,
       "--secondary": `oklch(0.93 ${(c * 0.55).toFixed(4)} ${s.hue})`,
       "--secondary-foreground": `oklch(0.24 ${(c * 0.75).toFixed(4)} ${s.hue})`,
@@ -116,12 +116,12 @@ function vividTokens(
       /* Hairlines read as a soft shade, never a hard line. */
       "--border": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue} / 16%)`,
       "--input": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue} / 14%)`,
-      "--ring": `oklch(0.62 ${(s.actionChroma * 0.85).toFixed(4)} ${s.actionHue})`,
+      "--ring": `oklch(0.2 ${(s.actionChroma * 0.85).toFixed(4)} ${s.actionHue})`,
       /* The inverted band: near-black with light writing, both modes. */
       "--ink": `oklch(0.18 ${(c * 0.75).toFixed(4)} ${s.hue})`,
       "--paper": `oklch(0.985 ${(c * 0.12).toFixed(4)} ${s.hue})`,
-      /* The signature accent. */
-      "--brand": `oklch(0.6 ${(s.brandChroma * 1.1).toFixed(4)} ${s.brandHue})`,
+      /* The signature accent: the same true black as the action colour. */
+      "--brand": `oklch(0.2 ${(s.brandChroma * 1.1).toFixed(4)} ${s.brandHue})`,
       "--radius": s.radius,
     };
   }
@@ -135,8 +135,8 @@ function vividTokens(
     "--foreground": `oklch(0.975 ${(c * 0.22).toFixed(4)} ${s.hue})`,
     "--card-foreground": `oklch(0.975 ${(c * 0.22).toFixed(4)} ${s.hue})`,
     "--popover-foreground": `oklch(0.975 ${(c * 0.22).toFixed(4)} ${s.hue})`,
-    /* The action colour: vivid and saturated, with dark writing on top. */
-    "--primary": `oklch(0.82 ${(s.actionChroma * 1.05).toFixed(4)} ${s.actionHue})`,
+    /* The action colour is the lightest tone: a true white button. */
+    "--primary": `oklch(0.975 ${(s.actionChroma * 1.05).toFixed(4)} ${s.actionHue})`,
     "--primary-foreground": `oklch(0.18 ${(c * 0.8).toFixed(4)} ${s.hue})`,
     /* Quiet fills read clearly above the page. */
     "--secondary": `oklch(0.295 ${(c * 1.05).toFixed(4)} ${s.hue})`,
@@ -148,12 +148,12 @@ function vividTokens(
     /* Hairlines stay a soft lift, never a hard line. */
     "--border": "oklch(1 0 0 / 16%)",
     "--input": "oklch(1 0 0 / 19%)",
-    "--ring": `oklch(0.72 ${(s.actionChroma * 0.8).toFixed(4)} ${s.actionHue})`,
+    "--ring": `oklch(0.975 ${(s.actionChroma * 0.8).toFixed(4)} ${s.actionHue})`,
     /* Darker than the page, for badges and inverted chips. */
     "--ink": `oklch(0.12 ${(c * 0.65).toFixed(4)} ${s.hue})`,
     "--paper": `oklch(0.975 ${(c * 0.1).toFixed(4)} ${s.hue})`,
-    /* The signature accent. */
-    "--brand": `oklch(0.82 ${(s.brandChroma * 1.05).toFixed(4)} ${s.brandHue})`,
+    /* The signature accent: the same true white as the action colour. */
+    "--brand": `oklch(0.975 ${(s.brandChroma * 1.05).toFixed(4)} ${s.brandHue})`,
     "--radius": s.radius,
   };
 }
