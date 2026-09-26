@@ -185,45 +185,46 @@ function SiteDesignPanel() {
       </div>
 
       <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {/* The built-in look is no longer offered as a choice. */}
-        {SITE_THEMES.filter((preset) => preset.id !== "original").map(
-          (preset) => {
-            const isCurrent = preset.id === current;
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                disabled={busy}
-                onClick={() => void apply(preset.id)}
-                className={cn(
-                  "grid gap-3 rounded-xl border p-4 text-start transition-colors",
-                  isCurrent
-                    ? "border-foreground bg-muted/40"
-                    : "border-border/70 hover:border-foreground/40",
-                  pending === preset.id && "opacity-60",
-                )}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <ThemeSwatches preset={preset} mode={currentMode} />
-                  {isCurrent ? (
-                    <span className="bg-foreground text-background inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium">
-                      <Check className="size-3" />
-                      {t("admin.designApplied")}
-                    </span>
-                  ) : null}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">
-                    {pickLang(preset.nameAr, preset.nameEn, lang)}
-                  </p>
-                  <p className="text-muted-foreground mt-1 text-[11px] leading-5">
-                    {pickLang(preset.blurbAr, preset.blurbEn, lang)}
-                  </p>
-                </div>
-              </button>
-            );
-          },
-        )}
+        {SITE_THEMES.map((preset) => {
+          const isCurrent = preset.id === current;
+          return (
+            <button
+              key={preset.id}
+              type="button"
+              disabled={busy}
+              onClick={() => void apply(preset.id)}
+              className={cn(
+                "grid gap-3 rounded-xl border p-4 text-start transition-colors",
+                isCurrent
+                  ? "border-foreground bg-muted/40"
+                  : "border-border/70 hover:border-foreground/40",
+                pending === preset.id && "opacity-60",
+              )}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <ThemeSwatches preset={preset} mode={currentMode} />
+                {isCurrent ? (
+                  <span className="bg-foreground text-background inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium">
+                    <Check className="size-3" />
+                    {t("admin.designApplied")}
+                  </span>
+                ) : preset.id === "original" ? (
+                  <span className="text-muted-foreground border border-border/70 px-2 py-0.5 text-[10px]">
+                    {t("admin.designOriginalBadge")}
+                  </span>
+                ) : null}
+              </div>
+              <div>
+                <p className="text-sm font-medium">
+                  {pickLang(preset.nameAr, preset.nameEn, lang)}
+                </p>
+                <p className="text-muted-foreground mt-1 text-[11px] leading-5">
+                  {pickLang(preset.blurbAr, preset.blurbEn, lang)}
+                </p>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
