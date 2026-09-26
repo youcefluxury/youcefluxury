@@ -41,9 +41,9 @@ import { cn } from "@/lib/utils";
 
 /** Swatch colours of the built-in design (see src/index.css). */
 const ORIGINAL_SWATCHES = {
-  ink: "#000000",
-  paper: "#ffffff",
-  brand: "#000000",
+  ink: "#0a0a0a",
+  paper: "#fafafa",
+  brand: "#b08d57",
 };
 
 /** Three dots that show a design before it is applied. */
@@ -485,7 +485,7 @@ function R2StoragePanel() {
       <p
         className={cn(
           "text-[10px] leading-4 break-all",
-          status.kind === "ok" ? "text-foreground" : "text-muted-foreground",
+          status.kind === "ok" ? "text-emerald-600" : "text-muted-foreground",
         )}
       >
         {status.kind === "idle" ? t("admin.r2Waiting") : status.detail}

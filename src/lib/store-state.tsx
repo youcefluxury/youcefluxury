@@ -74,7 +74,7 @@ export function flyToCart(source: HTMLElement | null, image?: string) {
     img.style.cssText = "width:100%;height:100%;object-fit:cover";
     ghost.appendChild(img);
   } else {
-    ghost.style.background = "#000000";
+    ghost.style.background = "#0a0a0a";
   }
   document.body.appendChild(ghost);
   const dx = to.left + to.width / 2 - (from.left + from.width / 2);

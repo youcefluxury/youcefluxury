@@ -604,7 +604,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <div className="grid min-h-screen place-items-center bg-foreground px-4 py-16">
-      <div className="on-ink bg-ink text-paper w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[#101010] p-8 text-white shadow-2xl">
         <div className="flex flex-col items-center gap-4 text-center">
           <StoreMark className="size-12" />
           <div>
@@ -624,7 +624,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
 
         {changeOpen ? (
           <form onSubmit={submitChange} className="mt-8 space-y-4">
-            <div className="rounded-xl border border-foreground/20 bg-foreground/5 px-3 py-2.5 text-[11px] leading-5 text-foreground">
+            <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-[11px] leading-5 text-amber-200">
               {t("admin.pwChangeTitle")}
             </div>
             <AdminField
@@ -1360,7 +1360,7 @@ function ProductsManager({
               <div className="text-[11px] leading-5">
                 {(orderedSizes.get(product._id) ?? []).length > 0 ? (
                   /* A customer picked a size: show ONLY those sizes. */
-                  <p className="font-semibold break-words text-foreground">
+                  <p className="font-semibold break-words text-emerald-700">
                     {t("admin.orderedSizes", {
                       sizes: (orderedSizes.get(product._id) ?? [])
                         .map((size) => sizeLabel(size, lang))
@@ -1464,7 +1464,7 @@ function ProductsManager({
                     <td className="px-2.5 py-2.5 text-[11px] sm:px-4 sm:py-3">
                       {(orderedSizes.get(product._id) ?? []).length > 0 ? (
                         /* A customer picked a size: show ONLY those sizes. */
-                        <p className="font-semibold text-foreground">
+                        <p className="font-semibold text-emerald-700">
                           {t("admin.orderedSizes", {
                             sizes: (orderedSizes.get(product._id) ?? [])
                               .map((size) => sizeLabel(size, lang))
@@ -2169,10 +2169,10 @@ function OrdersManager() {
   function statusChip(code: string) {
     const styles: Record<string, string> = {
       new: "border-foreground bg-foreground text-background",
-      confirmed: "border-foreground/30 bg-foreground/5 text-foreground",
-      shipped: "border-foreground/30 bg-foreground/10 text-foreground",
-      delivered: "border-foreground bg-foreground/20 text-foreground",
-      cancelled: "border-foreground text-foreground line-through",
+      confirmed: "border-blue-600/40 bg-blue-600/10 text-blue-700",
+      shipped: "border-amber-600/40 bg-amber-600/10 text-amber-700",
+      delivered: "border-emerald-600/40 bg-emerald-600/10 text-emerald-700",
+      cancelled: "border-destructive/40 bg-destructive/10 text-destructive",
     };
     return cn(
       "w-fit rounded-full border px-2.5 py-1 text-[10px] font-medium whitespace-nowrap",
@@ -2296,8 +2296,8 @@ function OrdersManager() {
                         className={cn(
                           "grid size-6 shrink-0 place-items-center rounded-full border transition-colors",
                           order.status === "delivered"
-                            ? "border-foreground bg-foreground text-background"
-                            : "border-border text-transparent hover:border-foreground hover:text-foreground/40",
+                            ? "border-emerald-600 bg-emerald-600 text-white"
+                            : "border-border text-transparent hover:border-emerald-600/60 hover:text-emerald-600/40",
                         )}
                       >
                         <Check className="size-3.5" />
@@ -2549,8 +2549,8 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
-      <header className="on-ink bg-ink text-paper">
+    <div className="min-h-screen overflow-x-hidden bg-muted/30">
+      <header className="bg-foreground text-background">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
             <Brand onDark />

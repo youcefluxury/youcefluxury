@@ -7,10 +7,8 @@
  * in the database *and* mirrored into localStorage, so the first paint after a
  * reload already wears it.
  *
- * There is exactly one design and exactly one face: a white page with black
- * writing, on black bands. No second mode, no tinted greys, no accent colour —
- * every token below is either `#000000` or `#ffffff`, or black at a low alpha
- * when a surface needs to be lifted off the page without introducing a hue.
+ * There is exactly one design and exactly one face: a white page with near
+ * black writing, on the inverted `--ink` band.
  */
 
 /** localStorage key shared with the instant-apply step in the provider. */
@@ -59,49 +57,41 @@ export type SiteThemePreset = {
 };
 
 /**
- * The store's only design, written out as plain black and white.
+ * The store's only design, taken from the palette the live store renders with.
  *
- * These tokens were once computed as near-black / near-white greys
- * (oklch(0.2) and oklch(0.975)). Those are only *almost* black, and on a
- * monochrome design that reads as grey: nav links and the black action buttons
- * looked washed out against the page. Everything is now a true `#000000` or a
- * true `#ffffff`.
- *
- * A surface that has to lift off the page — a hover fill, a quiet panel —
- * uses black at a low alpha instead of a grey colour. It still reads as one
- * flat colour, and the writing on top of it stays pure black.
+ * A white page, near-black writing, a black action button, one muted gold for
+ * the signature accent, and a red reserved for destructive actions. The greys
+ * are deliberately separated steps of neutral, not tints of a hue, so the page
+ * reads as a single black-and-white face from end to end.
  */
 function blackWhiteTokens(): Record<string, string> {
   return {
-    /* Pure white page. */
-    "--background": "#ffffff",
-    "--card": "#ffffff",
-    "--popover": "#ffffff",
-    /* Pure black writing. */
-    "--foreground": "#000000",
-    "--card-foreground": "#000000",
-    "--popover-foreground": "#000000",
-    /* A true black button, with white writing on it. */
-    "--primary": "#000000",
-    "--primary-foreground": "#ffffff",
-    /* Quiet fills: black washed onto the white page, never a grey of their own. */
-    "--secondary": "rgba(0, 0, 0, 0.05)",
-    "--secondary-foreground": "#000000",
-    "--muted": "rgba(0, 0, 0, 0.05)",
-    "--muted-foreground": "#000000",
-    "--accent": "rgba(0, 0, 0, 0.08)",
-    "--accent-foreground": "#000000",
-    /* Nothing is a second colour here, not even the destructive tone. */
-    "--destructive": "#000000",
+    /* Bright, luminous surfaces: the page reads white, never grey. */
+    "--background": "oklch(100% 0 0)",
+    "--foreground": "oklch(14.5% 0 0)",
+    "--card": "oklch(100% 0 0)",
+    "--card-foreground": "oklch(14.5% 0 0)",
+    "--popover": "oklch(100% 0 0)",
+    "--popover-foreground": "oklch(14.5% 0 0)",
+    /* The action colour is the deepest tone: a true black button. */
+    "--primary": "oklch(20.5% 0 0)",
+    "--primary-foreground": "oklch(98.5% 0 0)",
+    "--secondary": "oklch(97% 0 0)",
+    "--secondary-foreground": "oklch(20.5% 0 0)",
+    "--muted": "oklch(97% 0 0)",
+    "--muted-foreground": "oklch(55.6% 0 0)",
+    "--accent": "oklch(97% 0 0)",
+    "--accent-foreground": "oklch(20.5% 0 0)",
+    "--destructive": "oklch(57.7% 0.245 27.325)",
     /* Hairlines read as a soft shade, never a hard line. */
-    "--border": "rgba(0, 0, 0, 0.16)",
-    "--input": "rgba(0, 0, 0, 0.16)",
-    "--ring": "#000000",
+    "--border": "oklch(92.2% 0 0)",
+    "--input": "oklch(92.2% 0 0)",
+    "--ring": "oklch(70.8% 0 0)",
     /* The inverted band pair, used by .on-ink and by the design swatches. */
-    "--ink": "#000000",
-    "--paper": "#ffffff",
-    /* The signature accent is the same true black as the action colour. */
-    "--brand": "#000000",
+    "--ink": "#0a0a0a",
+    "--paper": "#fafafa",
+    /* The signature accent: a single muted gold. */
+    "--brand": "#b08d57",
     "--radius": "0.625rem",
   };
 }

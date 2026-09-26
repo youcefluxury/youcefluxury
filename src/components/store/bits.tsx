@@ -613,7 +613,7 @@ export function Badge({
   className,
 }: {
   children: ReactNode;
-  /** "promo" = the sale tag, "soldout" = the stock tag. */
+  /** "promo" = green sale tag, "soldout" = red stock tag. */
   variant?: "solid" | "outline" | "muted" | "promo" | "soldout";
   className?: string;
 }) {
@@ -622,8 +622,8 @@ export function Badge({
       className={cn(
         "inline-flex items-center px-2.5 py-1 text-[10px] font-medium tracking-[0.14em] uppercase",
         variant === "solid" && "bg-foreground text-background",
-        variant === "promo" && "bg-foreground text-background",
-        variant === "soldout" && "border border-foreground text-foreground",
+        variant === "promo" && "bg-emerald-600 text-white",
+        variant === "soldout" && "bg-red-600 text-white",
         variant === "outline" && "border border-border text-foreground",
         variant === "muted" && "bg-muted text-muted-foreground",
         className,

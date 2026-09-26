@@ -62,10 +62,10 @@ function orderReference(createdAt: number): string {
 function statusTone(status: string): string {
   const tones: Record<string, string> = {
     new: "bg-foreground text-background",
-    confirmed: "border-foreground/30 bg-foreground/5 text-foreground",
-    shipped: "border-foreground/30 bg-foreground/10 text-foreground",
-    delivered: "border-foreground bg-foreground/20 text-foreground",
-    cancelled: "border-foreground text-foreground line-through",
+    confirmed: "bg-blue-600/10 text-blue-700 border-blue-600/30",
+    shipped: "bg-amber-600/10 text-amber-700 border-amber-600/30",
+    delivered: "bg-emerald-600/10 text-emerald-700 border-emerald-600/30",
+    cancelled: "bg-destructive/10 text-destructive border-destructive/30",
   };
   return tones[status] ?? "bg-muted text-muted-foreground border-border";
 }
