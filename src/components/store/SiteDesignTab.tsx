@@ -26,7 +26,12 @@ import {
   siteThemeById,
   type SiteThemePreset,
 } from "@/lib/site-theme";
-import { STORE, mapCoordinates, toMapEmbedUrl } from "@/lib/store-data";
+import {
+  MAP_COORDINATES_PLACEHOLDER,
+  STORE,
+  mapCoordinates,
+  parseCoordinates,
+} from "@/lib/store-data";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 
@@ -278,9 +283,9 @@ function StoreIdentityPanel() {
       toast.error(t("admin.brandNameRequired"));
       return;
     }
-    // A pasted map link must resolve to something embeddable, or it is refused
-    // here instead of leaving a broken frame on the home page.
-    if (map.trim() && !toMapEmbedUrl(map)) {
+    // Coordinates only — a pasted link is refused here instead of leaving a
+    // broken frame on the home page. The value is stored as a plain "lat,lng".
+    if (map.trim() && !parseCoordinates(map)) {
       toast.error(t("admin.mapInvalid"));
       return;
     }
@@ -290,7 +295,7 @@ function StoreIdentityPanel() {
         name: name.trim(),
         tagline: tagline.trim(),
         description: description.trim(),
-        map: map.trim(),
+        map: map.trim() ? (mapCoordinates(map) ?? "") : "",
         logo,
       });
       toast.success(t("admin.identitySaved"));
@@ -387,14 +392,17 @@ function StoreIdentityPanel() {
       </div>
 
       <div className={fieldClass}>
-        <Label htmlFor="storeMap">{t("admin.mapUrl")}</Label>
+        <Label htmlFor="storeMap">{t("admin.mapCoordinates")}</Label>
         <Input
           id="storeMap"
           dir="ltr"
           value={map}
           onChange={(event) => setMap(event.target.value)}
-          placeholder={STORE.mapEmbedUrl}
+          placeholder={MAP_COORDINATES_PLACEHOLDER}
         />
+        <p className="text-muted-foreground text-[10px] leading-4">
+          {t("admin.mapHint")}
+        </p>
         <p className="text-muted-foreground flex items-center gap-1.5 text-[10px] leading-4">
           <MapPin className="size-3 shrink-0" />
           {t("admin.mapCoordinates")}

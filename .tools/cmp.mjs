@@ -1,0 +1,16 @@
+import fs from "node:fs";
+const bun = JSON.parse(fs.readFileSync(".tools/out/bun-i18n.json","utf8"));
+const cur = fs.readFileSync("src/lib/i18n.tsx","utf8");
+const re = /"([A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z0-9_]+)+)"\s*:\s*\{\s*ar\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*en\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}/g;
+let m; const curMap = new Map();
+while ((m = re.exec(cur))) curMap.set(m[1], { ar: m[2], en: m[3] });
+console.log("current keys:", curMap.size);
+const missing = Object.keys(bun).filter(k => !curMap.has(k));
+console.log("\n=== IN RAR, MISSING LOCALLY (" + missing.length + ") ===");
+for (const k of missing) console.log(k, "::", JSON.stringify(bun[k].ar), "|", JSON.stringify(bun[k].en));
+const changed = Object.keys(bun).filter(k => curMap.has(k) && (curMap.get(k).ar !== bun[k].ar || curMap.get(k).en !== bun[k].en));
+console.log("\n=== CHANGED (" + changed.length + ") ===");
+for (const k of changed) console.log(k, "\n  local:", JSON.stringify(curMap.get(k).ar), "\n  rar  :", JSON.stringify(bun[k].ar));
+const extra = [...curMap.keys()].filter(k => !bun.has(k));
+console.log("\n=== LOCAL ONLY (" + extra.length + ") ===");
+console.log(extra.join("\n"));

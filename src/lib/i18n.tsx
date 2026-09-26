@@ -844,6 +844,14 @@ const STRINGS = {
     en: "Map link or coordinates",
   },
   "admin.mapCoordinates": { ar: "إحداثيات المتجر", en: "Shop coordinates" },
+  "admin.mapCoordinatesHint": {
+    ar: `الصق الإحداثيات فقط: بالدرجات (35.180678,1.493835) أو بالشكل 35°22'02.7"N 1°19'24.0"E — وستنتقل الخريطة مباشرة إلى هذا المكان. الروابط غير مقبولة.`,
+    en: `Paste the coordinates only: decimal (35.180678,1.493835) or 35°22'02.7"N 1°19'24.0"E — the map jumps straight to that spot. Links are not accepted.`,
+  },
+  "admin.mapHint": {
+    ar: `الصق الإحداثيات فقط: بالدرجات (35.180678,1.493835) أو بالشكل 35°22'02.7"N 1°19'24.0"E — الروابط غير مقبولة.`,
+    en: `Paste coordinates only: decimal (35.180678,1.493835) or 35°22'02.7"N 1°19'24.0"E — links are not accepted.`,
+  },
   "admin.mapInvalid": {
     ar: "تعذر قراءة هذا الرابط — الصق رابط خرائط جوجل أو الإحداثيات",
     en: "Could not read that link — paste a Google Maps link or coordinates",
@@ -881,7 +889,7 @@ const STRINGS = {
     en: "Bucket: {bucket} — upload {put}, read {get} — probe deleted ({cleanup}).",
   },
   "admin.r2FailDetail": {
-    ar: "الرفع: {put} — القراءة العامة: {get} — رابط R2 العام يجب أن يكون مفتوحًا للقراءة على البكت.",
+    ar: "الرفع: {put} — القراءة العامة: {get} — رابط R2 العام يجب أن يكون مفتوحًا للقراءة على البucket.",
     en: "Upload: {put} — public read: {get} — the public R2 URL must allow reads on the bucket.",
   },
 } as const;

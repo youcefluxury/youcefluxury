@@ -1,0 +1,7 @@
+card.markedAvailable	card.markedSoldOut
+admin.deleteCategoryConfirm	admin.deleteProductConfirm
+card.markAvailable	card.markSoldOut
+card.editCategory	card.edit
+card.deleteCategory	card.delete
+admin.uploading	admin.imageUpload
+phone.hideNumber	phone.showNumber

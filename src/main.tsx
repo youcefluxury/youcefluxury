@@ -20,7 +20,6 @@ const ProductDetails = lazy(() => import("./pages/ProductDetails.tsx"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage.tsx"));
 const DeliveryPrices = lazy(() => import("./pages/DeliveryPrices.tsx"));
 const Admin = lazy(() => import("./pages/Admin.tsx"));
-const AdminDesign = lazy(() => import("./pages/AdminDesign.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
@@ -221,8 +220,6 @@ if (!rootElement) {
                           <Route path="/delivery" element={<DeliveryPrices />} />
                         </Route>
                         <Route path="/admin" element={<Admin />} />
-                        {/* Site design: presets, store identity, R2 storage. */}
-                        <Route path="/admin/design" element={<AdminDesign />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>

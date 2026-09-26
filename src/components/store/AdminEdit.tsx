@@ -18,6 +18,11 @@ import { Label } from "@/components/ui/label";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useStorePhone } from "@/hooks/use-store-phone";
 import { useI18n, type TKey } from "@/lib/i18n";
+import {
+  MAP_COORDINATES_PLACEHOLDER,
+  mapCoordinates,
+  parseCoordinates,
+} from "@/lib/store-data";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 
@@ -461,6 +466,88 @@ export function WhatsAppEditButton({ className }: { className?: string }) {
           />
           <p className="text-muted-foreground text-[10px] leading-4">
             {t("admin.whatsappHint")}
+          </p>
+        </div>
+        <Button
+          type="button"
+          className="h-11 w-full"
+          disabled={busy}
+          onClick={() => void save()}
+        >
+          {t("admin.saveChanges")}
+        </Button>
+      </AdminDialogShell>
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Map — coordinates only, never a link                                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The pencil that sits beside the shop map on the home page. It takes the
+ * coordinates and nothing else, stores them as "lat,lng", and the map
+ * rebuilds its own embed URL from them.
+ */
+export function MapEditButton({ className }: { className?: string }) {
+  const { t } = useI18n();
+  const { mapEmbedUrl } = useStoreBrand();
+  const setSetting = useMutation(api.catalog.setStoreSetting);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  // Show what is live now, already reduced to a plain "lat,lng" line.
+  useEffect(() => {
+    if (open) setValue(mapCoordinates(mapEmbedUrl));
+  }, [open, mapEmbedUrl]);
+
+  async function save() {
+    const point = parseCoordinates(value);
+    if (!point) {
+      toast.error(t("admin.mapInvalid"));
+      return;
+    }
+    setBusy(true);
+    try {
+      await setSetting({
+        adminKey: ADMIN_API_KEY,
+        key: "map",
+        value: `${point.lat},${point.lng}`,
+      });
+      toast.success(t("admin.settingsSaved"));
+      setOpen(false);
+    } catch {
+      toast.error(t("admin.saveFailed"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <>
+      <AdminPencil
+        label={t("admin.editMap")}
+        onClick={() => setOpen(true)}
+        className={className}
+      />
+      <AdminDialogShell
+        open={open}
+        onOpenChange={setOpen}
+        title={t("admin.editMap")}
+      >
+        <div className="grid gap-2">
+          <Label htmlFor="storeMap">{t("admin.mapCoordinates")}</Label>
+          <Input
+            id="storeMap"
+            dir="ltr"
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            placeholder={MAP_COORDINATES_PLACEHOLDER}
+          />
+          <p className="text-muted-foreground text-[10px] leading-4">
+            {t("admin.mapCoordinatesHint")}
           </p>
         </div>
         <Button

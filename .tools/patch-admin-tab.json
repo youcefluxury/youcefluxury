@@ -1,0 +1,14 @@
+[
+  {
+    "old": "          value={\n            requestedTab === \"slider\" ||\n            requestedTab === \"orders\" ||\n            requestedTab === \"categories\"\n              ? requestedTab\n              : \"products\"\n          }",
+    "new": "          value={\n            requestedTab === \"slider\" ||\n            requestedTab === \"orders\" ||\n            requestedTab === \"design\" ||\n            requestedTab === \"categories\"\n              ? requestedTab\n              : \"products\"\n          }"
+  },
+  {
+    "old": "            <TabsTrigger value=\"orders\" className=\"gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm\">\n              <Receipt className=\"size-4 shrink-0\" />\n              <span className=\"whitespace-nowrap\">{t(\"admin.tabOrders\")}</span>\n            </TabsTrigger>\n          </TabsList>",
+    "new": "            <TabsTrigger value=\"orders\" className=\"gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm\">\n              <Receipt className=\"size-4 shrink-0\" />\n              <span className=\"whitespace-nowrap\">{t(\"admin.tabOrders\")}</span>\n            </TabsTrigger>\n            {/* The design screen lives here in the panel, never in the navbar. */}\n            <TabsTrigger value=\"design\" className=\"gap-1.5 px-2.5 py-2.5 text-xs sm:gap-2 sm:px-4 sm:text-sm\">\n              <Palette className=\"size-4 shrink-0\" />\n              <span className=\"whitespace-nowrap\">{t(\"admin.tabDesign\")}</span>\n            </TabsTrigger>\n          </TabsList>"
+  },
+  {
+    "old": "            <OrdersManager />\n          </TabsContent>\n        </Tabs>",
+    "new": "            <OrdersManager />\n          </TabsContent>\n\n          <TabsContent value=\"design\">\n            <div className=\"mb-6 flex items-start gap-2.5 sm:gap-3\">\n              <Palette className=\"size-5 shrink-0\" />\n              <p className=\"min-w-0 flex-1 text-xs font-semibold leading-5 sm:text-sm\">{t(\"admin.designLead\")}</p>\n            </div>\n            <SiteDesignTab />\n          </TabsContent>\n        </Tabs>"
+  }
+]

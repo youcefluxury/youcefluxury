@@ -1,0 +1,77 @@
+./radix-ui-BJVseBqA.js
+./react-vendor-BgF3s-7g.js
+./index-C6xIWDG_.js
+./framer-motion-Bhy7A_DN.js
+path
+M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0
+1r0f0z
+circle
+12
+10
+3
+ilqhr7
+map-pin
+سعر التوصيل
+Delivery price
+${s.code} ${s.ar} ${s.fr}
+text-muted-foreground text-[10px]
+tracking-[0.2em]
+tracking-[0.34em] uppercase
+delivery.saved
+delivery.error
+div
+mx-auto w-full max-w-7xl px-4 py-10 sm:px-6
+delivery.eyebrow
+delivery.title
+p
+text-muted-foreground mt-5 max-w-2xl text-sm leading-7
+delivery.lead
+mt-10 flex flex-wrap items-center gap-3
+relative min-w-0 flex-1 basis-64
+text-muted-foreground pointer-events-none absolute inset-y-0 start-3 my-auto size-4
+delivery.search
+aria-label
+h-12 ps-9
+muted
+h-8
+delivery.results
+text-muted-foreground mt-10 text-sm
+delivery.empty
+ul
+mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3
+ar
+li
+hover:border-foreground/30 flex items-center gap-3.5 rounded-2xl border border-border/70 p-4 transition-colors
+span
+bg-muted text-foreground grid size-10 shrink-0 place-items-center rounded-xl text-xs font-semibold tabular-nums
+0
+min-w-0 flex-1
+truncate text-sm font-medium
+text-muted-foreground mt-0.5 text-[10px] leading-4
+shrink-0 text-sm font-semibold
+delivery.editWilaya
+text-muted-foreground mt-10 flex items-start gap-2 text-[11px] leading-5
+mt-0.5 size-3.5 shrink-0
+delivery.orderHint
+w-[calc(100vw-2rem)] max-w-sm gap-0 rounded-none p-6 sm:rounded-lg
+text-base
+delivery.editTitle
+text-xs
+form
+mt-5 grid gap-4
+grid gap-2
+delivery-price
+cart.delivery
+numeric
+ltr
+delivery.pricePlaceholder
+h-12 text-base
+delivery.editHint
+flex gap-2
+button
+outline
+h-11
+common.close
+submit
+h-11 flex-1
+common.save

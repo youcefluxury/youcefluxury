@@ -1,7 +1,6 @@
 import {
   ChevronDown,
   Menu,
-  Palette,
   Search,
   ShoppingCart,
   User,
@@ -248,6 +247,28 @@ export function StoreHeader() {
               {mobileSearch ? <X className="size-5" /> : <Search className="size-5" />}
             </button>
 
+            {/* The bag sits right beside the social icons, never at the far end. */}
+            <button
+              type="button"
+              id="cart-anchor"
+              onClick={openCart}
+              aria-label={t("common.cart")}
+              className={cn(iconButton, "relative")}
+            >
+              <ShoppingCart className="size-5" />
+              <span
+                key={count}
+                className={cn(
+                  "absolute -top-0.5 -end-0.5 grid min-w-5 animate-[cart-pop_0.35s_ease-out] place-items-center rounded-full px-1 text-[10px] font-semibold",
+                  count > 0
+                    ? "bg-ink text-white"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                {count}
+              </span>
+            </button>
+
             <span className="relative">
               <a
                 href={instagram}
@@ -296,15 +317,7 @@ export function StoreHeader() {
 
             {isAdmin ? (
               <>
-                {/* Admin only: jump straight to the site design screen. */}
-                <Link
-                  to="/admin/design"
-                  aria-label={t("admin.tabDesign")}
-                  title={t("admin.tabDesign")}
-                  className={iconButton}
-                >
-                  <Palette className="size-5" />
-                </Link>
+                {/* The design screen lives inside the dashboard, not here. */}
                 <Link
                   to="/admin"
                   aria-label={t("common.account")}
@@ -314,27 +327,6 @@ export function StoreHeader() {
                 </Link>
               </>
             ) : null}
-
-            <button
-              type="button"
-              id="cart-anchor"
-              onClick={openCart}
-              aria-label={t("common.cart")}
-              className={cn(iconButton, "relative")}
-            >
-              <ShoppingCart className="size-5" />
-              <span
-                key={count}
-                className={cn(
-                  "absolute -top-0.5 -end-0.5 grid min-w-5 animate-[cart-pop_0.35s_ease-out] place-items-center rounded-full px-1 text-[10px] font-semibold",
-                  count > 0
-                    ? "bg-ink text-white"
-                    : "bg-muted text-muted-foreground",
-                )}
-              >
-                {count}
-              </span>
-            </button>
 
             <button
               type="button"

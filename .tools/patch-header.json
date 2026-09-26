@@ -1,0 +1,18 @@
+[
+  {
+    "old": "            <button\n              type=\"button\"\n              aria-label={t(\"common.search\")}\n              onClick={() => setMobileSearch((open) => !open)}\n              className={cn(iconButton, \"md:hidden\")}\n            >\n              {mobileSearch ? <X className=\"size-5\" /> : <Search className=\"size-5\" />}\n            </button>\n",
+    "new": "            <button\n              type=\"button\"\n              aria-label={t(\"common.search\")}\n              onClick={() => setMobileSearch((open) => !open)}\n              className={cn(iconButton, \"md:hidden\")}\n            >\n              {mobileSearch ? <X className=\"size-5\" /> : <Search className=\"size-5\" />}\n            </button>\n\n            {/* The bag sits right beside the social icons, never at the far end. */}\n            <button\n              type=\"button\"\n              id=\"cart-anchor\"\n              onClick={openCart}\n              aria-label={t(\"common.cart\")}\n              className={cn(iconButton, \"relative\")}\n            >\n              <ShoppingCart className=\"size-5\" />\n              <span\n                key={count}\n                className={cn(\n                  \"absolute -top-0.5 -end-0.5 grid min-w-5 animate-[cart-pop_0.35s_ease-out] place-items-center rounded-full px-1 text-[10px] font-semibold\",\n                  count > 0\n                    ? \"bg-ink text-white\"\n                    : \"bg-muted text-muted-foreground\",\n                )}\n              >\n                {count}\n              </span>\n            </button>\n"
+  },
+  {
+    "old": "            <button\n              type=\"button\"\n              id=\"cart-anchor\"\n              onClick={openCart}\n              aria-label={t(\"common.cart\")}\n              className={cn(iconButton, \"relative\")}\n            >\n              <ShoppingCart className=\"size-5\" />\n              <span\n                key={count}\n                className={cn(\n                  \"absolute -top-0.5 -end-0.5 grid min-w-5 animate-[cart-pop_0.35s_ease-out] place-items-center rounded-full px-1 text-[10px] font-semibold\",\n                  count > 0\n                    ? \"bg-ink text-white\"\n                    : \"bg-muted text-muted-foreground\",\n                )}\n              >\n                {count}\n              </span>\n            </button>\n\n            <button\n              type=\"button\"\n              aria-label={t(\"common.menu\")}",
+    "new": "            <button\n              type=\"button\"\n              aria-label={t(\"common.menu\")}"
+  },
+  {
+    "old": "                {/* Admin only: jump straight to the site design screen. */}\n                <Link\n                  to=\"/admin/design\"\n                  aria-label={t(\"admin.tabDesign\")}\n                  title={t(\"admin.tabDesign\")}\n                  className={iconButton}\n                >\n                  <Palette className=\"size-5\" />\n                </Link>\n                <Link\n                  to=\"/admin\"",
+    "new": "                {/* The design screen lives inside the dashboard, not here. */}\n                <Link\n                  to=\"/admin\""
+  },
+  {
+    "old": "import {\n  ChevronDown,\n  Menu,\n  Palette,\n  Search,\n  ShoppingCart,\n  User,\n  X,\n} from \"lucide-react\";",
+    "new": "import {\n  ChevronDown,\n  Menu,\n  Search,\n  ShoppingCart,\n  User,\n  X,\n} from \"lucide-react\";"
+  }
+]

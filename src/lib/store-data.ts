@@ -540,6 +540,11 @@ export function matchesSearch(haystack: string, query: string): boolean {
 /* Shop location — the admin pastes a Maps link or plain coordinates   */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Sample shown in the map field: degrees / minutes / seconds, the way a
+ * person reads a location off their phone.
+ */
+export const MAP_COORDINATES_PLACEHOLDER = `35\u00b022'02.7"N 1\u00b019'24.0"E`;
 /** Valid latitude/longitude pair — anything else is refused, not embedded. */
 function validPoint(lat: number, lng: number): boolean {
   return (

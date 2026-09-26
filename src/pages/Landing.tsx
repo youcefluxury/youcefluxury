@@ -5,7 +5,10 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 import { api } from "@/convex/_generated/api";
-import { CategoryEditDialog } from "@/components/store/AdminEdit";
+import {
+  CategoryEditDialog,
+  MapEditButton,
+} from "@/components/store/AdminEdit";
 import { AddCategoryButton } from "@/components/store/CategoryFormDialog";
 import { ProductFormDialog } from "@/components/store/AddProductDialog";
 import {
@@ -235,7 +238,12 @@ export default function Landing() {
 
       {/* Store location ------------------------------------------------- */}
       <section className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6">
-        <SectionHeading center title={t("home.map.title")} />
+        {/* Admin only: the pencil that moves the map, same as the other edits. */}
+        <SectionHeading
+          center
+          title={t("home.map.title")}
+          action={<MapEditButton />}
+        />
         <div className="mt-7 overflow-hidden rounded-none border border-border/70 bg-card">
           <iframe
             title={t("home.map.title")}

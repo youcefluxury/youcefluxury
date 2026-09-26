@@ -1,0 +1,10 @@
+[
+  {
+    "old": "import { STORE, mapCoordinates, parseCoordinates } from \"@/lib/store-data\";",
+    "new": "import {\n  MAP_COORDINATES_PLACEHOLDER,\n  STORE,\n  mapCoordinates,\n  parseCoordinates,\n} from \"@/lib/store-data\";"
+  },
+  {
+    "old": "          placeholder={MAP_PLACEHOLDER}",
+    "new": "          placeholder={MAP_COORDINATES_PLACEHOLDER}"
+  }
+]
