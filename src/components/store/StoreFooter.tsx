@@ -130,7 +130,7 @@ export function StoreFooter() {
 
           <div>
             <h3 className={heading}>{t("footer.contact")}</h3>
-            <ul className="text-muted-foreground mt-5 space-y-3 text-sm">
+            <ul className="mt-5 space-y-3 text-sm text-foreground">
               <li>
                 <a href={`tel:${phone}`} className="hover:text-foreground">
                   {display}
