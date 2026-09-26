@@ -7,6 +7,7 @@ import {
   Moon,
   Palette,
   RefreshCw,
+  RotateCcw,
   Sun,
   Upload,
 } from "lucide-react";
@@ -24,6 +25,7 @@ import { ADMIN_API_KEY } from "@/lib/admin-key";
 import { pickLang, useI18n } from "@/lib/i18n";
 import {
   SITE_THEME_MODES,
+  DEFAULT_SITE_THEME_MODE,
   PURE_THEME_IDS,
   SITE_THEMES,
   applySiteTheme,
@@ -125,6 +127,13 @@ function SiteDesignPanel() {
     void commit(current, mode);
   }
 
+  /** Back to the built-in black & white look this store started with. */
+  function restoreOriginal() {
+    if (current === "original" && currentMode === DEFAULT_SITE_THEME_MODE)
+      return;
+    void commit("original", DEFAULT_SITE_THEME_MODE);
+  }
+
   return (
     <div className="grid gap-3 rounded-2xl border border-border/70 bg-background p-5">
       <div className="flex items-start gap-3">
@@ -157,31 +166,45 @@ function SiteDesignPanel() {
             {t("admin.modeHint")}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-1 rounded-lg border border-border/70 bg-background p-1">
-          {SITE_THEME_MODES.map((mode) => {
-            const active = currentMode === mode;
-            return (
-              <button
-                key={mode}
-                type="button"
-                disabled={busy}
-                onClick={() => applyMode(mode)}
-                className={cn(
-                  "inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-4 text-xs font-medium transition-colors disabled:opacity-50",
-                  active
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:bg-muted",
-                )}
-              >
-                {mode === "light" ? (
-                  <Sun className="size-3.5" />
-                ) : (
-                  <Moon className="size-3.5" />
-                )}
-                {mode === "light" ? t("admin.modeLight") : t("admin.modeDark")}
-              </button>
-            );
-          })}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="grid flex-1 grid-cols-2 gap-1 rounded-lg border border-border/70 bg-background p-1">
+            {SITE_THEME_MODES.map((mode) => {
+              const active = currentMode === mode;
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  disabled={busy}
+                  onClick={() => applyMode(mode)}
+                  className={cn(
+                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-4 text-xs font-medium transition-colors disabled:opacity-50",
+                    active
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  {mode === "light" ? (
+                    <Sun className="size-3.5" />
+                  ) : (
+                    <Moon className="size-3.5" />
+                  )}
+                  {mode === "light"
+                    ? t("admin.modeLight")
+                    : t("admin.modeDark")}
+                </button>
+              );
+            })}
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 shrink-0"
+            disabled={busy}
+            onClick={restoreOriginal}
+          >
+            <RotateCcw className="size-4" />
+            {t("admin.designRestore")}
+          </Button>
         </div>
       </div>
 

@@ -175,7 +175,9 @@ export default function CategoryPage() {
             to="/shop"
             className={cn(
               "inline-flex h-10 items-center gap-2 border border-white/60 px-4 text-white transition-colors hover:bg-white hover:text-black",
-              isAr ? "text-[12px]" : "font-display text-[10px] tracking-[0.24em] uppercase",
+              isAr
+                ? "text-[12px]"
+                : "font-display text-[10px] tracking-[0.24em] uppercase",
             )}
           >
             {t("common.allProducts")}
@@ -196,7 +198,7 @@ export default function CategoryPage() {
               </p>
               {/* Admin only: add a product or edit this category in place. */}
               <AddProductButton categorySlug={category.slug} />
-              <CategoryEditButton category={category} tone="dark" />
+              <CategoryEditButton category={category} />
             </div>
           }
         />

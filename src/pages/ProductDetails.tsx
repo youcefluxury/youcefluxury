@@ -64,7 +64,6 @@ function ProductPageEditButton({ product }: { product: Product }) {
       <AdminPencil
         label={t("admin.editProduct")}
         onClick={() => setOpen(true)}
-        tone="dark"
       />
       <ProductFormDialog
         open={open}
@@ -110,7 +109,9 @@ export default function ProductDetails() {
   useEffect(() => {
     if (!product) return;
     const stillOk = product.sizes.find(
-      (item) => item.label === size && item.available &&
+      (item) =>
+        item.label === size &&
+        item.available &&
         !soldOutForColor.has(item.label),
     );
     if (!stillOk) {
@@ -153,8 +154,9 @@ export default function ProductDetails() {
     const photoIndex = (product.imageColors ?? []).findIndex(
       (value) => value && value.toLowerCase() === color.toLowerCase(),
     );
-    for (const size of (photoIndex >= 0 ? product.imageSizes?.[photoIndex] : undefined) ??
-      []) {
+    for (const size of (photoIndex >= 0
+      ? product.imageSizes?.[photoIndex]
+      : undefined) ?? []) {
       out.add(size);
     }
     const row = (product.soldOutByColor ?? []).find(
@@ -227,8 +229,7 @@ export default function ProductDetails() {
     /* The cart and the order carry the photo of the chosen colour, so the
        admin sees exactly the variant that was ordered. */
     const colorPhoto = photoForColor(color);
-    const cartImage =
-      product!.images[colorPhoto >= 0 ? colorPhoto : 0] ?? "";
+    const cartImage = product!.images[colorPhoto >= 0 ? colorPhoto : 0] ?? "";
     addItem(
       {
         productId: product!._id,
@@ -370,7 +371,9 @@ export default function ProductDetails() {
                     >
                       <span
                         className="size-2 rounded-full border border-white/60"
-                        style={{ background: colorSwatch(product.imageColors[index]!) }}
+                        style={{
+                          background: colorSwatch(product.imageColors[index]!),
+                        }}
                       />
                       {colorLabel(product.imageColors[index]!, lang)}
                     </span>
@@ -412,7 +415,9 @@ export default function ProductDetails() {
           </div>
 
           <div className="mt-5 flex items-center gap-3">
-            <span className="text-2xl font-semibold">{formatDA(product.price)}</span>
+            <span className="text-2xl font-semibold">
+              {formatDA(product.price)}
+            </span>
             {product.oldPrice ? (
               <span className="text-muted-foreground text-sm line-through">
                 {formatDA(product.oldPrice)}
@@ -521,7 +526,9 @@ export default function ProductDetails() {
               >
                 <Minus className="size-4" />
               </button>
-              <span className="w-8 text-center text-sm font-medium">{quantity}</span>
+              <span className="w-8 text-center text-sm font-medium">
+                {quantity}
+              </span>
               <button
                 type="button"
                 aria-label={t("product.quantityPlus")}

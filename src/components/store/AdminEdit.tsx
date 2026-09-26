@@ -36,17 +36,22 @@ import { cn } from "@/lib/utils";
  * The little pencil the admin sees on top of anything editable. Visitors
  * never render it, so the storefront stays clean for shoppers.
  */
+/**
+ * The little pencil the admin sees on top of anything editable. Visitors
+ * never render it, so the storefront stays clean for shoppers.
+ *
+ * Its colours are relative to the writing tokens, so it stays visible on
+ * the black footer as well as on a light navbar: a hardcoded white pencil
+ * disappeared into a white tile in the light designs.
+ */
 export function AdminPencil({
   label,
   onClick,
   className,
-  tone = "light",
 }: {
   label: string;
   onClick: () => void;
   className?: string;
-  /** "light" = white pencil for dark areas, "dark" = black pencil. */
-  tone?: "light" | "dark";
 }) {
   const isAdmin = useIsAdminSession();
 
@@ -63,11 +68,8 @@ export function AdminPencil({
         onClick();
       }}
       className={cn(
-        "grid shrink-0 place-items-center rounded-full border shadow-sm transition-colors",
-        tone === "light"
-          ? "bg-background/90 text-foreground hover:bg-foreground hover:text-background border-border/70"
-          : "border-foreground bg-foreground text-background hover:opacity-80",
-        "size-6",
+        "border-foreground/20 bg-foreground text-background grid size-6 shrink-0 place-items-center rounded-full border shadow-sm transition-opacity",
+        "hover:opacity-80",
         className,
       )}
     >
@@ -742,11 +744,9 @@ export function CategoryEditDialog({
 export function CategoryEditButton({
   category,
   className,
-  tone = "light",
 }: {
   category: EditableCategory;
   className?: string;
-  tone?: "light" | "dark";
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -757,7 +757,6 @@ export function CategoryEditButton({
         label={t("admin.editCategory")}
         onClick={() => setOpen(true)}
         className={className}
-        tone={tone}
       />
       <CategoryEditDialog
         open={open}
