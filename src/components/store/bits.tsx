@@ -70,11 +70,16 @@ export function Brand({
 
   return (
     <div className={cn("flex min-w-0 items-center gap-2.5", className)}>
+      {/*
+        A fixed square tile with object-contain: whatever shape the admin
+        uploads, the mark sits centred in the same box, so the header never
+        grows a gap. The tile keeps dark artwork readable on the black bar.
+      */}
       <img
         src={logo}
         alt={name}
         className={cn(
-          "shrink-0 rounded-md bg-white object-contain p-0.5 ring-1 ring-black/5",
+          "shrink-0 rounded-lg bg-white object-contain p-1 ring-1 ring-black/10",
           dark ? "size-10" : "size-9",
         )}
       />

@@ -20,6 +20,74 @@ function isCompressible(file: File): boolean {
   );
 }
 
+/** Long edge of a normalised logo, in pixels. */
+const LOGO_EDGE = 256;
+
+/**
+ * Normalises any logo the admin uploads so it always renders identically.
+ *
+ * The product pipeline re-encodes to JPEG, which has no transparency — a
+ * transparent PNG logo came out as a white rectangle that broke the header
+ * with a bright gap. This path instead:
+ *
+ *   - scales the longest side down to a fixed 256px, so a huge photo and a
+ *     small icon both end up the same weight and equally crisp;
+ *   - centres the artwork inside a square with a transparent margin, so a wide
+ *     wordmark and a tall icon both fill the same box instead of leaving a
+ *     letterbox gap;
+ *   - writes PNG, which keeps the transparency the logo relies on.
+ */
+export async function normalizeLogoImage(file: File): Promise<File> {
+  if (!isCompressible(file)) return file;
+
+  try {
+    const bitmap = await createImageBitmap(file, {
+      imageOrientation: "from-image",
+    });
+    const longest = Math.max(bitmap.width, bitmap.height);
+    if (!longest) {
+      bitmap.close();
+      return file;
+    }
+
+    const scale = Math.min(1, LOGO_EDGE / longest);
+    const drawn = {
+      width: Math.max(1, Math.round(bitmap.width * scale)),
+      height: Math.max(1, Math.round(bitmap.height * scale)),
+    };
+
+    const canvas = document.createElement("canvas");
+    canvas.width = LOGO_EDGE;
+    canvas.height = LOGO_EDGE;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      bitmap.close();
+      return file;
+    }
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    /* Left and top margins are what centre the artwork in the square. */
+    ctx.drawImage(
+      bitmap,
+      Math.round((LOGO_EDGE - drawn.width) / 2),
+      Math.round((LOGO_EDGE - drawn.height) / 2),
+      drawn.width,
+      drawn.height,
+    );
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/png"),
+    );
+    if (!blob) return file;
+
+    const baseName = file.name.replace(/\.[^.]+$/, "") || "logo";
+    return new File([blob], `${baseName}.png`, { type: "image/png" });
+  } catch {
+    return file; // decode failed — upload the original as-is
+  }
+}
+
 export async function compressImage(file: File): Promise<File> {
   if (!isCompressible(file)) return file;
 

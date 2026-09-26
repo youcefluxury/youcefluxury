@@ -27,14 +27,24 @@ function isR2Missing(error: unknown): boolean {
  * While R2 is not configured, the same upload quietly falls back to Convex
  * storage, so saving a product never breaks.
  */
-export function useUploadImage() {
+/**
+ * `alreadyNormalized` skips the product JPEG pipeline. A logo that has been
+ * through `normalizeLogoImage` is already a square, correctly sized PNG with
+ * transparency intact; re-encoding it would paint a white box behind it and
+ * undo the whole point.
+ */
+export function useUploadImage(
+  options: { alreadyNormalized?: boolean } = {},
+) {
   const uploadToR2 = useAction(api.r2.uploadImage);
   const generateUploadUrl = useMutation(api.catalog.generateUploadUrl);
   const getUrl = useMutation(api.catalog.imageUrl);
 
   return useCallback(
     async (file: File): Promise<string> => {
-      const compressed = await compressImage(file);
+      const compressed = options.alreadyNormalized
+        ? file
+        : await compressImage(file);
       const contentType = compressed.type || "image/jpeg";
 
       try {

@@ -23,6 +23,7 @@ import {
   mapCoordinates,
   parseCoordinates,
 } from "@/lib/store-data";
+import { normalizeLogoImage } from "@/lib/image-compress";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 
@@ -137,7 +138,8 @@ function ImageField({
   onChange: (url: string) => void;
 }) {
   const { t } = useI18n();
-  const uploadImage = useUploadImage();
+  /* Already normalised, so the product JPEG pipeline must not touch it. */
+  const uploadImage = useUploadImage({ alreadyNormalized: true });
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -146,7 +148,9 @@ function ImageField({
     if (!files || files.length === 0) return;
     setBusy(true);
     try {
-      onChange(await uploadImage(files[0]!));
+      // Logos skip the JPEG product pipeline: it would paint a white box
+      // behind a transparent file and break the header with a bright gap.
+      onChange(await uploadImage(await normalizeLogoImage(files[0]!)));
     } catch {
       toast.error(t("admin.uploadFailed"));
     } finally {

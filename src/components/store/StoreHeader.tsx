@@ -192,7 +192,7 @@ export function StoreHeader() {
         <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-6">
           <div className="relative shrink-0">
             <Link to="/" aria-label={name}>
-              <Brand responsive />
+              <Brand responsive onBlack />
             </Link>
             {/* Admin only: swap the logo from here. */}
             <LogoEditButton className="absolute -top-1 -start-1" />
@@ -296,40 +296,6 @@ export function StoreHeader() {
               </span>
             </button>
 
-            {/*
-              Admin only, immediately to the right of the bag: one tap opens
-              the dashboard or ends the session on this device.
-            */}
-            {isAdmin ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    aria-label={t("common.account")}
-                    title={t("common.account")}
-                    className={iconButton}
-                  >
-                    <User className="size-5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="min-w-44">
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin">
-                      <LayoutDashboard className="size-4" />
-                      {t("admin.dashboard")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onSelect={signOut}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <LogOut className="size-4" />
-                    {t("admin.logout")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : null}
 
             <span className="relative">
               <a
@@ -374,8 +340,40 @@ export function StoreHeader() {
               <FacebookEditButton className="absolute -bottom-1 -start-1" />
             </span>
 
+            {/* Admin only, parked to the left of the social row. */}
+            {isAdmin ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("common.account")}
+                    title={t("common.account")}
+                    className={iconButton}
+                  >
+                    <User className="size-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-44">
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin">
+                      <LayoutDashboard className="size-4" />
+                      {t("admin.dashboard")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={signOut}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="size-4" />
+                    {t("admin.logout")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
+
             {/* Admin only: live order notifications with the red counter. */}
-            <AdminNotifications />
+            <AdminNotifications tone="dark" />
 
             <button
               type="button"

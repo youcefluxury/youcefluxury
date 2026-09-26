@@ -36,7 +36,7 @@ export function StoreFooter() {
       <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
           <div>
-            <Brand onDark />
+            <Brand onBlack />
             <p className="mt-5 max-w-sm text-sm leading-7 text-chrome-muted">
               {t("footer.about")}
             </p>
