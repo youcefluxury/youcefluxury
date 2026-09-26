@@ -11,21 +11,50 @@
 /** localStorage key shared with the instant-apply step in main.tsx. */
 export const SITE_THEME_STORAGE_KEY = "store.site-theme";
 
-/** The two ways a design can be worn: a bright page or a dark one. */
-export const SITE_THEME_MODES = ["light", "dark"] as const;
+/**
+ * How a design can be worn: a bright page, a deep one, or neither —
+ * "auto" hands the choice to the visitor's operating system.
+ */
+export const SITE_THEME_MODES = ["light", "auto", "dark"] as const;
 export type SiteThemeMode = (typeof SITE_THEME_MODES)[number];
 
-/** New designs start dark, which is the store's original look. */
-export const DEFAULT_SITE_THEME_MODE: SiteThemeMode = "dark";
+/** Nobody has chosen yet, so the store follows the device. */
+export const DEFAULT_SITE_THEME_MODE: SiteThemeMode = "auto";
 
-/** localStorage key for the light/dark choice. */
+/** localStorage key for the light / auto / dark choice. */
 export const SITE_THEME_MODE_STORAGE_KEY = "store.site-mode";
 
-/** Anything unknown falls back to the dark mode. */
+/** Anything unknown follows the device. */
 export function normalizeSiteMode(
   mode: string | null | undefined,
 ): SiteThemeMode {
-  return mode === "light" ? "light" : "dark";
+  return SITE_THEME_MODES.includes(mode as SiteThemeMode)
+    ? (mode as SiteThemeMode)
+    : DEFAULT_SITE_THEME_MODE;
+}
+
+/** True when the device asks for a dark page. */
+export function prefersDarkScheme(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return false;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+/** The palette actually worn: "auto" resolves to the device's. */
+export function resolveSiteMode(mode: SiteThemeMode): "light" | "dark" {
+  if (mode === "auto") return prefersDarkScheme() ? "dark" : "light";
+  return mode;
+}
+
+/** Fires when the device flips its colour preference. Returns a cleanup. */
+export function watchSystemColour(onChange: () => void): () => void {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return () => {};
+  }
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
 }
 
 /** Every token a preset may set — cleared before the next one is applied. */
@@ -64,7 +93,7 @@ export type SiteThemePreset = {
    * `light` is the bright page, `dark` the deep one. The admin picks
    * which one the whole storefront wears.
    */
-  tokens: Record<SiteThemeMode, Record<string, string>>;
+  tokens: Record<"light" | "dark", Record<string, string>>;
 };
 
 /**
@@ -339,13 +368,13 @@ export const SITE_THEMES: SiteThemePreset[] = [
   ...PURE_THEMES,
   {
     id: "original",
-    nameAr: "الأسود والذهبي",
-    nameEn: "Black & Gold",
-    blurbAr: "هوية متجرك: أسود عميق بلمسة ذهبية قويّة.",
-    blurbEn: "Your store identity: deep black with a strong golden accent.",
+    nameAr: "أبيض وأسود",
+    nameEn: "Black & White",
+    blurbAr: "تصميم المتجر الأصلي: أسود عميق وكتابة بيضاء، بلا أي لون مدمج.",
+    blurbEn: "The store\u2019s own look: deep black and white writing, with no colour mixed in.",
     tokens: {
-      light: vividTokens(V(70, 0.035, 82, 0.16, 82, 0.16, "0.625rem"), "light"),
-      dark: vividTokens(V(70, 0.035, 82, 0.16, 82, 0.16, "0.625rem"), "dark"),
+      light: vividTokens(V(0, 0, 0, 0, 0, 0, "0.625rem"), "light"),
+      dark: vividTokens(V(0, 0, 0, 0, 0, 0, "0.625rem"), "dark"),
     },
   },
   {
@@ -626,20 +655,23 @@ export function applySiteTheme(
 ): SiteThemePreset {
   const preset = siteThemeById(id);
   const chosen = normalizeSiteMode(mode);
+  /* "auto" wears whichever palette the device asks for. */
+  const worn = resolveSiteMode(chosen);
   if (typeof document === "undefined") return preset;
 
   const root = document.documentElement;
   for (const token of SITE_THEME_TOKEN_KEYS) {
     root.style.removeProperty(token);
   }
-  for (const [token, value] of Object.entries(preset.tokens[chosen])) {
+  for (const [token, value] of Object.entries(preset.tokens[worn])) {
     root.style.setProperty(token, value);
   }
   root.dataset.theme = preset.id;
   root.dataset.mode = chosen;
   /* The class Tailwind's `dark:` variants listen to. */
-  root.classList.toggle("dark", chosen === "dark");
-  root.style.colorScheme = chosen;
+  root.classList.toggle("dark", worn === "dark");
+  /* Under "auto" the browser picks the form-control colours itself. */
+  root.style.colorScheme = chosen === "auto" ? "light dark" : worn;
 
   try {
     window.localStorage.setItem(SITE_THEME_STORAGE_KEY, preset.id);

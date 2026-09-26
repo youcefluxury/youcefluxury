@@ -458,8 +458,11 @@ export const getSiteTheme = query({
       .unique();
     const theme = row?.value ?? "original";
     // Narrowed here so the dashboard receives the literal union, not a string.
-    const mode: "light" | "dark" =
-      modeRow?.value === "light" ? "light" : "dark";
+    // Nothing saved yet means "follow the visitor's device".
+    const mode: "light" | "auto" | "dark" =
+      modeRow?.value === "light" || modeRow?.value === "dark"
+        ? modeRow.value
+        : "auto";
     return { theme: SITE_THEME_IDS.includes(theme) ? theme : "original", mode };
   },
 });
@@ -469,7 +472,9 @@ export const setSiteTheme = mutation({
   args: {
     adminKey: v.string(),
     theme: v.union(...SITE_THEME_IDS.map((id) => v.literal(id))),
-    mode: v.optional(v.union(v.literal("light"), v.literal("dark"))),
+    mode: v.optional(
+      v.union(v.literal("light"), v.literal("auto"), v.literal("dark")),
+    ),
   },
   handler: async (ctx, args) => {
     if (!isValidAdminKey(args.adminKey)) {
@@ -485,7 +490,7 @@ export const setSiteTheme = mutation({
       await ctx.db.insert("meta", { key: SITE_THEME_KEY, value: args.theme });
     }
     // Omitting the mode only switches the colours, keeping the tone.
-    const nextMode = args.mode ?? "dark";
+    const nextMode = args.mode ?? "auto";
     const modeRow = await ctx.db
       .query("meta")
       .withIndex("by_key", (q) => q.eq("key", SITE_THEME_MODE_KEY))

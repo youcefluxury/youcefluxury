@@ -915,9 +915,10 @@ const STRINGS = {
     en: "Colour mode",
   },
   "admin.modeHint": {
-    ar: "اختر فاتحاً أو داكناً — التغيير يظهر في الموقع كله فوراً.",
-    en: "Pick light or dark - the whole store follows at once.",
+    ar: `اختر عادياً أو فاتحاً أو داكناً — والعادي يتبع لجهاز الموقع من النظام، والتغيير يظهر في الموقع كله فوراً.`,
+    en: `Pick Normal, Light or Dark — Normal follows the visitor's device, and the change shows across the whole store at once.`,
   },
+  "admin.modeAuto": { ar: "عادي", en: "Normal" },
   "admin.modeLight": { ar: "فاتح", en: "Light" },
   "admin.modeDark": { ar: "داكن", en: "Dark" },
   "admin.designRestore": {

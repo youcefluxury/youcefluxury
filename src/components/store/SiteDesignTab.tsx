@@ -4,6 +4,7 @@ import {
   HardDrive,
   Image as ImageIcon,
   MapPin,
+  Monitor,
   Moon,
   Palette,
   RefreshCw,
@@ -22,14 +23,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { ADMIN_API_KEY } from "@/lib/admin-key";
-import { pickLang, useI18n } from "@/lib/i18n";
+import { pickLang, useI18n, type TKey } from "@/lib/i18n";
 import {
   SITE_THEME_MODES,
-  DEFAULT_SITE_THEME_MODE,
   PURE_THEME_IDS,
   SITE_THEMES,
   applySiteTheme,
   normalizeSiteMode,
+  resolveSiteMode,
   siteThemeById,
   type SiteThemeMode,
   type SiteThemePreset,
@@ -62,8 +63,9 @@ function ThemeSwatches({
   preset: SiteThemePreset;
   mode: SiteThemeMode;
 }) {
-  // The dots wear the palette the store is in right now.
-  const palette = preset.tokens[mode];
+  // The dots wear the palette the store is in right now; "auto" resolves to
+  // whichever one the device asked for.
+  const palette = preset.tokens[resolveSiteMode(mode)];
   const swatches = [
     palette["--ink"] ?? ORIGINAL_SWATCHES.ink,
     palette["--paper"] ?? ORIGINAL_SWATCHES.paper,
@@ -81,6 +83,20 @@ function ThemeSwatches({
     </div>
   );
 }
+
+/** The glyph each mode wears in the switch. */
+const MODE_ICONS: Record<SiteThemeMode, typeof Sun> = {
+  light: Sun,
+  auto: Monitor,
+  dark: Moon,
+};
+
+/** And the word under it, in the active language. */
+const MODE_LABELS: Record<SiteThemeMode, TKey> = {
+  light: "admin.modeLight",
+  auto: "admin.modeAuto",
+  dark: "admin.modeDark",
+};
 
 /**
  * Design picker: every card applies itself to the whole store on tap, and the
@@ -129,9 +145,8 @@ function SiteDesignPanel() {
 
   /** Back to the built-in black & white look this store started with. */
   function restoreOriginal() {
-    if (current === "original" && currentMode === DEFAULT_SITE_THEME_MODE)
-      return;
-    void commit("original", DEFAULT_SITE_THEME_MODE);
+    if (current === "original" && currentMode === "dark") return;
+    void commit("original", "dark");
   }
 
   return (
@@ -167,9 +182,10 @@ function SiteDesignPanel() {
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <div className="grid flex-1 grid-cols-2 gap-1 rounded-lg border border-border/70 bg-background p-1">
+          <div className="grid flex-1 grid-cols-3 gap-1 rounded-lg border border-border/70 bg-background p-1">
             {SITE_THEME_MODES.map((mode) => {
               const active = currentMode === mode;
+              const Icon = MODE_ICONS[mode];
               return (
                 <button
                   key={mode}
@@ -177,20 +193,14 @@ function SiteDesignPanel() {
                   disabled={busy}
                   onClick={() => applyMode(mode)}
                   className={cn(
-                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-4 text-xs font-medium transition-colors disabled:opacity-50",
+                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors disabled:opacity-50",
                     active
                       ? "bg-foreground text-background"
                       : "text-muted-foreground hover:bg-muted",
                   )}
                 >
-                  {mode === "light" ? (
-                    <Sun className="size-3.5" />
-                  ) : (
-                    <Moon className="size-3.5" />
-                  )}
-                  {mode === "light"
-                    ? t("admin.modeLight")
-                    : t("admin.modeDark")}
+                  <Icon className="size-3.5" />
+                  {t(MODE_LABELS[mode])}
                 </button>
               );
             })}
