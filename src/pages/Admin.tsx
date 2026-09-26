@@ -2550,11 +2550,11 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-muted/30">
-      <header className="on-ink bg-foreground text-background">
+      <header className="border-border bg-background text-foreground border-b">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
-            <Brand onDark />
-            <span className="hidden text-[10px] tracking-[0.24em] text-foreground/60 uppercase sm:block">
+            <Brand />
+            <span className="text-muted-foreground hidden text-[10px] tracking-[0.24em] uppercase sm:block">
               {t("admin.dashboard")}
             </span>
           </div>
@@ -2564,7 +2564,7 @@ export default function Admin() {
               asChild
               variant="outline"
               size="sm"
-              className="border-foreground/20 bg-transparent text-foreground hover:bg-foreground/10 hover:text-foreground"
+              className="border-foreground/20 bg-background text-foreground hover:bg-muted hover:text-foreground"
             >
               <Link to="/">
                 <ExternalLink className="size-4" />
@@ -2574,7 +2574,6 @@ export default function Admin() {
               </Link>
             </Button>
             <Button
-              variant="secondary"
               size="sm"
               onClick={() => {
                 window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
