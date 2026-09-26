@@ -20,6 +20,7 @@ import { useStorePhone } from "@/hooks/use-store-phone";
 import { useI18n, type TKey } from "@/lib/i18n";
 import {
   MAP_COORDINATES_PLACEHOLDER,
+  STORE,
   mapCoordinates,
   parseCoordinates,
 } from "@/lib/store-data";
@@ -223,23 +224,47 @@ function ImageField({
 /* Logo                                                                */
 /* ------------------------------------------------------------------ */
 
-/** Pencil that swaps the store logo (anywhere it is shown). */
+/** Pencil that swaps the store logo, name and tagline (wherever they show). */
 export function LogoEditButton({ className }: { className?: string }) {
   const { t } = useI18n();
-  const { logo } = useStoreBrand();
+  const { logo, name, tagline } = useStoreBrand();
   const setSetting = useMutation(api.catalog.setStoreSetting);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(logo);
+  const [brandName, setBrandName] = useState(name);
+  const [brandTagline, setBrandTagline] = useState(tagline);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (open) setValue(logo);
-  }, [open, logo]);
+    if (!open) return;
+    setValue(logo);
+    setBrandName(name);
+    setBrandTagline(tagline);
+  }, [open, logo, name, tagline]);
 
-  async function save(next: string) {
+  async function save(next: { logo: string; name: string; tagline: string }) {
+    // The server refuses an empty store name, so it is checked up front.
+    if (!next.name.trim()) {
+      toast.error(t("admin.brandNameRequired"));
+      return;
+    }
     setBusy(true);
     try {
-      await setSetting({ adminKey: ADMIN_API_KEY, key: "logo", value: next });
+      await setSetting({
+        adminKey: ADMIN_API_KEY,
+        key: "name",
+        value: next.name.trim(),
+      });
+      await setSetting({
+        adminKey: ADMIN_API_KEY,
+        key: "tagline",
+        value: next.tagline.trim(),
+      });
+      await setSetting({
+        adminKey: ADMIN_API_KEY,
+        key: "logo",
+        value: next.logo,
+      });
       toast.success(t("admin.settingsSaved"));
       setOpen(false);
     } catch {
@@ -252,14 +277,14 @@ export function LogoEditButton({ className }: { className?: string }) {
   return (
     <>
       <AdminPencil
-        label={t("admin.editLogo")}
+        label={t("admin.editIdentity")}
         onClick={() => setOpen(true)}
         className={className}
       />
       <AdminDialogShell
         open={open}
         onOpenChange={setOpen}
-        title={t("admin.editLogo")}
+        title={t("admin.editIdentity")}
       >
         <ImageField
           id="logoImage"
@@ -268,12 +293,42 @@ export function LogoEditButton({ className }: { className?: string }) {
           hint={t("admin.logoHint")}
           onChange={setValue}
         />
+        <div className="grid gap-2">
+          <Label htmlFor="logoBrandName">{t("admin.brandName")}</Label>
+          <Input
+            id="logoBrandName"
+            value={brandName}
+            onChange={(event) => setBrandName(event.target.value)}
+            placeholder={STORE.name}
+          />
+          <p className="text-muted-foreground text-[10px] leading-4">
+            {t("admin.brandNameHint")}
+          </p>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="logoBrandTagline">{t("admin.tagline")}</Label>
+          <Input
+            id="logoBrandTagline"
+            value={brandTagline}
+            onChange={(event) => setBrandTagline(event.target.value)}
+            placeholder={STORE.tagline}
+          />
+          <p className="text-muted-foreground text-[10px] leading-4">
+            {t("admin.taglineHint")}
+          </p>
+        </div>
         <div className="flex gap-2">
           <Button
             type="button"
             className="h-11 flex-1"
             disabled={busy}
-            onClick={() => void save(value)}
+            onClick={() =>
+              void save({
+                logo: value,
+                name: brandName,
+                tagline: brandTagline,
+              })
+            }
           >
             {t("admin.saveChanges")}
           </Button>
@@ -282,9 +337,11 @@ export function LogoEditButton({ className }: { className?: string }) {
             variant="outline"
             className="h-11"
             disabled={busy}
-            onClick={() => void save("")}
+            onClick={() =>
+              void save({ logo: "", name: STORE.name, tagline: "" })
+            }
           >
-            {t("admin.logoReset")}
+            {t("admin.identityReset")}
           </Button>
         </div>
       </AdminDialogShell>
