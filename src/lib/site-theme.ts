@@ -48,6 +48,324 @@ export type SiteThemePreset = {
   tokens: Record<string, string>;
 };
 
+/**
+ * A compact palette description expanded into the full token set. Building the
+ * presets this way keeps every design complete: a colour can never land
+ * half-themed, and the contrast pairs stay in step with each other.
+ */
+type Palette = {
+  /** Page background. */
+  bg: string;
+  /** Cards and popovers — a touch lighter than the page. */
+  surface: string;
+  /** Headings and body copy. */
+  fg: string;
+  /** Secondary copy. */
+  mutedFg: string;
+  /** Main action colour. */
+  primary: string;
+  /** Writing on top of `primary`. */
+  onPrimary: string;
+  /** Quiet fill: muted rows, hover states. */
+  fill: string;
+  /** Hairlines. */
+  border: string;
+  /** Focus ring. */
+  ring: string;
+  /** Dark bands and badges. */
+  ink: string;
+  /** The store's refined accent. */
+  brand: string;
+  /** Card corner radius. */
+  radius: string;
+};
+
+function makeTokens(p: Palette): Record<string, string> {
+  return {
+    "--background": p.bg,
+    "--foreground": p.fg,
+    "--card": p.surface,
+    "--card-foreground": p.fg,
+    "--popover": p.surface,
+    "--popover-foreground": p.fg,
+    "--primary": p.primary,
+    "--primary-foreground": p.onPrimary,
+    "--secondary": p.fill,
+    "--secondary-foreground": p.fg,
+    "--muted": p.fill,
+    "--muted-foreground": p.mutedFg,
+    "--accent": p.fill,
+    "--accent-foreground": p.fg,
+    "--border": p.border,
+    "--input": p.border,
+    "--ring": p.ring,
+    "--ink": p.ink,
+    "--paper": p.surface,
+    "--brand": p.brand,
+    "--radius": p.radius,
+  };
+}
+
+/** The wider palette the store can wear, added after the original designs. */
+const EXTRA_THEMES: SiteThemePreset[] = [
+  {
+    id: "honey",
+    nameAr: "عسلي دافئ",
+    nameEn: "Warm Honey",
+    blurbAr: "عسلي ذهبي دافئ مع بنّي متباين وحواف مستديرة.",
+    blurbEn: "Warm honey gold with a deep brown and softly rounded corners.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.014 88)",
+      surface: "oklch(1 0.008 88)",
+      fg: "oklch(0.26 0.035 68)",
+      mutedFg: "oklch(0.53 0.035 78)",
+      primary: "oklch(0.44 0.11 66)",
+      onPrimary: "oklch(0.99 0.012 90)",
+      fill: "oklch(0.96 0.026 85)",
+      border: "oklch(0.9 0.028 82)",
+      ring: "oklch(0.62 0.1 72)",
+      ink: "oklch(0.27 0.045 68)",
+      brand: "oklch(0.74 0.14 78)",
+      radius: "0.5rem",
+    }),
+  },
+  {
+    id: "forest",
+    nameAr: "غابة هادئة",
+    nameEn: "Calm Forest",
+    blurbAr: "أخضر غابة عميق مع كريمي دافئ ولمسة ذهبية.",
+    blurbEn: "Deep forest green on warm cream with a small golden touch.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.009 152)",
+      surface: "oklch(1 0.005 152)",
+      fg: "oklch(0.24 0.035 155)",
+      mutedFg: "oklch(0.52 0.03 152)",
+      primary: "oklch(0.38 0.08 155)",
+      onPrimary: "oklch(0.99 0.008 150)",
+      fill: "oklch(0.96 0.02 150)",
+      border: "oklch(0.9 0.024 150)",
+      ring: "oklch(0.58 0.09 152)",
+      ink: "oklch(0.26 0.05 155)",
+      brand: "oklch(0.7 0.13 148)",
+      radius: "0.625rem",
+    }),
+  },
+  {
+    id: "crimson",
+    nameAr: "قرمزي",
+    nameEn: "Crimson",
+    blurbAr: "أحمر قرمزي واثق مع وردي داكن وحواف حادة.",
+    blurbEn: "Confident crimson with a deep rose and sharp, crisp corners.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.006 22)",
+      surface: "oklch(1 0.004 22)",
+      fg: "oklch(0.25 0.045 20)",
+      mutedFg: "oklch(0.53 0.04 22)",
+      primary: "oklch(0.42 0.16 25)",
+      onPrimary: "oklch(0.99 0.01 25)",
+      fill: "oklch(0.96 0.022 24)",
+      border: "oklch(0.9 0.026 24)",
+      ring: "oklch(0.58 0.15 25)",
+      ink: "oklch(0.27 0.09 22)",
+      brand: "oklch(0.68 0.16 28)",
+      radius: "0.25rem",
+    }),
+  },
+  {
+    id: "azure",
+    nameAr: "أزرق سماوي",
+    nameEn: "Azure",
+    blurbAr: "أزرق سماوي صافي مع لمسة فيروزية وحواف دائرية.",
+    blurbEn: "Clean azure blue with a turquoise accent and round corners.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.008 245)",
+      surface: "oklch(1 0.004 245)",
+      fg: "oklch(0.25 0.035 250)",
+      mutedFg: "oklch(0.53 0.03 248)",
+      primary: "oklch(0.42 0.11 250)",
+      onPrimary: "oklch(0.99 0.008 245)",
+      fill: "oklch(0.96 0.02 245)",
+      border: "oklch(0.9 0.024 245)",
+      ring: "oklch(0.6 0.1 250)",
+      ink: "oklch(0.28 0.055 252)",
+      brand: "oklch(0.7 0.12 215)",
+      radius: "0.875rem",
+    }),
+  },
+  {
+    id: "lavender",
+    nameAr: "لافندر",
+    nameEn: "Lavender",
+    blurbAr: "بنفسجي لافندر ناعم مع أبيض وردي وحواف مستديرة جداً.",
+    blurbEn: "Soft lavender purple on a rosy white with very round corners.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.01 300)",
+      surface: "oklch(1 0.006 300)",
+      fg: "oklch(0.28 0.04 300)",
+      mutedFg: "oklch(0.55 0.035 300)",
+      primary: "oklch(0.44 0.12 300)",
+      onPrimary: "oklch(0.99 0.01 300)",
+      fill: "oklch(0.965 0.022 300)",
+      border: "oklch(0.9 0.026 300)",
+      ring: "oklch(0.63 0.11 300)",
+      ink: "oklch(0.3 0.055 300)",
+      brand: "oklch(0.72 0.13 305)",
+      radius: "1rem",
+    }),
+  },
+  {
+    id: "teal",
+    nameAr: "أزرق مخضر",
+    nameEn: "Teal",
+    blurbAr: "أزرق مخضر بحري مع لمسة ذهبية وحواف متوازنة.",
+    blurbEn: "Ocean teal with a golden accent and a balanced, easy shape.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.008 200)",
+      surface: "oklch(1 0.004 200)",
+      fg: "oklch(0.25 0.03 205)",
+      mutedFg: "oklch(0.53 0.028 202)",
+      primary: "oklch(0.4 0.075 200)",
+      onPrimary: "oklch(0.99 0.008 200)",
+      fill: "oklch(0.96 0.018 200)",
+      border: "oklch(0.9 0.022 200)",
+      ring: "oklch(0.58 0.08 200)",
+      ink: "oklch(0.27 0.045 205)",
+      brand: "oklch(0.74 0.11 180)",
+      radius: "0.75rem",
+    }),
+  },
+  {
+    id: "cocoa",
+    nameAr: "كاكاو",
+    nameEn: "Cocoa",
+    blurbAr: "بني كاكاو غني مع كريمي دافئ ولمسة نحاسية.",
+    blurbEn: "Rich cocoa brown on warm cream with a copper highlight.",
+    tokens: makeTokens({
+      bg: "oklch(0.975 0.012 62)",
+      surface: "oklch(0.995 0.008 62)",
+      fg: "oklch(0.27 0.04 55)",
+      mutedFg: "oklch(0.53 0.035 60)",
+      primary: "oklch(0.36 0.06 52)",
+      onPrimary: "oklch(0.98 0.014 70)",
+      fill: "oklch(0.95 0.022 62)",
+      border: "oklch(0.89 0.026 60)",
+      ring: "oklch(0.58 0.07 58)",
+      ink: "oklch(0.28 0.05 52)",
+      brand: "oklch(0.64 0.1 50)",
+      radius: "0.625rem",
+    }),
+  },
+  {
+    id: "rose",
+    nameAr: "وردي باهت",
+    nameEn: "Dusty Rose",
+    blurbAr: "وردي باهت راقٍ مع توت داكن وحواف ناعمة.",
+    blurbEn: "Refined dusty rose with a deep berry tone and soft corners.",
+    tokens: makeTokens({
+      bg: "oklch(0.985 0.008 12)",
+      surface: "oklch(1 0.005 12)",
+      fg: "oklch(0.28 0.04 8)",
+      mutedFg: "oklch(0.55 0.032 10)",
+      primary: "oklch(0.44 0.11 8)",
+      onPrimary: "oklch(0.99 0.01 12)",
+      fill: "oklch(0.965 0.02 10)",
+      border: "oklch(0.9 0.024 10)",
+      ring: "oklch(0.62 0.1 8)",
+      ink: "oklch(0.3 0.06 6)",
+      brand: "oklch(0.68 0.14 12)",
+      radius: "1.125rem",
+    }),
+  },
+  {
+    id: "noir",
+    nameAr: "أسود فاخر",
+    nameEn: "Luxe Noir",
+    blurbAr: "أسود نقي فاخر للموقع كله مع لمسة ذهبية عميقة.",
+    blurbEn: "Pure luxe black across the whole store with a deep gold accent.",
+    dark: true,
+    tokens: makeTokens({
+      bg: "oklch(0.15 0 0)",
+      surface: "oklch(0.19 0 0)",
+      fg: "oklch(0.97 0 0)",
+      mutedFg: "oklch(0.7 0 0)",
+      primary: "oklch(0.97 0 0)",
+      onPrimary: "oklch(0.18 0 0)",
+      fill: "oklch(0.24 0 0)",
+      border: "oklch(1 0 0 / 14%)",
+      ring: "oklch(0.55 0 0)",
+      ink: "oklch(0.11 0 0)",
+      brand: "oklch(0.8 0.11 82)",
+      radius: "0.375rem",
+    }),
+  },
+  {
+    id: "charcoal",
+    nameAr: "فحمي",
+    nameEn: "Charcoal",
+    blurbAr: "فحمي هادئ بارد مع لمسة زرقاء خفيفة.",
+    blurbEn: "Cool, quiet charcoal with a restrained blue note.",
+    dark: true,
+    tokens: makeTokens({
+      bg: "oklch(0.19 0.006 255)",
+      surface: "oklch(0.23 0.006 255)",
+      fg: "oklch(0.95 0.004 255)",
+      mutedFg: "oklch(0.71 0.01 255)",
+      primary: "oklch(0.95 0.004 255)",
+      onPrimary: "oklch(0.22 0.006 255)",
+      fill: "oklch(0.28 0.008 255)",
+      border: "oklch(1 0 0 / 13%)",
+      ring: "oklch(0.56 0.02 255)",
+      ink: "oklch(0.14 0.005 255)",
+      brand: "oklch(0.72 0.09 235)",
+      radius: "1rem",
+    }),
+  },
+  {
+    id: "forest-night",
+    nameAr: "غابة ليلية",
+    nameEn: "Forest Night",
+    blurbAr: "أخضر ليلي عميق مع ذهبي هادئ — دفء وأمان.",
+    blurbEn: "A deep night green with calm gold — warm and reassuring.",
+    dark: true,
+    tokens: makeTokens({
+      bg: "oklch(0.18 0.02 155)",
+      surface: "oklch(0.22 0.022 155)",
+      fg: "oklch(0.96 0.008 150)",
+      mutedFg: "oklch(0.72 0.02 152)",
+      primary: "oklch(0.93 0.03 150)",
+      onPrimary: "oklch(0.2 0.02 155)",
+      fill: "oklch(0.27 0.025 155)",
+      border: "oklch(1 0 0 / 14%)",
+      ring: "oklch(0.58 0.06 152)",
+      ink: "oklch(0.14 0.018 155)",
+      brand: "oklch(0.78 0.12 148)",
+      radius: "0.75rem",
+    }),
+  },
+  {
+    id: "plum-night",
+    nameAr: "برقوقي",
+    nameEn: "Plum Night",
+    blurbAr: "برقوقي ليلي فاخر مع لمسة وردية وحواف دائرية.",
+    blurbEn: "A luxurious night plum with a rose highlight and round corners.",
+    dark: true,
+    tokens: makeTokens({
+      bg: "oklch(0.18 0.025 320)",
+      surface: "oklch(0.22 0.028 320)",
+      fg: "oklch(0.96 0.01 320)",
+      mutedFg: "oklch(0.72 0.025 318)",
+      primary: "oklch(0.94 0.03 320)",
+      onPrimary: "oklch(0.2 0.025 320)",
+      fill: "oklch(0.28 0.03 320)",
+      border: "oklch(1 0 0 / 15%)",
+      ring: "oklch(0.6 0.08 320)",
+      ink: "oklch(0.14 0.022 320)",
+      brand: "oklch(0.76 0.13 330)",
+      radius: "1.125rem",
+    }),
+  },
+];
+
 export const SITE_THEMES: SiteThemePreset[] = [
   {
     id: "original",
@@ -299,6 +617,7 @@ export const SITE_THEMES: SiteThemePreset[] = [
       "--radius": "0.625rem",
     },
   },
+  ...EXTRA_THEMES,
 ];
 
 /** Falls back to the original look for unknown/blank ids. */

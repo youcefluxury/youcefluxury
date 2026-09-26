@@ -240,6 +240,10 @@ const STRINGS = {
     en: "We will call you to confirm. Your order number:",
   },
   "cart.total": { ar: "المجموع", en: "Total" },
+  "cart.totalNeedsWilaya": {
+    ar: "اختر ولايتك ليظهر المجموع النهائي مع سعر التوصيل",
+    en: "Choose your wilaya to see the final total with delivery",
+  },
   "cart.confirmWhatsapp": { ar: "تأكيد عبر واتساب", en: "Confirm on WhatsApp" },
   "cart.continue": { ar: "متابعة التسوق", en: "Continue shopping" },
   "cart.chooseWilaya": { ar: "اختر الولاية", en: "Please choose a wilaya" },

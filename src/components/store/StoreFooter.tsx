@@ -26,17 +26,18 @@ export function StoreFooter() {
   const categoryRows = useQuery(api.catalog.listCategories);
   const categories = categoryRows ?? [];
   const heading = cn(
-    "text-[10px] text-white/40",
+    "text-[10px] text-chrome-faint",
     isAr ? "tracking-[0.2em]" : "tracking-[0.3em] uppercase",
   );
 
   return (
-    <footer className="bg-foreground text-background mt-24">
+    /* Fixed black chrome: no theme can turn the footer white. */
+    <footer className="bg-chrome text-chrome-foreground mt-24">
       <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
           <div>
             <Brand onDark />
-            <p className="mt-5 max-w-sm text-sm leading-7 text-white/60">
+            <p className="mt-5 max-w-sm text-sm leading-7 text-chrome-muted">
               {t("footer.about")}
             </p>
             <div className="mt-6 flex items-center gap-3">
@@ -46,7 +47,7 @@ export function StoreFooter() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={t("common.instagram")}
-                  className="grid size-10 place-items-center rounded-full border border-white/15 transition-colors hover:bg-white/10"
+                  className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
                 >
                   <InstagramIcon className="size-5" />
                 </a>
@@ -59,7 +60,7 @@ export function StoreFooter() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={t("common.facebook")}
-                  className="grid size-10 place-items-center rounded-full border border-white/15 transition-colors hover:bg-white/10"
+                  className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
                 >
                   <Facebook className="size-5 text-[#1877F2]" />
                 </a>
@@ -69,43 +70,47 @@ export function StoreFooter() {
               <a
                 href={`tel:${phone}`}
                 aria-label={t("common.phone")}
-                className="grid size-10 place-items-center rounded-full border border-white/15 transition-colors hover:bg-white/10"
+                className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
               >
                 <Phone className="size-5" />
               </a>
               <LanguageToggle onDark className="ms-1" />
             </div>
-          </div>            <div>
-              <h3 className={heading}>{t("common.shop")}</h3>
-              <ul className="mt-5 space-y-3 text-sm">
-                <li>
-                  <Link to="/shop" className="text-white/70 hover:text-white">
-                    {t("common.allProducts")}
+          </div>
+          <div>
+            <h3 className={heading}>{t("common.shop")}</h3>
+            <ul className="mt-5 space-y-3 text-sm">
+              <li>
+                <Link
+                  to="/shop"
+                  className="text-chrome-muted hover:text-chrome-foreground"
+                >
+                  {t("common.allProducts")}
+                </Link>
+              </li>
+              {categories.map((category) => (
+                <li key={category._id}>
+                  <Link
+                    to={`/category/${category.slug}`}
+                    className="text-chrome-muted hover:text-chrome-foreground"
+                  >
+                    {categoryName(category, lang)}
                   </Link>
                 </li>
-                {categories.map((category) => (
-                  <li key={category._id}>
-                    <Link
-                      to={`/category/${category.slug}`}
-                      className="text-white/70 hover:text-white"
-                    >
-                      {categoryName(category, lang)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              ))}
+            </ul>
+          </div>
 
           <div>
             <h3 className={heading}>{t("footer.service")}</h3>
-            <ul className="mt-5 space-y-4 text-sm text-white/70">
+            <ul className="mt-5 space-y-4 text-sm text-chrome-muted">
               <li className="flex items-start gap-3">
                 <Truck className="mt-0.5 size-4 shrink-0" />
                 {/* Opens the per-wilaya price list. */}
                 <Link
                   to="/delivery"
                   title={t("footer.deliveryPrices")}
-                  className="hover:text-white"
+                  className="hover:text-chrome-foreground"
                 >
                   {t("footer.delivery")}
                 </Link>
@@ -119,9 +124,12 @@ export function StoreFooter() {
 
           <div>
             <h3 className={heading}>{t("footer.contact")}</h3>
-            <ul className="mt-5 space-y-3 text-sm text-white/70">
+            <ul className="mt-5 space-y-3 text-sm text-chrome-muted">
               <li>
-                <a href={`tel:${phone}`} className="hover:text-white">
+                <a
+                  href={`tel:${phone}`}
+                  className="hover:text-chrome-foreground"
+                >
                   {display}
                 </a>
               </li>
@@ -130,7 +138,7 @@ export function StoreFooter() {
                   href={whatsappLink(undefined, phone)}
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-white"
+                  className="hover:text-chrome-foreground"
                 >
                   {t("common.whatsapp")}
                 </a>
@@ -139,14 +147,14 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[11px] tracking-wide text-white/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-chrome-border pt-6 text-[11px] tracking-wide text-chrome-faint sm:flex-row sm:items-center sm:justify-between">
           <span>
             {t("footer.rights", {
               year: new Date().getFullYear(),
               store: name,
             })}
           </span>
-          <Link to="/admin" className="hover:text-white/70">
+          <Link to="/admin" className="hover:text-chrome-muted">
             {t("footer.admin")}
           </Link>
         </div>

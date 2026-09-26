@@ -571,10 +571,22 @@ export function CartDrawer() {
                   </span>
                 )}
               </div>
-              <div className="mt-1 flex items-center justify-between border-t border-border/60 pt-2 text-sm font-semibold">
-                <span>{t("cart.total")}</span>
-                <span className="text-base">{formatDA(subtotal + deliveryFee)}</span>
-              </div>
+              {/*
+                The final price only exists once the customer names their wilaya.
+                Before that a "total" would carry the shop default fee and be a
+                wrong number, so the row is replaced by a short prompt instead.
+              */}
+              {wilaya ? (
+                <div className="mt-1 flex items-center justify-between border-t border-border/60 pt-2 text-sm font-semibold">
+                  <span>{t("cart.total")}</span>
+                  <span className="text-base">{formatDA(subtotal + deliveryFee)}</span>
+                </div>
+              ) : (
+                <p className="text-muted-foreground mt-2 flex items-center gap-1.5 border-t border-border/60 pt-2 text-[11px] leading-5">
+                  <Truck className="size-3.5 shrink-0" />
+                  {t("cart.totalNeedsWilaya")}
+                </p>
+              )}
 
               {step === "cart" ? (
                 /* Checkout first asks how the order should reach us. */

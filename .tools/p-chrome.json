@@ -1,6 +1,0 @@
-[
-  {
-    "old": "  /* Quiet neutrals + one refined accent */\n  --color-ink: #0a0a0a;\n  --color-paper: #fafafa;\n  --color-brand: #b08d57;\n",
-    "new": "  /* Quiet neutrals + one refined accent */\n  --color-ink: #0a0a0a;\n  --color-paper: #fafafa;\n  --color-brand: #b08d57;\n\n  /*\n   * The store's fixed black chrome: the announcement bar, the navbar, the\n   * footer and the notifications header stay black with white writing in\n   * EVERY design. They are deliberately not linked to --background/\n   * --foreground, so picking a light or dark theme can never wash them out.\n   */\n  --color-chrome: #0a0a0a;\n  --color-chrome-foreground: #fafafa;\n  --color-chrome-muted: oklch(1 0 0 / 58%);\n  --color-chrome-faint: oklch(1 0 0 / 42%);\n  --color-chrome-border: oklch(1 0 0 / 14%);\n  --color-chrome-hover: oklch(1 0 0 / 10%);\n"
-  }
-]
