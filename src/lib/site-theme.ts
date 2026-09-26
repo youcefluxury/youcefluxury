@@ -179,6 +179,157 @@ const V = (
   radius,
 });
 
+/* ------------------------------------------------------------------ */
+/* Unblended palettes: the colour exactly as it was written           */
+/* ------------------------------------------------------------------ */
+
+type Rgb = [number, number, number];
+
+function hexToRgb(hex: string): Rgb {
+  const clean = hex.replace("#", "");
+  return [
+    parseInt(clean.slice(0, 2), 16),
+    parseInt(clean.slice(2, 4), 16),
+    parseInt(clean.slice(4, 6), 16),
+  ];
+}
+
+function rgbToHex([r, g, b]: Rgb): string {
+  const part = (value: number) =>
+    Math.max(0, Math.min(255, Math.round(value)))
+      .toString(16)
+      .padStart(2, "0");
+  return `#${part(r)}${part(g)}${part(b)}`;
+}
+
+/** `amount` above zero walks towards white, below zero towards black. */
+function shade(hex: string, amount: number): string {
+  const [r, g, b] = hexToRgb(hex);
+  const target = amount > 0 ? 255 : 0;
+  const k = Math.abs(amount);
+  return rgbToHex([
+    r + (target - r) * k,
+    g + (target - g) * k,
+    b + (target - b) * k,
+  ]);
+}
+
+/** Plain perceived brightness — picks black or white writing on a colour. */
+function brightness(hex: string): number {
+  const [r, g, b] = hexToRgb(hex);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+
+function readableOn(hex: string): string {
+  return brightness(hex) > 0.5 ? "#000000" : "#ffffff";
+}
+
+type PureSpec = {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  /** Used byte-for-byte: no oklch, no rounding, no tint. */
+  hex: string;
+  radius: string;
+  /** White cards on a black page instead of near-black cards. */
+  whiteCards?: boolean;
+};
+
+/**
+ * A palette with no mixing in it at all. The two ends of the page are true
+ * #000000 and #ffffff, and the design's own colour is used exactly as written,
+ * so a "black" design really is black on screen. Surfaces step away from the
+ * page with real black or real white, never with a tinted grey.
+ */
+function pureTokens(
+  spec: PureSpec,
+  mode: SiteThemeMode,
+): Record<string, string> {
+  const light = mode === "light";
+  const page = light ? "#ffffff" : "#000000";
+  const writing = light ? "#000000" : "#ffffff";
+  // A design that IS the page colour would vanish into it: flip the ends.
+  const base = spec.hex.toLowerCase() === page ? writing : spec.hex;
+  /* Some designs flip the cards instead of lifting them off the page. */
+  const inverted = Boolean(spec.whiteCards) && !light;
+  const card = inverted ? "#ffffff" : shade(page, light ? -0.04 : 0.08);
+  const cardWriting = inverted ? "#000000" : writing;
+  const popover = inverted ? "#ffffff" : shade(page, light ? -0.02 : 0.13);
+  const muted = inverted ? "#f0f0f0" : shade(page, light ? -0.06 : 0.12);
+  const secondary = shade(base, light ? 0.88 : -0.82);
+  const accent = shade(base, light ? 0.68 : -0.68);
+
+  return {
+    "--background": page,
+    "--card": card,
+    "--popover": popover,
+    "--foreground": writing,
+    "--card-foreground": cardWriting,
+    "--popover-foreground": cardWriting,
+    "--primary": base,
+    "--primary-foreground": readableOn(base),
+    "--secondary": secondary,
+    "--secondary-foreground": readableOn(secondary),
+    "--muted": muted,
+    "--muted-foreground": shade(base, light ? -0.62 : 0.48),
+    "--accent": accent,
+    "--accent-foreground": readableOn(accent),
+    "--border": light ? "rgba(0, 0, 0, 0.16)" : "rgba(255, 255, 255, 0.18)",
+    "--input": light ? "rgba(0, 0, 0, 0.13)" : "rgba(255, 255, 255, 0.2)",
+    "--ring": base,
+    "--ink": "#000000",
+    "--paper": "#ffffff",
+    "--brand": base,
+    "--radius": spec.radius,
+  };
+}
+
+const P = (
+  id: string,
+  nameAr: string,
+  nameEn: string,
+  hex: string,
+  radius: string,
+  whiteCards = false,
+): PureSpec => ({ id, nameAr, nameEn, hex, radius, whiteCards });
+
+/* Sixteen unblended colours, from true black and true white to the spectrum. */
+const PURE_SPECS: PureSpec[] = [
+  P("pure-black", "أسود خالص", "Pure Black", "#000000", "0.25rem"),
+  P("pure-white", "أبيض خالص", "Pure White", "#ffffff", "1.25rem", true),
+  P("pure-red", "أحمر خالص", "Pure Red", "#ff0000", "0.25rem"),
+  P("pure-orange", "برتقالي خالص", "Pure Orange", "#ff7a00", "0.375rem"),
+  P("pure-gold", "ذهبي خالص", "Pure Gold", "#ffd400", "0.625rem"),
+  P("pure-yellow", "أصفر خالص", "Pure Yellow", "#ffff00", "0.25rem"),
+  P("pure-lime", "ليموني خالص", "Pure Lime", "#7cff00", "0.75rem"),
+  P("pure-green", "أخضر خالص", "Pure Green", "#00a63e", "0.5rem"),
+  P("pure-emerald", "زمردي خالص", "Pure Emerald", "#00e08a", "0.875rem"),
+  P("pure-turquoise", "تركوازي خالص", "Pure Turquoise", "#00d7c0", "0.75rem"),
+  P("pure-cyan", "سماوي خالص", "Pure Cyan", "#00e5ff", "0.625rem"),
+  P("pure-blue", "أزرق خالص", "Pure Blue", "#0040ff", "0.5rem"),
+  P("pure-indigo", "نيلي خالص", "Pure Indigo", "#4b0082", "0.375rem"),
+  P("pure-purple", "بنفسجي خالص", "Pure Purple", "#8000ff", "1rem"),
+  P("pure-pink", "وردي خالص", "Pure Pink", "#ff0080", "1.125rem"),
+  P("pure-silver", "فضي خالص", "Pure Silver", "#c0c0c0", "0.25rem"),
+];
+
+const PURE_BLURB_AR =
+  "ألوان غير مدمجة: أسود يبقى أسود تماماً، وأبيض يبقى أبيض تماماً.";
+const PURE_BLURB_EN =
+  "Unblended colours: black stays perfectly black, white stays perfectly white.";
+
+const PURE_THEMES: SiteThemePreset[] = PURE_SPECS.map((spec) => ({
+  id: spec.id,
+  nameAr: spec.nameAr,
+  nameEn: spec.nameEn,
+  blurbAr: PURE_BLURB_AR,
+  blurbEn: PURE_BLURB_EN,
+  tokens: {
+    light: pureTokens(spec, "light"),
+    dark: pureTokens(spec, "dark"),
+  },
+}));
+
 export const SITE_THEMES: SiteThemePreset[] = [
   {
     id: "original",
@@ -450,6 +601,7 @@ export const SITE_THEMES: SiteThemePreset[] = [
       dark: vividTokens(V(0, 0.012, 82, 0.16, 82, 0.16, "0.375rem"), "dark"),
     },
   },
+  ...PURE_THEMES,
 ];
 
 /** Falls back to the original look for unknown/blank ids. */

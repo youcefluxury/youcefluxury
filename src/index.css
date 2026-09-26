@@ -150,8 +150,8 @@
   --font-display: "Playfair Display", "Cairo", ui-serif, Georgia, serif;
 
   /* Quiet neutrals + one refined accent */
-  --color-ink: #0a0a0a;
-  --color-paper: #f2efe9;
+  --color-ink: #000000;
+  --color-paper: #ffffff;
   --color-brand: #b08d57;
 
   /*
