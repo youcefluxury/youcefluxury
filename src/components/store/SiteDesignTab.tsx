@@ -4,11 +4,9 @@ import {
   HardDrive,
   Image as ImageIcon,
   MapPin,
-  Moon,
   Palette,
   RefreshCw,
   RotateCcw,
-  Sun,
   Upload,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -22,14 +20,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { ADMIN_API_KEY } from "@/lib/admin-key";
-import { pickLang, useI18n, type TKey } from "@/lib/i18n";
+import { pickLang, useI18n } from "@/lib/i18n";
 import {
-  SITE_THEME_MODES,
-  SITE_THEMES,
   applySiteTheme,
-  normalizeSiteMode,
   siteThemeById,
-  type SiteThemeMode,
   type SiteThemePreset,
 } from "@/lib/site-theme";
 import {
@@ -47,21 +41,15 @@ import { cn } from "@/lib/utils";
 
 /** Swatch colours of the built-in design (see src/index.css). */
 const ORIGINAL_SWATCHES = {
-  ink: "#0a0a0a",
-  paper: "#fafafa",
-  brand: "#b08d57",
+  ink: "#000000",
+  paper: "#ffffff",
+  brand: "#000000",
 };
 
 /** Three dots that show a design before it is applied. */
-function ThemeSwatches({
-  preset,
-  mode,
-}: {
-  preset: SiteThemePreset;
-  mode: SiteThemeMode;
-}) {
+function ThemeSwatches({ preset }: { preset: SiteThemePreset }) {
   // The dots wear the palette the store is in right now.
-  const palette = preset.tokens[mode];
+  const palette = preset.tokens;
   const swatches = [
     palette["--ink"] ?? ORIGINAL_SWATCHES.ink,
     palette["--paper"] ?? ORIGINAL_SWATCHES.paper,
@@ -80,62 +68,41 @@ function ThemeSwatches({
   );
 }
 
-/** The glyph each mode wears in the switch. */
-const MODE_ICONS: Record<SiteThemeMode, typeof Sun> = {
-  light: Sun,
-  dark: Moon,
-};
-
-/** And the word under it, in the active language. */
-const MODE_LABELS: Record<SiteThemeMode, TKey> = {
-  light: "admin.modeLight",
-  dark: "admin.modeDark",
-};
-
 /**
- * Design picker: every card applies itself to the whole store on tap, and the
- * result shows up here immediately — before any shopper sees it.
+ * Design panel: the store has one design and one face, so this shows what is
+ * applied and offers a way back to it. The result shows up immediately —
+ * before any shopper sees it.
  */
 function SiteDesignPanel() {
   const { t, lang } = useI18n();
   const stored = useQuery(api.catalog.getSiteTheme);
   const setSiteTheme = useMutation(api.catalog.setSiteTheme);
   const [pending, setPending] = useState<string | null>(null);
-  const [pendingMode, setPendingMode] = useState<SiteThemeMode | null>(null);
 
   const current = stored?.theme ?? "original";
-  const currentMode = normalizeSiteMode(stored?.mode);
   const applied = siteThemeById(current);
-  const busy = pending !== null || pendingMode !== null;
+  const busy = pending !== null;
 
   /** Shows the new look at once, then saves it for every visitor. */
-  async function commit(id: string, mode: SiteThemeMode) {
+  async function commit(id: string) {
     setPending(id);
-    setPendingMode(mode);
     // Instant preview: the store restyles before the write comes back.
-    applySiteTheme(id, mode);
+    applySiteTheme(id);
     try {
-      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id as never, mode });
+      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id as never });
       toast.success(t("admin.designSaved"));
     } catch {
-      applySiteTheme(current, currentMode);
+      applySiteTheme(current);
       toast.error(t("admin.designFailed"));
     } finally {
       setPending(null);
-      setPendingMode(null);
     }
-  }
-
-  /** Same design, the other tone. */
-  function applyMode(mode: SiteThemeMode) {
-    if (mode === currentMode || busy) return;
-    void commit(current, mode);
   }
 
   /** Back to the built-in black & white look this store started with. */
   function restoreOriginal() {
-    if (current === "original" && currentMode === "dark") return;
-    void commit("original", "dark");
+    if (current === "original" || busy) return;
+    void commit("original");
   }
 
   return (
@@ -147,9 +114,6 @@ function SiteDesignPanel() {
             {t("admin.designCurrent")}:{" "}
             {pickLang(applied.nameAr, applied.nameEn, lang)}
           </p>
-          <p className="text-muted-foreground mt-1 text-[11px]">
-            {t("admin.modeTitle")}: {t(MODE_LABELS[currentMode])}
-          </p>
           <p className="text-muted-foreground mt-1 text-xs leading-5">
             {t("admin.designLead")}
           </p>
@@ -159,56 +123,24 @@ function SiteDesignPanel() {
         </div>
       </div>
 
-      {/* The same design, worn on a bright page or a deep one. */}
-      <div className="mt-2 grid gap-3 rounded-xl border border-border/70 p-3 sm:grid-cols-[1fr_auto] sm:items-center">
-        <div className="min-w-0">
-          <p className="text-xs font-medium">{t("admin.modeTitle")}</p>
-          <p className="text-muted-foreground mt-1 text-[10px] leading-5">
-            {t("admin.modeHint")}
-          </p>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <div className="grid flex-1 grid-cols-2 gap-1 rounded-lg border border-border/70 bg-background p-1">
-            {SITE_THEME_MODES.map((mode) => {
-              const active = currentMode === mode;
-              const Icon = MODE_ICONS[mode];
-              return (
-                <button
-                  key={mode}
-                  type="button"
-                  disabled={busy}
-                  onClick={() => applyMode(mode)}
-                  className={cn(
-                    "inline-flex h-9 items-center justify-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors disabled:opacity-50",
-                    active
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:bg-muted",
-                  )}
-                >
-                  <Icon className="size-3.5" />
-                  {t(MODE_LABELS[mode])}
-                </button>
-              );
-            })}
-          </div>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 shrink-0"
-            disabled={busy}
-            onClick={restoreOriginal}
-          >
-            <RotateCcw className="size-4" />
-            {t("admin.designRestore")}
-          </Button>
-        </div>
+      <div className="mt-2 flex justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11"
+          disabled={busy}
+          onClick={restoreOriginal}
+        >
+          <RotateCcw className="size-4" />
+          {t("admin.designRestore")}
+        </Button>
       </div>
 
       {/* One design only, so it is shown as the store's identity rather
           than as a list of things to choose between. */}
       <div className="mt-2 grid gap-3 rounded-xl border border-border/70 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
         <div className="flex min-w-0 items-center gap-3">
-          <ThemeSwatches preset={applied} mode={currentMode} />
+          <ThemeSwatches preset={applied} />
           <div className="min-w-0">
             <p className="text-sm font-medium">
               {pickLang(applied.nameAr, applied.nameEn, lang)}
@@ -553,7 +485,7 @@ function R2StoragePanel() {
       <p
         className={cn(
           "text-[10px] leading-4 break-all",
-          status.kind === "ok" ? "text-emerald-600" : "text-muted-foreground",
+          status.kind === "ok" ? "text-foreground" : "text-muted-foreground",
         )}
       >
         {status.kind === "idle" ? t("admin.r2Waiting") : status.detail}

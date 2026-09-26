@@ -887,8 +887,8 @@ const STRINGS = {
   /* ---- admin: site design ---------------------------------------- */
   "admin.tabDesign": { ar: "تصميم الموقع", en: "Site design" },
   "admin.designLead": {
-    ar: `تصميم المتجر: أسود عميق وكتابة بيضاء، بلا أي لون مدمج.`,
-    en: `The store design: deep black and white writing, with nothing mixed in.`,
+    ar: `تصميم المتجر: صفحة بيضاء وكتابة سوداء، لون واحد بلا أي لون مدمج.`,
+    en: `The store design: a white page with black writing, one colour and nothing mixed in.`,
   },
   "admin.designApplied": { ar: "مطبّق حالياً", en: "Applied now" },
   "admin.designCurrent": {
@@ -896,22 +896,12 @@ const STRINGS = {
     en: "Design applied now",
   },
   "admin.designHint": {
-    ar: `اختر الوضع فوقه: فاتح أو عادي أو داكن — والتغيير يظهر في الموقع كله فوراً.`,
-    en: `Pick the tone above: light, normal or dark - the change shows across the whole store at once.`,
+    ar: `هذا هو تصميم المتجر الوحيد: أبيض وأسود. أي تعديل على الألوان يظهر في الموقع كله فوراً.`,
+    en: `This is the store's one design: black and white. Any colour change shows across the whole store at once.`,
   },
-  "admin.modeTitle": {
-    ar: "وضع الألوان",
-    en: "Colour mode",
-  },
-  "admin.modeHint": {
-    ar: `اختر فاتحاً أو داكناً — والتغيير يظهر في الموقع كله فوراً.`,
-    en: `Pick light or dark - the change shows across the whole store at once.`,
-  },
-  "admin.modeLight": { ar: "فاتح", en: "Light" },
-  "admin.modeDark": { ar: "داكن", en: "Dark" },
   "admin.designRestore": {
-    ar: "استرجاع التصميم الأصلي",
-    en: "Restore original design",
+    ar: "إعادة تطبيق التصميم",
+    en: "Reapply the design",
   },
   "admin.designSaved": {
     ar: "تم تطبيق التصميم على الموقع",

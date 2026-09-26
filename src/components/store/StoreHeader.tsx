@@ -97,7 +97,7 @@ function AnnouncementBar() {
   const { t, isAr } = useI18n();
 
   return (
-    <div className="bg-black text-white dark:bg-white dark:text-black">
+    <div className="bg-ink text-paper">
       <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-center gap-2 px-3 py-1 text-center">
         <AlgeriaFlag />
         <p
@@ -112,7 +112,7 @@ function AnnouncementBar() {
         {/* Colour delivery truck — the left-hand mark of the note. */}
         <span
           aria-hidden="true"
-          className="shrink-0 text-[13px] leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)] dark:drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)]"
+          className="shrink-0 text-[13px] leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]"
         >
           🚚
         </span>

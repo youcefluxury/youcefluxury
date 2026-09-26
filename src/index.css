@@ -1,7 +1,7 @@
 /* DO NOT CHANGE */
 @import "tailwindcss";
 @import "tw-animate-css";
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *)); /* the deep face was removed; kept so the ui/ components' dark: classes still parse */
 @custom-variant rtl (&:where([dir="rtl"] *));
 
 /* DO NOT CHANGE */
@@ -48,6 +48,11 @@
 /* CHANGE VALUES FOR THEME */
 :root {
   --radius: 0.625rem;
+  /*
+   * The one and only palette: a white page, black writing, and a black button.
+   * These mirror the design in src/lib/site-theme.ts so the very first paint —
+   * before the saved design is applied — already comes up black and white.
+   */
   --background: #ffffff;
   --foreground: #000000;
   --card: #ffffff;
@@ -56,66 +61,34 @@
   --popover-foreground: #000000;
   --primary: #000000;
   --primary-foreground: #ffffff;
-  --secondary: #f2f2f2;
+  /* Quiet fills are black washed onto the page, never a grey of their own. */
+  --secondary: rgba(0, 0, 0, 0.05);
   --secondary-foreground: #000000;
-  --muted: #f2f2f2;
-  --muted-foreground: #4d4d4d;
-  --accent: #ebebeb;
+  --muted: rgba(0, 0, 0, 0.05);
+  --muted-foreground: #000000;
+  --accent: rgba(0, 0, 0, 0.08);
   --accent-foreground: #000000;
-  --destructive: #d92d20;
-  --border: rgba(0, 0, 0, 0.14);
-  --input: rgba(0, 0, 0, 0.12);
+  /* Nothing is a second colour here, not even the destructive tone. */
+  --destructive: #000000;
+  --border: rgba(0, 0, 0, 0.16);
+  --input: rgba(0, 0, 0, 0.16);
   --ring: #000000;
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.205 0.038 70);
-  --sidebar-foreground: oklch(0.96 0.016 70);
-  --sidebar-primary: oklch(0.93 0.04 70);
-  --sidebar-primary-foreground: oklch(0.2 0.05 70);
-  --sidebar-accent: oklch(0.29 0.05 70);
-  --sidebar-accent-foreground: oklch(0.95 0.016 70);
-  --sidebar-border: oklch(1 0 0 / 13%);
-  --sidebar-ring: oklch(0.6 0.07 70);
+  --chart-1: #000000;
+  --chart-2: #262626;
+  --chart-3: #4d4d4d;
+  --chart-4: #737373;
+  --chart-5: #a6a6a6;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #000000;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(0, 0, 0, 0.05);
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: rgba(0, 0, 0, 0.16);
+  --sidebar-ring: #000000;
   /* The inverted band pair, used by .on-ink and by the design swatches. */
   --ink: #000000;
   --paper: #ffffff;
-}
-
-.dark {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #0b0b0b;
-  --card-foreground: #ffffff;
-  --popover: #0b0b0b;
-  --popover-foreground: #ffffff;
-  --primary: #ffffff;
-  --primary-foreground: #000000;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #ffffff;
-  --muted: #1a1a1a;
-  --muted-foreground: #a6a6a6;
-  --accent: #262626;
-  --accent-foreground: #ffffff;
-  --destructive: #f04438;
-  --border: rgba(255, 255, 255, 0.18);
-  --input: rgba(255, 255, 255, 0.2);
-  --ring: #ffffff;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -157,9 +130,9 @@
 
   /*
    * The store's fixed black chrome: the announcement bar, the navbar, the
-   * footer and the notifications header stay black with white writing in
-   * EVERY design. They are deliberately not linked to --background/
-   * --foreground, so picking a light or dark theme can never wash them out.
+   * footer and the notifications header stay black with white writing. They
+   * are deliberately not linked to --background/--foreground, so nothing can
+   * ever wash them out.
    */
   --color-chrome: #000000;
   --color-chrome-foreground: #ffffff;

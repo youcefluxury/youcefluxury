@@ -62,28 +62,28 @@ function PhoneButton() {
 
   return (
     <>
-    <div className="fixed bottom-5 end-5 z-30">
-      {isAdmin ? (
-        <button
-          type="button"
-          aria-label={t("phone.edit")}
-          onClick={() => {
-            setDraft(phone);
-            setError("");
-            setOpen(true);
-          }}
-          className="bg-background text-foreground absolute -top-2 -start-2 z-10 grid size-7 place-items-center rounded-full border border-border/70 shadow-sm transition-colors hover:bg-muted"
-        >
-          <MoreHorizontal className="size-3.5" />
-        </button>
-      ) : null}
+      <div className="fixed bottom-5 end-5 z-30">
+        {isAdmin ? (
+          <button
+            type="button"
+            aria-label={t("phone.edit")}
+            onClick={() => {
+              setDraft(phone);
+              setError("");
+              setOpen(true);
+            }}
+            className="bg-background text-foreground absolute -top-2 -start-2 z-10 grid size-7 place-items-center rounded-full border border-border/70 shadow-sm transition-colors hover:bg-muted"
+          >
+            <MoreHorizontal className="size-3.5" />
+          </button>
+        ) : null}
         <div className="relative">
           {/* A plain phone number: tapping dials it — never WhatsApp. */}
           <a
             href={`tel:+${whatsapp}`}
             aria-label={t("common.phoneAria")}
             className={
-              "group flex items-center gap-2 rounded-full bg-[#0a0a0a] py-3 text-white shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)] transition-transform hover:-translate-y-0.5 " +
+              "group flex items-center gap-2 rounded-full bg-ink py-3 text-paper shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)] transition-transform hover:-translate-y-0.5 " +
               (showNumber ? "ps-3 pe-4" : "px-3")
             }
           >

@@ -33,7 +33,10 @@ type CartContextValue = {
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addItem: (item: Omit<CartItem, "key" | "quantity">, quantity?: number) => void;
+  addItem: (
+    item: Omit<CartItem, "key" | "quantity">,
+    quantity?: number,
+  ) => void;
   removeItem: (key: string) => void;
   setQuantity: (key: string, quantity: number) => void;
   clearCart: () => void;
@@ -71,7 +74,7 @@ export function flyToCart(source: HTMLElement | null, image?: string) {
     img.style.cssText = "width:100%;height:100%;object-fit:cover";
     ghost.appendChild(img);
   } else {
-    ghost.style.background = "#0a0a0a";
+    ghost.style.background = "#000000";
   }
   document.body.appendChild(ghost);
   const dx = to.left + to.width / 2 - (from.left + from.width / 2);
@@ -89,12 +92,15 @@ export function flyToCart(source: HTMLElement | null, image?: string) {
  * (which showed up as "must be used inside <Provider>" runtime errors).
  */
 const storeContexts = globalThis as typeof globalThis & {
-  __storefrontCartContext__?: ReturnType<typeof createContext<CartContextValue | null>>;
+  __storefrontCartContext__?: ReturnType<
+    typeof createContext<CartContextValue | null>
+  >;
 };
 
 const CartContext =
   storeContexts.__storefrontCartContext__ ??
-  (storeContexts.__storefrontCartContext__ = createContext<CartContextValue | null>(null));
+  (storeContexts.__storefrontCartContext__ =
+    createContext<CartContextValue | null>(null));
 
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -158,7 +164,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((current) =>
       current
         .map((entry) =>
-          entry.key === key ? { ...entry, quantity: Math.max(0, quantity) } : entry,
+          entry.key === key
+            ? { ...entry, quantity: Math.max(0, quantity) }
+            : entry,
         )
         .filter((entry) => entry.quantity > 0),
     );
