@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router";
 
-import { HaMonogram } from "@/components/store/bits";
+import { StoreMark } from "@/components/store/bits";
 import { Button } from "@/components/ui/button";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useI18n } from "@/lib/i18n";
@@ -19,7 +19,7 @@ export default function NotFound() {
       transition={{ duration: 0.5 }}
       className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center"
     >
-      <HaMonogram className="size-12 text-foreground" />
+      <StoreMark className="size-12" />
       <p className="font-display mt-8 text-6xl tracking-[0.2em]">404</p>
       <h1 className="mt-4 text-xl font-semibold">{t("notFound.title")}</h1>
       <p className="text-muted-foreground mt-2 max-w-sm text-sm leading-7">

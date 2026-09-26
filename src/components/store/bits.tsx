@@ -32,18 +32,14 @@ import { cn } from "@/lib/utils";
 import { formatDA } from "@/lib/store-data";
 
 /* ------------------------------------------------------------------ */
-/* Brand mark — square HA logo (Man's Fashion · Boutique Boys)         */
+/* Brand mark — the square logo tile, live from the store settings     */
 /* ------------------------------------------------------------------ */
 
-export function HaMonogram({ className }: { className?: string }) {
+export function StoreMark({ className }: { className?: string }) {
   /* The admin can swap the logo — every place it appears follows along. */
-  const { logo } = useStoreBrand();
+  const { logo, name } = useStoreBrand();
   return (
-    <img
-      src={logo}
-      alt="HA Drip Boys — Man's Fashion · Boutique Boys"
-      className={cn("size-9 object-contain", className)}
-    />
+    <img src={logo} alt={name} className={cn("size-9 object-contain", className)} />
   );
 }
 
@@ -88,11 +84,12 @@ export function Brand({
           className={cn(
             "font-display truncate text-[14px] leading-tight font-semibold tracking-[0.12em] uppercase sm:text-[15px] sm:tracking-[0.14em]",
             responsive && "hidden sm:block",
-            onBlack
-              ? "text-white"
-              : onDark
-                ? "text-background"
-                : "text-foreground",
+            /*
+             * The name always takes the writing colour of the band it sits
+             * on: the navbar sets its own, a black band sets the light one.
+             * Guessing a token instead used to make it vanish on black.
+             */
+            onBlack ? "text-white" : "text-inherit",
           )}
         >
           {name}
@@ -102,11 +99,8 @@ export function Brand({
             className={cn(
               "mt-0.5 truncate text-[9px] leading-tight tracking-[0.16em]",
               responsive ? "hidden lg:block" : "hidden sm:block",
-              onBlack
-                ? "text-white/55"
-                : onDark
-                  ? "text-background/55"
-                  : "text-muted-foreground",
+              // The name's own colour, just quieter.
+              onBlack ? "opacity-55" : "opacity-60",
             )}
           >
             {tagline}
@@ -477,7 +471,7 @@ export function ProductImage({
           className,
         )}
       >
-        <HaMonogram className="size-10 opacity-40" />
+        <StoreMark className="size-10 opacity-40" />
       </div>
     );
   }

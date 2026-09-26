@@ -35,9 +35,9 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import {
   Brand,
-  HaMonogram,
   LanguageToggle,
   ProductImage,
+  StoreMark,
 } from "@/components/store/bits";
 import { SiteDesignTab } from "@/components/store/SiteDesignTab";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useStoreBrand } from "@/hooks/use-store-brand";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -510,6 +511,8 @@ function AdminField({
  */
 export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
   const { t, isAr } = useI18n();
+  /* The sign-in card wears the same live store name as the rest of the site. */
+  const { name: brandName } = useStoreBrand();
   const ensureAccount = useMutation(api.admin.ensureAdminAccount);
   const checkLogin = useMutation(api.admin.checkAdminLogin);
   const changePassword = useMutation(api.admin.changeAdminPassword);
@@ -603,10 +606,10 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
     <div className="grid min-h-screen place-items-center bg-foreground px-4 py-16">
       <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[#101010] p-8 text-white shadow-2xl">
         <div className="flex flex-col items-center gap-4 text-center">
-          <HaMonogram className="size-12 text-white" />
+          <StoreMark className="size-12" />
           <div>
             <h1 className="font-display text-lg tracking-[0.24em] uppercase">
-              HA Drip Boys
+              {brandName}
             </h1>
             <p
               className={cn(

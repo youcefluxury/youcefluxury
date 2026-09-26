@@ -286,13 +286,6 @@ export function LogoEditButton({ className }: { className?: string }) {
         onOpenChange={setOpen}
         title={t("admin.editIdentity")}
       >
-        <ImageField
-          id="logoImage"
-          label={t("admin.logoImage")}
-          value={value === "/brand.svg" ? "" : value}
-          hint={t("admin.logoHint")}
-          onChange={setValue}
-        />
         <div className="grid gap-2">
           <Label htmlFor="logoBrandName">{t("admin.brandName")}</Label>
           <Input
@@ -317,6 +310,13 @@ export function LogoEditButton({ className }: { className?: string }) {
             {t("admin.taglineHint")}
           </p>
         </div>
+        <ImageField
+          id="logoImage"
+          label={t("admin.logoImage")}
+          value={value === "/brand.svg" ? "" : value}
+          hint={t("admin.logoHint")}
+          onChange={setValue}
+        />
         <div className="flex gap-2">
           <Button
             type="button"
