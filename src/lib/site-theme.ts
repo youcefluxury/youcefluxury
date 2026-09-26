@@ -9,7 +9,7 @@
  */
 
 /** localStorage key shared with the instant-apply step in main.tsx. */
-export const SITE_THEME_STORAGE_KEY = "hadrip.site-theme";
+export const SITE_THEME_STORAGE_KEY = "store.site-theme";
 
 /** The two ways a design can be worn: a bright page or a dark one. */
 export const SITE_THEME_MODES = ["light", "dark"] as const;
@@ -19,7 +19,7 @@ export type SiteThemeMode = (typeof SITE_THEME_MODES)[number];
 export const DEFAULT_SITE_THEME_MODE: SiteThemeMode = "dark";
 
 /** localStorage key for the light/dark choice. */
-export const SITE_THEME_MODE_STORAGE_KEY = "hadrip.site-mode";
+export const SITE_THEME_MODE_STORAGE_KEY = "store.site-mode";
 
 /** Anything unknown falls back to the dark mode. */
 export function normalizeSiteMode(

@@ -1,23 +1,23 @@
 import type { Lang } from "@/lib/i18n";
 
 /**
- * Shared storefront data for HA Drip Boys.
+ * Shared storefront data for the store.
  * Each record keeps both languages side by side; the UI renders only the
  * active one (see `src/lib/i18n.tsx`).
  */
 
 export const STORE = {
-  name: "HA Drip Boys",
-  tagline: "Man's Fashion · Boutique Boys",
+  name: "متجري",
+  tagline: "",
   /** Shown in Google results and when the site is shared. */
   description:
-    "HA Drip Boys — متجر ملابس وأزياء الرجال في الجزائر: تي شيرت أوفرسايز، سراويل واسعة، أطقم وأحذية. أسعار بالدينار وتوصيل لـ 69 ولاية.",
-  phone: "0776105085",
+    "متجر أزياء وملابس — أسعار واضحة، الدفع عند الاستلام وتوصيل إلى 69 ولاية.",
+  phone: "0550000000",
   /** Surrounded by LTR marks (U+200E) so digit groups never flip in RTL. */
-  phoneDisplay: "\u200E0776 10 50 85\u200E",
-  whatsapp: "213776105085",
-  instagram: "https://www.instagram.com/ha_drip14",
-  facebook: "https://facebook.com/hadripboys",
+  phoneDisplay: "\u200E0550 00 00 00\u200E",
+  whatsapp: "213550000000",
+  instagram: "https://www.instagram.com/your-store",
+  facebook: "https://www.facebook.com/your-store",
   wilayaCount: 69,
   /** Flat delivery fee shown in the cart and stored on every order. */
   deliveryFee: 900,
@@ -247,8 +247,11 @@ export function liveCategoryLabel(
   lang: Lang,
 ): string {
   const found = rows?.find((row) => row.slug === slug);
-  if (found) return lang === "ar" ? found.nameAr || found.nameEn : found.nameEn || found.nameAr;
-  return slug ? categoryLabel(slug, lang) : slug ?? "";
+  if (found)
+    return lang === "ar"
+      ? found.nameAr || found.nameEn
+      : found.nameEn || found.nameAr;
+  return slug ? categoryLabel(slug, lang) : (slug ?? "");
 }
 
 /* ------------------------------------------------------------------ */
@@ -389,7 +392,10 @@ export type OrderStatusCode = (typeof ORDER_STATUSES)[number]["code"];
 export function orderErrorMessage(code: string, lang: Lang): string {
   const messages: Record<string, { ar: string; en: string }> = {
     INVALID_NAME: { ar: "الاسم غير مكتمل", en: "The name is incomplete" },
-    INVALID_PHONE: { ar: "رقم الهاتف غير صحيح", en: "The phone number is invalid" },
+    INVALID_PHONE: {
+      ar: "رقم الهاتف غير صحيح",
+      en: "The phone number is invalid",
+    },
     INVALID_ADDRESS: { ar: "العنوان مطلوب", en: "An address is required" },
     EMPTY_CART: { ar: "السلة فارغة", en: "Your bag is empty" },
   };
@@ -451,7 +457,10 @@ export function phoneDigits(value: string = STORE.phone): string {
 /** 0776105085 → "‎0776 10 50 85‎" (LTR marks keep it tidy inside RTL text). */
 export function phoneDisplay(value: string = STORE.phone): string {
   const digits = phoneDigits(value);
-  const grouped = digits.replace(/^(\d{4})(\d{2})(\d{2})(\d{2})/, "$1 $2 $3 $4");
+  const grouped = digits.replace(
+    /^(\d{4})(\d{2})(\d{2})(\d{2})/,
+    "$1 $2 $3 $4",
+  );
   return `\u200E${grouped}\u200E`;
 }
 
@@ -476,8 +485,12 @@ export function whatsappLink(message?: string, phone?: string): string {
  */
 export function instagramOrderLink(message: string, profile?: string): string {
   const source = profile?.trim() ? profile : STORE.instagram;
-  const username = source.split("/").filter(Boolean).pop() ?? "ha_drip14";
-  return `https://ig.me/m/${username}?text=${encodeURIComponent(message)}`;
+  const handle = source.split("/").filter(Boolean).pop() ?? "";
+  // Until the admin saves a real profile the link is just the place to type.
+  const base = /^[\w.]+$/.test(handle)
+    ? `https://ig.me/m/${handle}`
+    : "https://www.instagram.com/direct";
+  return `${base}?text=${encodeURIComponent(message)}`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -558,8 +571,12 @@ function validPoint(lat: number, lng: number): boolean {
 /** Folds ٠-٩ / ۰-۹ digits and the many degree & quote glyphs people paste. */
 function normalizeCoordinates(value: string): string {
   return value
-    .replace(/[\u0660-\u0669]/g, (digit) => String(digit.charCodeAt(0) - 0x0660))
-    .replace(/[\u06f0-\u06f9]/g, (digit) => String(digit.charCodeAt(0) - 0x06f0))
+    .replace(/[\u0660-\u0669]/g, (digit) =>
+      String(digit.charCodeAt(0) - 0x0660),
+    )
+    .replace(/[\u06f0-\u06f9]/g, (digit) =>
+      String(digit.charCodeAt(0) - 0x06f0),
+    )
     .replace(/[\u00ba\u02da\u2218]/g, "\u00b0")
     .replace(/[\u2032\u2019\u2018`\u00b4]/g, "'")
     .replace(/[\u2033\u201c\u201d\u00ab\u00bb]/g, '"')
@@ -577,9 +594,7 @@ export function parseCoordinates(
   const text = normalizeCoordinates(value);
   if (!text) return null;
 
-  const decimal = text.match(
-    /^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/,
-  );
+  const decimal = text.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
   if (decimal) {
     const lat = Number(decimal[1]);
     const lng = Number(decimal[2]);
@@ -609,9 +624,7 @@ export function parseCoordinates(
 
 /** `35.180678,1.493835` → the short coordinates line shown in the popup. */
 export function mapCoordinates(value: string): string {
-  const fromQuery = value.match(
-    /[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
-  );
+  const fromQuery = value.match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
   if (fromQuery) return `${fromQuery[1]},${fromQuery[2]}`;
   const point = parseCoordinates(value);
   return point ? `${point.lat},${point.lng}` : "";

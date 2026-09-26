@@ -181,7 +181,7 @@ export function StoreLayout() {
     ensureSeed({})
       .then(() => purgeLegacyCategories({}))
       .catch((error) => {
-        console.warn("[HA Drip Boys] seed skipped:", error);
+        console.warn("[Storefront] seed skipped:", error);
       });
   }, [ensureSeed, purgeLegacyCategories]);
 

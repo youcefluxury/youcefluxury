@@ -142,7 +142,7 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* HA Drip Boys — modern black & white boutique theme                  */
+/* Storefront theme — dark & light boutique look                  */
 /* ------------------------------------------------------------------ */
 @theme {
   --font-sans:
@@ -249,5 +249,7 @@
     --foreground: var(--paper);
     --card-foreground: var(--paper);
     --popover-foreground: var(--paper);
+    /* Children that simply inherit the writing colour follow along. */
+    color: var(--foreground);
   }
 }

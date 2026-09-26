@@ -8,7 +8,7 @@
  */
 
 /** Shared with the boot screen script in index.html. */
-export const BRAND_CACHE_KEY = "hadrip.brand";
+export const BRAND_CACHE_KEY = "store.brand";
 
 export type CachedBrand = {
   name?: string;

@@ -16,7 +16,7 @@ import { formatDA, orderStatusLabel, sizeLabel } from "@/lib/store-data";
 import { cn } from "@/lib/utils";
 
 /** Where the last “I read them” moment is remembered (per browser). */
-const SEEN_KEY = "hadrip-orders-seen-at";
+const SEEN_KEY = "store-orders-seen-at";
 
 /** Instagram-red used for the counter and the unread marks. */
 const BADGE_RED = "#ff3040";

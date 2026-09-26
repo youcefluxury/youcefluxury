@@ -952,8 +952,8 @@ const STRINGS = {
     en: "Enter the store name first",
   },
   "admin.taglineHint": {
-    ar: "السطر الصغير تحت الاسم — مثال: Man's Fashion · Boutique Boys",
-    en: "The small line under the name — e.g. Man's Fashion · Boutique Boys",
+    ar: "السطر الصغير تحت الاسم — مثال: أزياء رجالية عصرية",
+    en: "The small line under the name — e.g. Modern menswear",
   },
   "admin.siteDescription": { ar: "وصف الموقع", en: "Site description" },
   "admin.siteDescriptionHint": {
@@ -1051,15 +1051,15 @@ type LanguageContextObject = ReturnType<
 >;
 
 const contextHolder = globalThis as typeof globalThis & {
-  __hadripLanguageContext__?: LanguageContextObject;
+  __storefrontLanguageContext__?: LanguageContextObject;
 };
 
 const LanguageContext =
-  contextHolder.__hadripLanguageContext__ ??
-  (contextHolder.__hadripLanguageContext__ =
+  contextHolder.__storefrontLanguageContext__ ??
+  (contextHolder.__storefrontLanguageContext__ =
     createContext<LanguageContextValue | null>(null));
 
-const STORAGE_KEY = "hadrip.lang.v1";
+const STORAGE_KEY = "store.lang.v1";
 
 type LanguageContextValue = {
   /** Active language. */

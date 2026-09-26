@@ -458,7 +458,8 @@ export const getSiteTheme = query({
       .unique();
     const theme = row?.value ?? "original";
     // Narrowed here so the dashboard receives the literal union, not a string.
-    const mode: "light" | "dark" = modeRow?.value === "light" ? "light" : "dark";
+    const mode: "light" | "dark" =
+      modeRow?.value === "light" ? "light" : "dark";
     return { theme: SITE_THEME_IDS.includes(theme) ? theme : "original", mode };
   },
 });
@@ -833,8 +834,8 @@ const SEED_PRODUCTS = [
       "Synthetic leather upper with a non-slip rubber sole — light and comfortable for daily wear.",
   },
   {
-    nameAr: "كاب HA Drip",
-    nameEn: "HA Drip Cap",
+    nameAr: "كاب قطني",
+    nameEn: "Cotton Cap",
     price: 2200,
     category: "accessories",
     images: ["/products/p-cap.jpg"],
@@ -842,9 +843,8 @@ const SEED_PRODUCTS = [
     soldOutSizes: [],
     colors: ["black", "white"],
     featured: false,
-    descriptionAr: "كاب قطني مع تطريز HA، حزام خلفي قابل للتعديل.",
-    descriptionEn:
-      "Cotton cap with embroidered HA monogram and an adjustable strap.",
+    descriptionAr: "كاب قطني مع تطريز وحزام خلفي قابل للتعديل.",
+    descriptionEn: "Cotton cap with embroidery and an adjustable strap.",
   },
 ];
 

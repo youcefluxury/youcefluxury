@@ -32,7 +32,7 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // HA Drip Boys storefront tables
+    // Storefront tables
     products: defineTable({
       nameAr: v.string(),
       nameEn: v.string(),

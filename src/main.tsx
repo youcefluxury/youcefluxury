@@ -149,7 +149,7 @@ function RouteSyncer() {
  * RootErrorBoundary above.)
  */
 function showBootError(error: unknown) {
-  console.error("[HA Drip Boys] boot failed:", error);
+  console.error("[Storefront] boot failed:", error);
   const container = document.getElementById("root");
   if (!container) return;
   container.textContent = "";
@@ -182,7 +182,7 @@ function showBootError(error: unknown) {
  * shows up as a blank white page.
  */
 const bootGlobal = globalThis as typeof globalThis & {
-  __hadripRoot__?: ReturnType<typeof createRoot>;
+  __storefrontRoot__?: ReturnType<typeof createRoot>;
 };
 
 const rootElement = document.getElementById("root");
@@ -193,8 +193,8 @@ if (!rootElement) {
   try {
     const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
     const root =
-      bootGlobal.__hadripRoot__ ??
-      (bootGlobal.__hadripRoot__ = createRoot(rootElement));
+      bootGlobal.__storefrontRoot__ ??
+      (bootGlobal.__storefrontRoot__ = createRoot(rootElement));
     root.render(
       <StrictMode>
         <RootErrorBoundary>

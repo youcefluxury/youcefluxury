@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { ADMIN_API_KEY, ADMIN_SESSION_KEY } from "@/lib/admin-key";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,11 @@ export function StoreMark({ className }: { className?: string }) {
   /* The admin can swap the logo — every place it appears follows along. */
   const { logo, name } = useStoreBrand();
   return (
-    <img src={logo} alt={name} className={cn("size-9 object-contain", className)} />
+    <img
+      src={logo}
+      alt={name}
+      className={cn("size-9 object-contain", className)}
+    />
   );
 }
 
@@ -136,8 +140,19 @@ export function InstagramIcon({ className }: { className?: string }) {
           <stop offset="90%" stopColor="#7638FA" />
         </linearGradient>
       </defs>
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" stroke="url(#ig-gradient)" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="url(#ig-gradient)" />
+      <rect
+        width="20"
+        height="20"
+        x="2"
+        y="2"
+        rx="5"
+        ry="5"
+        stroke="url(#ig-gradient)"
+      />
+      <path
+        d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+        stroke="url(#ig-gradient)"
+      />
       <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" stroke="url(#ig-gradient)" />
     </svg>
   );
@@ -181,7 +196,7 @@ export function FacebookIcon({ className }: { className?: string }) {
  */
 export function isAdminSession(): boolean {
   try {
-    return window.sessionStorage.getItem("hadrip-admin-session") === "1";
+    return window.sessionStorage.getItem(ADMIN_SESSION_KEY) === "1";
   } catch {
     return false;
   }
@@ -238,7 +253,9 @@ export function CardActionsMenu({
         id: productId as never,
         soldOut: !soldOut,
       });
-      toast.success(soldOut ? t("card.markedAvailable") : t("card.markedSoldOut"));
+      toast.success(
+        soldOut ? t("card.markedAvailable") : t("card.markedSoldOut"),
+      );
       setOpen(false);
     } catch {
       toast.error(t("admin.saveFailed"));
@@ -252,9 +269,15 @@ export function CardActionsMenu({
     setBusy(true);
     try {
       if (tab === "categories") {
-        await deleteCategory({ adminKey: ADMIN_API_KEY, id: productId as never });
+        await deleteCategory({
+          adminKey: ADMIN_API_KEY,
+          id: productId as never,
+        });
       } else {
-        await deleteProduct({ adminKey: ADMIN_API_KEY, id: productId as never });
+        await deleteProduct({
+          adminKey: ADMIN_API_KEY,
+          id: productId as never,
+        });
       }
       toast.success(t("admin.deleted"));
       setOpen(false);
@@ -368,7 +391,9 @@ export function CardActionsMenu({
                 onClick={() => setConfirming(true)}
               >
                 <Trash2 className="size-4 shrink-0" />
-                {tab === "categories" ? t("card.deleteCategory") : t("card.delete")}
+                {tab === "categories"
+                  ? t("card.deleteCategory")
+                  : t("card.delete")}
               </button>
             </>
           )}

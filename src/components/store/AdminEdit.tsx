@@ -304,7 +304,7 @@ export function LogoEditButton({ className }: { className?: string }) {
             id="logoBrandTagline"
             value={brandTagline}
             onChange={(event) => setBrandTagline(event.target.value)}
-            placeholder={STORE.tagline}
+            placeholder={STORE.tagline || undefined}
           />
           <p className="text-muted-foreground text-[10px] leading-4">
             {t("admin.taglineHint")}

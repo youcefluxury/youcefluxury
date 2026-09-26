@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
 /**
- * HA Drip Boys — single operator account for the /admin dashboard.
+ * Storefront — single operator account for the /admin dashboard.
  *
  * The credentials no longer live in the browser bundle: they are stored in
  * the "meta" table (the password as `sha256$<salt>$<hash>`), and every login

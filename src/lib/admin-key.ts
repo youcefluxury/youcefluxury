@@ -10,10 +10,10 @@
  */
 
 /** Key the dashboard sends when it reads or writes admin-only data. */
-export const ADMIN_API_KEY = "hadrip-boys-admin-key";
+export const ADMIN_API_KEY = "storefront-admin-key";
 
 /** Session marker stored in sessionStorage after a successful login. */
-export const ADMIN_SESSION_KEY = "hadrip-admin-session";
+export const ADMIN_SESSION_KEY = "storefront-admin-session";
 
 
 /** True when the caller presents the dashboard key (checked server-side). */

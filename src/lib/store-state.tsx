@@ -39,7 +39,7 @@ type CartContextValue = {
   clearCart: () => void;
 };
 
-const CART_STORAGE_KEY = "hadrip.cart.v1";
+const CART_STORAGE_KEY = "store.cart.v1";
 
 /**
  * Flies a small product thumbnail from the source element to the header cart
@@ -89,12 +89,12 @@ export function flyToCart(source: HTMLElement | null, image?: string) {
  * (which showed up as "must be used inside <Provider>" runtime errors).
  */
 const storeContexts = globalThis as typeof globalThis & {
-  __hadripCartContext__?: ReturnType<typeof createContext<CartContextValue | null>>;
+  __storefrontCartContext__?: ReturnType<typeof createContext<CartContextValue | null>>;
 };
 
 const CartContext =
-  storeContexts.__hadripCartContext__ ??
-  (storeContexts.__hadripCartContext__ = createContext<CartContextValue | null>(null));
+  storeContexts.__storefrontCartContext__ ??
+  (storeContexts.__storefrontCartContext__ = createContext<CartContextValue | null>(null));
 
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
