@@ -1,5 +1,7 @@
 import {
   ChevronDown,
+  LayoutDashboard,
+  LogOut,
   Menu,
   Search,
   ShoppingCart,
@@ -22,12 +24,20 @@ import {
 } from "@/components/store/bits";
 import { AdminNotifications } from "@/components/store/AdminNotifications";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   FacebookEditButton,
   InstagramEditButton,
   LogoEditButton,
   WhatsAppEditButton,
 } from "@/components/store/AdminEdit";
 import { useStoreBrand } from "@/hooks/use-store-brand";
+import { ADMIN_SESSION_KEY } from "@/lib/admin-key";
 import { useStorePhone } from "@/hooks/use-store-phone";
 import { pickLang, useI18n } from "@/lib/i18n";
 import {
@@ -102,6 +112,21 @@ export function StoreHeader() {
       )
       .slice(0, 5);
   }, [products, query]);
+
+  /**
+   * Ends the admin session on this device. The header listens for the window
+   * `focus` event to re-read the session marker, so firing it here makes the
+   * admin icon disappear right away instead of on the next page load.
+   */
+  function signOut() {
+    try {
+      window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    } catch {
+      /* storage unavailable — the icon still hides after the focus event */
+    }
+    window.dispatchEvent(new Event("focus"));
+    navigate("/");
+  }
 
   function submitSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -269,6 +294,41 @@ export function StoreHeader() {
               </span>
             </button>
 
+            {/*
+              Admin only, immediately to the right of the bag: one tap opens
+              the dashboard or ends the session on this device.
+            */}
+            {isAdmin ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("common.account")}
+                    title={t("common.account")}
+                    className={iconButton}
+                  >
+                    <User className="size-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-44">
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin">
+                      <LayoutDashboard className="size-4" />
+                      {t("admin.dashboard")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={signOut}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="size-4" />
+                    {t("admin.logout")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
+
             <span className="relative">
               <a
                 href={instagram}
@@ -314,19 +374,6 @@ export function StoreHeader() {
 
             {/* Admin only: live order notifications with the red counter. */}
             <AdminNotifications />
-
-            {isAdmin ? (
-              <>
-                {/* The design screen lives inside the dashboard, not here. */}
-                <Link
-                  to="/admin"
-                  aria-label={t("common.account")}
-                  className={iconButton}
-                >
-                  <User className="size-5" />
-                </Link>
-              </>
-            ) : null}
 
             <button
               type="button"
