@@ -12,55 +12,22 @@
 export const SITE_THEME_STORAGE_KEY = "store.site-theme";
 
 /**
- * How the design can be worn: a bright page, a deep one, or neither — "auto"
- * hands the choice to the visitor's operating system.
+ * The two ways the design can be worn: a bright page or a deep one.
  */
-export const SITE_THEME_MODES = ["light", "auto", "dark"] as const;
+export const SITE_THEME_MODES = ["light", "dark"] as const;
 export type SiteThemeMode = (typeof SITE_THEME_MODES)[number];
 
-/** Nobody has chosen yet, so the store follows the device. */
-export const DEFAULT_SITE_THEME_MODE: SiteThemeMode = "auto";
+/** The store opens on its deep face, which is the classic boutique look. */
+export const DEFAULT_SITE_THEME_MODE: SiteThemeMode = "dark";
 
-/** localStorage key for the light / auto / dark choice. */
+/** localStorage key for the light / dark choice. */
 export const SITE_THEME_MODE_STORAGE_KEY = "store.site-mode";
 
-/** Anything unknown follows the device. */
+/** Anything unknown falls back to the dark face. */
 export function normalizeSiteMode(
   mode: string | null | undefined,
 ): SiteThemeMode {
-  return SITE_THEME_MODES.includes(mode as SiteThemeMode)
-    ? (mode as SiteThemeMode)
-    : DEFAULT_SITE_THEME_MODE;
-}
-
-/** True when the device asks for a dark page. */
-export function prefersDarkScheme(): boolean {
-  if (
-    typeof window === "undefined" ||
-    typeof window.matchMedia !== "function"
-  ) {
-    return false;
-  }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
-
-/** The palette actually worn: "auto" resolves to the device's. */
-export function resolveSiteMode(mode: SiteThemeMode): "light" | "dark" {
-  if (mode === "auto") return prefersDarkScheme() ? "dark" : "light";
-  return mode;
-}
-
-/** Fires when the device flips its colour preference. Returns a cleanup. */
-export function watchSystemColour(onChange: () => void): () => void {
-  if (
-    typeof window === "undefined" ||
-    typeof window.matchMedia !== "function"
-  ) {
-    return () => {};
-  }
-  const media = window.matchMedia("(prefers-color-scheme: dark)");
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
+  return mode === "light" ? "light" : "dark";
 }
 
 /** Every token the design may set — cleared before it is applied. */
@@ -94,7 +61,7 @@ export type SiteThemePreset = {
   nameEn: string;
   blurbAr: string;
   blurbEn: string;
-  /** Both palettes for this design. "auto" is a way of wearing one of them. */
+  /** Both faces of this design: the bright one and the deep one. */
   tokens: Record<"light" | "dark", Record<string, string>>;
 };
 
@@ -143,7 +110,7 @@ function vividTokens(
       "--secondary": `oklch(0.93 ${(c * 0.55).toFixed(4)} ${s.hue})`,
       "--secondary-foreground": `oklch(0.24 ${(c * 0.75).toFixed(4)} ${s.hue})`,
       "--muted": `oklch(0.94 ${(c * 0.5).toFixed(4)} ${s.hue})`,
-      "--muted-foreground": `oklch(0.44 ${(c * 0.55).toFixed(4)} ${s.hue})`,
+      "--muted-foreground": `oklch(0.38 ${(c * 0.55).toFixed(4)} ${s.hue})`,
       "--accent": `oklch(0.9 ${(c * 0.9).toFixed(4)} ${s.hue})`,
       "--accent-foreground": `oklch(0.24 ${(c * 0.8).toFixed(4)} ${s.hue})`,
       /* Hairlines read as a soft shade, never a hard line. */
@@ -246,23 +213,20 @@ export function applySiteTheme(
 ): SiteThemePreset {
   const preset = siteThemeById(id);
   const chosen = normalizeSiteMode(mode);
-  /* "auto" wears whichever palette the device asks for. */
-  const worn = resolveSiteMode(chosen);
   if (typeof document === "undefined") return preset;
 
   const root = document.documentElement;
   for (const token of SITE_THEME_TOKEN_KEYS) {
     root.style.removeProperty(token);
   }
-  for (const [token, value] of Object.entries(preset.tokens[worn])) {
+  for (const [token, value] of Object.entries(preset.tokens[chosen])) {
     root.style.setProperty(token, value);
   }
   root.dataset.theme = preset.id;
   root.dataset.mode = chosen;
   /* The class Tailwind's `dark:` variants listen to. */
-  root.classList.toggle("dark", worn === "dark");
-  /* Under "auto" the browser picks the form-control colours itself. */
-  root.style.colorScheme = chosen === "auto" ? "light dark" : worn;
+  root.classList.toggle("dark", chosen === "dark");
+  root.style.colorScheme = chosen;
 
   try {
     window.localStorage.setItem(SITE_THEME_STORAGE_KEY, preset.id);
@@ -283,7 +247,7 @@ export function readStoredSiteTheme(): string | null {
   }
 }
 
-/** The light / auto / dark mode this browser saw last time, if any. */
+/** The light / dark mode this browser saw last time, if any. */
 export function readStoredSiteMode(): SiteThemeMode | null {
   if (typeof window === "undefined") return null;
   try {

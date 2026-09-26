@@ -220,7 +220,7 @@ export function StoreHeader() {
 
   /* size-9 on phones keeps the extra social icons inside the bar. */
   const iconButton =
-    "grid size-9 place-items-center rounded-full text-foreground/85 transition-colors hover:bg-muted hover:text-foreground sm:size-10";
+    "grid size-9 place-items-center rounded-full text-foreground transition-colors hover:bg-muted sm:size-10";
 
   const navLinks = [
     { to: "/", label: t("common.home") },
@@ -247,7 +247,7 @@ export function StoreHeader() {
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-[12px] font-medium tracking-[0.08em] text-foreground/85 transition-colors hover:text-foreground"
+                className="text-[12px] font-medium tracking-[0.08em] text-foreground transition-colors hover:opacity-70"
               >
                 {link.label}
               </Link>

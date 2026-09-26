@@ -4,7 +4,6 @@ import {
   HardDrive,
   Image as ImageIcon,
   MapPin,
-  Monitor,
   Moon,
   Palette,
   RefreshCw,
@@ -29,7 +28,6 @@ import {
   SITE_THEMES,
   applySiteTheme,
   normalizeSiteMode,
-  resolveSiteMode,
   siteThemeById,
   type SiteThemeMode,
   type SiteThemePreset,
@@ -62,9 +60,8 @@ function ThemeSwatches({
   preset: SiteThemePreset;
   mode: SiteThemeMode;
 }) {
-  // The dots wear the palette the store is in right now; "auto" resolves to
-  // whichever one the device asked for.
-  const palette = preset.tokens[resolveSiteMode(mode)];
+  // The dots wear the palette the store is in right now.
+  const palette = preset.tokens[mode];
   const swatches = [
     palette["--ink"] ?? ORIGINAL_SWATCHES.ink,
     palette["--paper"] ?? ORIGINAL_SWATCHES.paper,
@@ -86,14 +83,12 @@ function ThemeSwatches({
 /** The glyph each mode wears in the switch. */
 const MODE_ICONS: Record<SiteThemeMode, typeof Sun> = {
   light: Sun,
-  auto: Monitor,
   dark: Moon,
 };
 
 /** And the word under it, in the active language. */
 const MODE_LABELS: Record<SiteThemeMode, TKey> = {
   light: "admin.modeLight",
-  auto: "admin.modeAuto",
   dark: "admin.modeDark",
 };
 
@@ -173,7 +168,7 @@ function SiteDesignPanel() {
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <div className="grid flex-1 grid-cols-3 gap-1 rounded-lg border border-border/70 bg-background p-1">
+          <div className="grid flex-1 grid-cols-2 gap-1 rounded-lg border border-border/70 bg-background p-1">
             {SITE_THEME_MODES.map((mode) => {
               const active = currentMode === mode;
               const Icon = MODE_ICONS[mode];

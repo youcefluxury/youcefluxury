@@ -434,7 +434,7 @@ export function LanguageToggle({ className }: { className?: string }) {
     >
       <Languages
         aria-hidden="true"
-        className="text-foreground/45 ms-1.5 me-0.5 size-3.5 shrink-0"
+        className="text-foreground/70 ms-1.5 me-0.5 size-3.5 shrink-0"
       />
       {LANGS.map((option) => (
         <button
@@ -446,7 +446,7 @@ export function LanguageToggle({ className }: { className?: string }) {
             "grid h-6 min-w-8 place-items-center rounded-full px-2 text-[11px] font-semibold tracking-wide transition-colors",
             lang === option.code
               ? "bg-foreground text-background"
-              : "text-foreground/60 hover:text-foreground",
+              : "text-foreground/70 hover:text-foreground",
           )}
         >
           {option.label}
