@@ -2,6 +2,8 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { isValidAdminKey } from "./admin";
 
+import { SITE_THEMES } from "../lib/site-theme";
+
 const sizeValidator = v.object({
   label: v.string(),
   available: v.boolean(),
@@ -410,18 +412,13 @@ export const setStoreSetting = mutation({
 /** Meta key holding the chosen site design. */
 const SITE_THEME_KEY = "site-theme";
 
-/** Every design the dashboard can apply (see src/lib/site-theme.ts). */
-export const SITE_THEME_IDS = [
-  "original",
-  "royal",
-  "sand",
-  "emerald",
-  "burgundy",
-  "slate",
-  "olive",
-  "ivory",
-  "midnight",
-] as const;
+/**
+ * Every design the dashboard can apply, read straight from the design library
+ * so a new colour can never be added to the UI yet rejected by the server.
+ */
+export const SITE_THEME_IDS: readonly string[] = SITE_THEMES.map(
+  (preset) => preset.id,
+);
 
 /** The design the whole storefront wears right now. */
 export const getSiteTheme = query({
@@ -432,7 +429,7 @@ export const getSiteTheme = query({
       .withIndex("by_key", (q) => q.eq("key", SITE_THEME_KEY))
       .unique();
     const theme = row?.value ?? "original";
-    return { theme: SITE_THEME_IDS.includes(theme as never) ? theme : "original" };
+    return { theme: SITE_THEME_IDS.includes(theme) ? theme : "original" };
   },
 });
 
@@ -440,17 +437,7 @@ export const getSiteTheme = query({
 export const setSiteTheme = mutation({
   args: {
     adminKey: v.string(),
-    theme: v.union(
-      v.literal("original"),
-      v.literal("royal"),
-      v.literal("sand"),
-      v.literal("emerald"),
-      v.literal("burgundy"),
-      v.literal("slate"),
-      v.literal("olive"),
-      v.literal("ivory"),
-      v.literal("midnight"),
-    ),
+    theme: v.union(...SITE_THEME_IDS.map((id) => v.literal(id))),
   },
   handler: async (ctx, args) => {
     if (!isValidAdminKey(args.adminKey)) {

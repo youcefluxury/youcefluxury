@@ -847,7 +847,7 @@ const STRINGS = {
     ar: "رابط الخريطة أو الإحداثيات",
     en: "Map link or coordinates",
   },
-  "admin.mapCoordinates": { ar: "إحداثيات المتجر", en: "Shop coordinates" },
+  "admin.mapCoordinates": { ar: "موقع المتجر", en: "Shop location" },
   "admin.mapCoordinatesHint": {
     ar: `الصق الإحداثيات فقط: بالدرجات (35.180678,1.493835) أو بالشكل 35°22'02.7"N 1°19'24.0"E — وستنتقل الخريطة مباشرة إلى هذا المكان. الروابط غير مقبولة.`,
     en: `Paste the coordinates only: decimal (35.180678,1.493835) or 35°22'02.7"N 1°19'24.0"E — the map jumps straight to that spot. Links are not accepted.`,

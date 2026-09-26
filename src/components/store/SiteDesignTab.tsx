@@ -85,7 +85,7 @@ function SiteDesignPanel() {
     // Instant preview: the store restyles before the write comes back.
     applySiteTheme(id);
     try {
-      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id as never });
+      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id });
       toast.success(t("admin.designSaved"));
     } catch {
       applySiteTheme(current);
@@ -114,7 +114,8 @@ function SiteDesignPanel() {
       </div>
 
       <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {SITE_THEMES.map((preset) => {
+        {/* The built-in look is no longer offered as a choice. */}
+        {SITE_THEMES.filter((preset) => preset.id !== "original").map((preset) => {
           const isCurrent = preset.id === current;
           return (
             <button
@@ -160,17 +161,6 @@ function SiteDesignPanel() {
         })}
       </div>
 
-      {current !== "original" ? (
-        <Button
-          type="button"
-          variant="outline"
-          className="h-11 w-full sm:w-fit"
-          disabled={pending !== null}
-          onClick={() => void apply("original")}
-        >
-          {t("admin.designRestore")}
-        </Button>
-      ) : null}
     </div>
   );
 }

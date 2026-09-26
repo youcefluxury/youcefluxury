@@ -2397,11 +2397,11 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-muted/30">
-      <header className="bg-foreground text-background">
+      <header className="bg-chrome text-chrome-foreground">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
             <Brand onDark />
-            <span className="hidden text-[10px] tracking-[0.24em] text-white/40 uppercase sm:block">
+            <span className="hidden text-[10px] tracking-[0.24em] text-chrome-faint uppercase sm:block">
               {t("admin.dashboard")}
             </span>
           </div>
@@ -2411,7 +2411,7 @@ export default function Admin() {
               asChild
               variant="outline"
               size="sm"
-              className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              className="border-chrome-border bg-transparent text-chrome-foreground hover:bg-chrome-hover hover:text-chrome-foreground"
             >
               <Link to="/">
                 <ExternalLink className="size-4" />
