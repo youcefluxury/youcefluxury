@@ -455,7 +455,14 @@ export function ProductImage({
   className?: string;
   sizes?: string;
 }) {
-  const [failed, setFailed] = useState(false);
+  /*
+   * Remembers WHICH address failed, not just "something failed". Without
+   * this the placeholder sticks for good: a photo that errored once (a slow
+   * R2 link while the design was switching) kept its blank card even after the
+   * product came back with a working image.
+   */
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const failed = Boolean(src) && failedSrc === src;
 
   if (!src || failed) {
     return (
@@ -476,7 +483,7 @@ export function ProductImage({
       alt={alt}
       loading="lazy"
       sizes={sizes}
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(src)}
       className={cn("h-full w-full object-cover", className)}
     />
   );

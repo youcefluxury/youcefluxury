@@ -1,0 +1,58 @@
+[
+  {
+    "old": "  const heading = cn(\n    \"text-[10px] text-white/40\",",
+    "new": "  const heading = cn(\n    \"text-[10px] text-chrome-faint\","
+  },
+  {
+    "old": "    <footer className=\"bg-foreground text-background mt-24\">",
+    "new": "    <footer className=\"bg-chrome text-chrome-foreground mt-24\">"
+  },
+  {
+    "old": "            <p className=\"mt-5 max-w-sm text-sm leading-7 text-white/60\">",
+    "new": "            <p className=\"mt-5 max-w-sm text-sm leading-7 text-chrome-muted\">"
+  },
+  {
+    "old": "                  className=\"grid size-10 place-items-center rounded-full border border-white/15 transition-colors hover:bg-white/10\"\n                >\n                  <InstagramIcon className=\"size-5\" />",
+    "new": "                  className=\"grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover\"\n                >\n                  <InstagramIcon className=\"size-5\" />"
+  },
+  {
+    "old": "                  className=\"grid size-10 place-items-center rounded-full border border-white/15 transition-colors hover:bg-white/10\"\n                >\n                  <Facebook className=\"size-5 text-[#1877F2]\" />",
+    "new": "                  className=\"grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover\"\n                >\n                  <Facebook className=\"size-5 text-[#1877F2]\" />"
+  },
+  {
+    "old": "                className=\"grid size-10 place-items-center rounded-full border border-white/15 transition-colors hover:bg-white/10\"\n              >\n                <Phone className=\"size-5\" />",
+    "new": "                className=\"grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover\"\n              >\n                <Phone className=\"size-5\" />"
+  },
+  {
+    "old": "                <ul className=\"mt-5 space-y-3 text-sm\">\n                  <li>\n                    <Link to=\"/shop\" className=\"text-white/70 hover:text-white\">",
+    "new": "                <ul className=\"mt-5 space-y-3 text-sm\">\n                  <li>\n                    <Link to=\"/shop\" className=\"text-chrome-muted hover:text-chrome-foreground\">"
+  },
+  {
+    "old": "                      className=\"text-white/70 hover:text-white\"\n                    >\n                      {categoryName(category, lang)}",
+    "new": "                      className=\"text-chrome-muted hover:text-chrome-foreground\"\n                    >\n                      {categoryName(category, lang)}"
+  },
+  {
+    "old": "            <ul className=\"mt-5 space-y-4 text-sm text-white/70\">",
+    "new": "            <ul className=\"mt-5 space-y-4 text-sm text-chrome-muted\">"
+  },
+  {
+    "old": "                  className=\"hover:text-white\"\n                >\n                  {t(\"footer.delivery\")}",
+    "new": "                  className=\"hover:text-chrome-foreground\"\n                >\n                  {t(\"footer.delivery\")}"
+  },
+  {
+    "old": "            <ul className=\"mt-5 space-y-3 text-sm text-white/70\">\n              <li>\n                <a href={`tel:${phone}`} className=\"hover:text-white\">",
+    "new": "            <ul className=\"mt-5 space-y-3 text-sm text-chrome-muted\">\n              <li>\n                <a href={`tel:${phone}`} className=\"hover:text-chrome-foreground\">"
+  },
+  {
+    "old": "                  className=\"hover:text-white\"\n                >\n                  {t(\"common.whatsapp\")}",
+    "new": "                  className=\"hover:text-chrome-foreground\"\n                >\n                  {t(\"common.whatsapp\")}"
+  },
+  {
+    "old": "        <div className=\"mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[11px] tracking-wide text-white/40 sm:flex-row sm:items-center sm:justify-between\">",
+    "new": "        <div className=\"mt-12 flex flex-col gap-3 border-t border-chrome-border pt-6 text-[11px] tracking-wide text-chrome-faint sm:flex-row sm:items-center sm:justify-between\">"
+  },
+  {
+    "old": "          <Link to=\"/admin\" className=\"hover:text-white/70\">",
+    "new": "          <Link to=\"/admin\" className=\"hover:text-chrome-muted\">"
+  }
+]

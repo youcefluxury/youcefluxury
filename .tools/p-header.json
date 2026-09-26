@@ -1,0 +1,38 @@
+[
+  {
+    "old": "    <div className=\"bg-ink text-white\">",
+    "new": "    <div className=\"bg-chrome text-chrome-foreground\">"
+  },
+  {
+    "old": "    \"grid size-9 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground sm:size-10\";",
+    "new": "    \"grid size-9 place-items-center rounded-full text-chrome-foreground/85 transition-colors hover:bg-chrome-hover hover:text-chrome-foreground sm:size-10\";"
+  },
+  {
+    "old": "      <div className=\"bg-background/85 border-b border-border/70 backdrop-blur-xl\">",
+    "new": "      <div className=\"bg-chrome/92 text-chrome-foreground border-b border-chrome-border backdrop-blur-xl\">"
+  },
+  {
+    "old": "                className=\"text-[12px] font-medium tracking-[0.08em] transition-colors hover:text-muted-foreground\"",
+    "new": "                className=\"text-[12px] font-medium tracking-[0.08em] text-chrome-foreground/85 transition-colors hover:text-chrome-foreground\""
+  },
+  {
+    "old": "              className=\"flex h-11 items-stretch overflow-hidden rounded-md border border-border bg-card\"",
+    "new": "              className=\"flex h-11 items-stretch overflow-hidden rounded-md border border-chrome-border bg-chrome-hover/60\""
+  },
+  {
+    "old": "                  \"h-full min-w-0 flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-muted-foreground\",\n                  !isAr && \"text-start\",",
+    "new": "                  \"h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-chrome-foreground outline-none placeholder:text-chrome-faint\",\n                  !isAr && \"text-start\","
+  },
+  {
+    "old": "                className=\"hover:bg-muted grid h-full w-14 shrink-0 place-items-center border-s border-border transition-colors\"",
+    "new": "                className=\"hover:bg-chrome-hover grid h-full w-14 shrink-0 place-items-center border-s border-chrome-border text-chrome-foreground transition-colors\""
+  },
+  {
+    "old": "                    ? \"bg-ink text-white\"\n                    : \"bg-muted text-muted-foreground\",",
+    "new": "                    ? \"bg-chrome-foreground text-chrome\"\n                    : \"bg-chrome-hover text-chrome-faint\","
+  },
+  {
+    "old": "              <div className=\"flex h-11 items-stretch overflow-hidden rounded-md border border-border bg-card\">\n                <input\n                  autoFocus\n                  value={query}\n                  onChange={(event) => setQuery(event.target.value)}\n                  placeholder={t(\"common.searchPlaceholder\")}\n                  aria-label={t(\"common.search\")}\n                  className=\"h-full min-w-0 flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-muted-foreground\"\n                />\n                <button\n                  type=\"submit\"\n                  aria-label={t(\"common.search\")}\n                  className=\"hover:bg-muted grid h-full w-14 shrink-0 place-items-center border-s border-border\"\n                >",
+    "new": "              <div className=\"flex h-11 items-stretch overflow-hidden rounded-md border border-chrome-border bg-chrome-hover/60\">\n                <input\n                  autoFocus\n                  value={query}\n                  onChange={(event) => setQuery(event.target.value)}\n                  placeholder={t(\"common.searchPlaceholder\")}\n                  aria-label={t(\"common.search\")}\n                  className=\"h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-chrome-foreground outline-none placeholder:text-chrome-faint\"\n                />\n                <button\n                  type=\"submit\"\n                  aria-label={t(\"common.search\")}\n                  className=\"hover:bg-chrome-hover grid h-full w-14 shrink-0 place-items-center border-s border-chrome-border text-chrome-foreground\"\n                >"
+  }
+]

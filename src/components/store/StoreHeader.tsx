@@ -44,7 +44,7 @@ function AnnouncementBar() {
   const { t, isAr } = useI18n();
 
   return (
-    <div className="bg-ink text-white">
+    <div className="bg-chrome text-chrome-foreground">
       <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-center gap-2 px-3 py-1 text-center">
         <span aria-hidden="true" className="text-[13px] leading-none">
           🇩🇿
@@ -151,7 +151,7 @@ export function StoreHeader() {
 
   /* size-9 on phones keeps the extra social icons inside the bar. */
   const iconButton =
-    "grid size-9 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground sm:size-10";
+    "grid size-9 place-items-center rounded-full text-chrome-foreground/85 transition-colors hover:bg-chrome-hover hover:text-chrome-foreground sm:size-10";
 
   const navLinks = [
     { to: "/", label: t("common.home") },
@@ -163,7 +163,7 @@ export function StoreHeader() {
     <header className="sticky top-0 z-40">
       <AnnouncementBar />
 
-      <div className="bg-background/85 border-b border-border/70 backdrop-blur-xl">
+      <div className="bg-chrome/92 text-chrome-foreground border-b border-chrome-border backdrop-blur-xl">
         <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-6">
           <div className="relative shrink-0">
             <Link to="/" aria-label={name}>
@@ -178,7 +178,7 @@ export function StoreHeader() {
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-[12px] font-medium tracking-[0.08em] transition-colors hover:text-muted-foreground"
+                className="text-[12px] font-medium tracking-[0.08em] text-chrome-foreground/85 transition-colors hover:text-chrome-foreground"
               >
                 {link.label}
               </Link>
@@ -210,7 +210,7 @@ export function StoreHeader() {
             <form
               onSubmit={submitSearch}
               role="search"
-              className="flex h-11 items-stretch overflow-hidden rounded-md border border-border bg-card"
+              className="flex h-11 items-stretch overflow-hidden rounded-md border border-chrome-border bg-chrome-hover/60"
             >
               <input
                 value={query}
@@ -218,14 +218,14 @@ export function StoreHeader() {
                 placeholder={t("common.searchPlaceholder")}
                 aria-label={t("common.search")}
                 className={cn(
-                  "h-full min-w-0 flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-muted-foreground",
+                  "h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-chrome-foreground outline-none placeholder:text-chrome-faint",
                   !isAr && "text-start",
                 )}
               />
               <button
                 type="submit"
                 aria-label={t("common.search")}
-                className="hover:bg-muted grid h-full w-14 shrink-0 place-items-center border-s border-border transition-colors"
+                className="hover:bg-chrome-hover grid h-full w-14 shrink-0 place-items-center border-s border-chrome-border text-chrome-foreground transition-colors"
               >
                 <Search className="size-4" />
               </button>
@@ -261,8 +261,8 @@ export function StoreHeader() {
                 className={cn(
                   "absolute -top-0.5 -end-0.5 grid min-w-5 animate-[cart-pop_0.35s_ease-out] place-items-center rounded-full px-1 text-[10px] font-semibold",
                   count > 0
-                    ? "bg-ink text-white"
-                    : "bg-muted text-muted-foreground",
+                    ? "bg-chrome-foreground text-chrome"
+                    : "bg-chrome-hover text-chrome-faint",
                 )}
               >
                 {count}
@@ -342,19 +342,19 @@ export function StoreHeader() {
         {mobileSearch ? (
           <div className="relative mx-auto w-full max-w-7xl px-4 pb-4 lg:hidden">
             <form onSubmit={submitSearch}>
-              <div className="flex h-11 items-stretch overflow-hidden rounded-md border border-border bg-card">
+              <div className="flex h-11 items-stretch overflow-hidden rounded-md border border-chrome-border bg-chrome-hover/60">
                 <input
                   autoFocus
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder={t("common.searchPlaceholder")}
                   aria-label={t("common.search")}
-                  className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-muted-foreground"
+                  className="h-full min-w-0 flex-1 bg-transparent px-4 text-sm text-chrome-foreground outline-none placeholder:text-chrome-faint"
                 />
                 <button
                   type="submit"
                   aria-label={t("common.search")}
-                  className="hover:bg-muted grid h-full w-14 shrink-0 place-items-center border-s border-border"
+                  className="hover:bg-chrome-hover grid h-full w-14 shrink-0 place-items-center border-s border-chrome-border text-chrome-foreground"
                 >
                   <Search className="size-4" />
                 </button>
