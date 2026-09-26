@@ -17,9 +17,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { HeroSlider } from "@/components/store/HeroSlider";
 import { ProductCard } from "@/components/store/ProductCard";
+import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useStoreClock } from "@/hooks/use-store-clock";
 import { useI18n } from "@/lib/i18n";
-import { STORE, categoryName, isHiddenFromStore } from "@/lib/store-data";
+import { categoryName, isHiddenFromStore } from "@/lib/store-data";
 import { cn } from "@/lib/utils";
 
 /**
@@ -90,6 +91,8 @@ function AddFeaturedProductButton() {
 export default function Landing() {
   const { t, lang, isAr } = useI18n();
   const isAdmin = useIsAdminSession();
+  // Live shop location — the dashboard can move the pin any time.
+  const { mapEmbedUrl } = useStoreBrand();
   const products = useQuery(api.catalog.listProducts);
   const categoryRows = useQuery(api.catalog.listCategories);
   const categories = categoryRows ?? [];
@@ -236,7 +239,8 @@ export default function Landing() {
         <div className="mt-7 overflow-hidden rounded-none border border-border/70 bg-card">
           <iframe
             title={t("home.map.title")}
-            src={STORE.mapEmbedUrl}
+            /* Whatever the dashboard saved as the shop's location. */
+            src={mapEmbedUrl}
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             className="h-[320px] w-full sm:h-[420px]"

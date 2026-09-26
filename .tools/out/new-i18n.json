@@ -1,0 +1,242 @@
+{
+  "admin.brandName": {
+    "ar": "اسم المتجر",
+    "en": "Store name"
+  },
+  "admin.brandNameHint": {
+    "ar": "يظهر في الشريط العلوي والتذييل، وفي عنوان تبويب المتصفح وشاشة التحميل.",
+    "en": "Shown in the header and the footer, plus the browser tab title and the loading screen."
+  },
+  "admin.brandNameRequired": {
+    "ar": "اكتب اسم المتجر أولاً",
+    "en": "Enter the store name first"
+  },
+  "admin.designApplied": {
+    "ar": "مطبّق حالياً",
+    "en": "Applied now"
+  },
+  "admin.designApply": {
+    "ar": "تطبيق هذا التصميم",
+    "en": "Apply this design"
+  },
+  "admin.designCurrent": {
+    "ar": "التصميم المطبّق الآن",
+    "en": "Design applied now"
+  },
+  "admin.designDarkBadge": {
+    "ar": "داكن",
+    "en": "Dark"
+  },
+  "admin.designFailed": {
+    "ar": "تعذر تغيير التصميم، حاول مرة أخرى",
+    "en": "Could not change the design — please try again"
+  },
+  "admin.designHint": {
+    "ar": "اضغط أي تصميم ليُطبَّق فوراً على المتجر كله، ويظهر لك هنا مباشرة قبل أن يراه الزبائن. تصميمك القديم محفوظ دائماً باسم «الأصلي».",
+    "en": "Tap any design to apply it to the whole store right away — you see it here before shoppers do. Your previous look is always saved as “Original”."
+  },
+  "admin.designLead": {
+    "ar": "اختر تصميم موقعك — الألوان، لون الهيدر والفوتر، اللمسة المميزة واستدارة الحواف تتغيّر فوراً على كل صفحات الموقع، والمنتجات والعروض لا تتأثر.",
+    "en": "Pick your store design — colours, header and footer tone, the accent and the corner radius change instantly on every page. Products and orders are never touched."
+  },
+  "admin.designOriginalBadge": {
+    "ar": "الأصلي",
+    "en": "Original"
+  },
+  "admin.designRestore": {
+    "ar": "استرجاع التصميم الأصلي",
+    "en": "Restore original design"
+  },
+  "admin.designSaved": {
+    "ar": "تم تطبيق التصميم على الموقع",
+    "en": "Design applied to your store"
+  },
+  "admin.editBrandName": {
+    "ar": "تعديل اسم المتجر",
+    "en": "Edit the store name"
+  },
+  "admin.editIdentity": {
+    "ar": "تعديل الشعار واسم المتجر",
+    "en": "Edit the logo & store name"
+  },
+  "admin.editMap": {
+    "ar": "تعديل موقع الخريطة",
+    "en": "Edit the map location"
+  },
+  "admin.identity": {
+    "ar": "هوية المتجر",
+    "en": "Store identity"
+  },
+  "admin.identityLead": {
+    "ar": "الاسم، الوصف، النص التعريفي، الشعار وموقع المحل — تُحدَّث فوراً في الشريط العلوي والتذييل وعنوان التبويب وشاشة التحميل.",
+    "en": "Name, description, tagline, logo and shop location — updated instantly in the header, the footer, the tab title and the loading screen."
+  },
+  "admin.identityReset": {
+    "ar": "استرجاع الأصلي",
+    "en": "Restore defaults"
+  },
+  "admin.identitySaved": {
+    "ar": "تم تحديث هوية المتجر",
+    "en": "Store identity updated"
+  },
+  "admin.mapCoordinates": {
+    "ar": "إحداثيات المتجر",
+    "en": "Shop coordinates"
+  },
+  "admin.mapInvalid": {
+    "ar": "تعذر قراءة هذا الرابط — الصق رابط خرائط جوجل أو الإحداثيات",
+    "en": "Could not read that link — paste a Google Maps link or coordinates"
+  },
+  "admin.mapUrl": {
+    "ar": "رابط الخريطة أو الإحداثيات",
+    "en": "Map link or coordinates"
+  },
+  "admin.r2ConfigMissing": {
+    "ar": "R2 غير مُعدّ بعد — أضف المتغيّرات الناقصة في Keys / API keys",
+    "en": "R2 is not set up yet — add the missing variables in Keys / API keys"
+  },
+  "admin.r2FailDetail": {
+    "ar": "الرفع: {put} — القراءة العامة: {get} — رابط R2 العام يجب أن يكون مفتوحًا للقراءة على البucket.",
+    "en": "Upload: {put} — public read: {get} — the public R2 URL must allow reads on the bucket."
+  },
+  "admin.r2Failed": {
+    "ar": "فشل الاتصال بـ R2 — راجع حالة PUT/GET أدناه",
+    "en": "R2 connection failed — check the PUT/GET status below"
+  },
+  "admin.r2Hint": {
+    "ar": "اضغط الاختبار: تُرفع صورة صغيرة إلى R2 ثم تُقرأ من رابطها العام ثم تُحذف — للتأكد من أن المفاتيح تعمل.",
+    "en": "Press test: a tiny image is uploaded to R2, read back from its public URL, then deleted — to prove the keys work."
+  },
+  "admin.r2Ok": {
+    "ar": "R2 يعمل: تم الرفع والقراءة بنجاح",
+    "en": "R2 works: upload and read-back succeeded"
+  },
+  "admin.r2OkDetail": {
+    "ar": "الـ bucket: {bucket} — رفع {put}، قراءة {get} — تم حذف ملف الاختبار ({cleanup}).",
+    "en": "Bucket: {bucket} — upload {put}, read {get} — probe deleted ({cleanup})."
+  },
+  "admin.r2Test": {
+    "ar": "اختبار اتصال R2",
+    "en": "Test R2 connection"
+  },
+  "admin.r2Testing": {
+    "ar": "جارٍ الاختبار…",
+    "en": "Testing…"
+  },
+  "admin.r2Title": {
+    "ar": "تخزين الصور (Cloudflare R2)",
+    "en": "Image storage (Cloudflare R2)"
+  },
+  "admin.r2Waiting": {
+    "ar": "لم يتم الاختبار بعد. إذا لم تُضبط المفاتيح، تُحفظ الصور مؤقتاً في تخزين Convex.",
+    "en": "Not tested yet. Without the keys, images still go to Convex storage."
+  },
+  "admin.siteDescription": {
+    "ar": "وصف الموقع",
+    "en": "Site description"
+  },
+  "admin.siteDescriptionHint": {
+    "ar": "يظهر في نتائج Google و مشاركة الموقع. يجب أن يذكر التوصيل إلى 69 ولاية.",
+    "en": "Used in Google results and when sharing the site. Mention delivery to 69 wilayas."
+  },
+  "admin.tabDesign": {
+    "ar": "تصميم الموقع",
+    "en": "Site design"
+  },
+  "admin.tagline": {
+    "ar": "النص التعريفي",
+    "en": "Tagline"
+  },
+  "admin.taglineHint": {
+    "ar": "السطر الصغير تحت الاسم — مثال: Man's Fashion · Boutique Boys",
+    "en": "The small line under the name — e.g. Man's Fashion · Boutique Boys"
+  },
+  "cart.deliveryByWilaya": {
+    "ar": "يُحسب حسب الولاية",
+    "en": "Calculated from your wilaya"
+  },
+  "cart.deliveryToWilaya": {
+    "ar": "التوصيل إلى {wilaya}",
+    "en": "Delivery to {wilaya}"
+  },
+  "common.deliveryPrices": {
+    "ar": "أسعار التوصيل",
+    "en": "Delivery prices"
+  },
+  "common.save": {
+    "ar": "حفظ",
+    "en": "Save"
+  },
+  "delivery.defaultHint": {
+    "ar": "يُطبّق على كل ولاية لم تُحدَّد لها تسعيرة خاصة.",
+    "en": "Applies to every wilaya without its own price."
+  },
+  "delivery.defaultTag": {
+    "ar": "السعر الافتراضي",
+    "en": "Default price"
+  },
+  "delivery.defaultTitle": {
+    "ar": "السعر الافتراضي",
+    "en": "Default price"
+  },
+  "delivery.editDefault": {
+    "ar": "تعديل السعر الافتراضي",
+    "en": "Edit the default price"
+  },
+  "delivery.editHint": {
+    "ar": "اكتب السعر بالدينار الجزائري، أو 0 لإرجاع الولاية إلى السعر الافتراضي.",
+    "en": "Type the price in Algerian dinars, or 0 to put the wilaya back on the default price."
+  },
+  "delivery.editTitle": {
+    "ar": "تعديل سعر التوصيل",
+    "en": "Edit delivery price"
+  },
+  "delivery.editWilaya": {
+    "ar": "تعديل سعر {wilaya}",
+    "en": "Edit the price of {wilaya}"
+  },
+  "delivery.empty": {
+    "ar": "لا توجد ولاية بهذا الاسم",
+    "en": "No wilaya matches that name"
+  },
+  "delivery.error": {
+    "ar": "تعذر حفظ السعر",
+    "en": "Could not save the price"
+  },
+  "delivery.eyebrow": {
+    "ar": "التوصيل",
+    "en": "Delivery"
+  },
+  "delivery.lead": {
+    "ar": "اختر ولايتك عند إتمام الطلب ويُحتسب سعر التوصيل تلقائياً مع المجموع النهائي، والدفع عند الاستلام في كل الولايات.",
+    "en": "Pick your wilaya at checkout and the delivery fee is added to your total automatically. Cash on delivery in every wilaya."
+  },
+  "delivery.orderHint": {
+    "ar": "السعر النهائي للطلب = مجموع المنتجات + سعر التوصيل لولايتك.",
+    "en": "Order total = products + the delivery price of your wilaya."
+  },
+  "delivery.pricePlaceholder": {
+    "ar": "مثال: 700",
+    "en": "e.g. 700"
+  },
+  "delivery.results": {
+    "ar": "{n} ولاية",
+    "en": "{n} wilayas"
+  },
+  "delivery.saved": {
+    "ar": "تم تحديث سعر التوصيل",
+    "en": "Delivery price updated"
+  },
+  "delivery.search": {
+    "ar": "ابحث عن ولايتك…",
+    "en": "Search your wilaya…"
+  },
+  "delivery.title": {
+    "ar": "أسعار التوصيل إلى 69 ولاية",
+    "en": "Delivery prices to 69 wilayas"
+  },
+  "footer.deliveryPrices": {
+    "ar": "تعرّف على أسعار التوصيل لكل ولاية",
+    "en": "See the delivery price of every wilaya"
+  }
+}

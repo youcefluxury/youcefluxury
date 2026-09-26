@@ -142,6 +142,15 @@ const schema = defineSchema(
       createdAt: v.number(),
     }).index("by_created", ["createdAt"]),
 
+    /**
+     * Delivery price of one wilaya, in DA. A wilaya without a row is charged
+     * the shop-wide default, and a price of 0 puts it back on that default.
+     */
+    deliveryPrices: defineTable({
+      wilayaCode: v.number(),
+      price: v.number(),
+    }).index("by_code", ["wilayaCode"]),
+
     meta: defineTable({
       key: v.string(),
       value: v.string(),

@@ -2,7 +2,11 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { isValidAdminKey } from "./admin";
 
-/** Flat delivery fee in DA — the fallback for products without their own. */
+/**
+ * Delivery fee in DA for one order. The price belongs to the wilaya (see
+ * `deliveryPrices`), and a wilaya without its own price pays this default.
+ * Mirrors the cart's own calculation in src/components/store/CartDrawer.tsx.
+ */
 const DEFAULT_DELIVERY_FEE = 900;
 
 const orderItemValidator = v.object({
@@ -14,7 +18,10 @@ const orderItemValidator = v.object({
   color: v.string(),
   quantity: v.number(),
   image: v.string(),
-  /** Per-product delivery price (undefined → shop default applies). */
+  /**
+   * Legacy per-product delivery price. Kept optional so orders placed before
+   * the wilaya-based prices still read back exactly as they were saved.
+   */
   deliveryFee: v.optional(v.number()),
 });
 
@@ -51,23 +58,21 @@ export const createOrder = mutation({
       (sum, item) => sum + item.price * item.quantity,
       0,
     );
-    // Each distinct product contributes its own fee (once, whatever the
-    // quantity); products without one pay the shop-wide default.
-    const seen = new Set<string>();
-    let deliveryFee = 0;
-    for (const item of args.items) {
-      if (seen.has(item.productId)) continue;
-      seen.add(item.productId);
-      deliveryFee +=
-        item.deliveryFee && item.deliveryFee > 0
-          ? item.deliveryFee
-          : DEFAULT_DELIVERY_FEE;
-    }
+    // One delivery fee per order: the price of the chosen wilaya, or the
+    // shop-wide default when that wilaya has none yet.
+    const wilayaPrice = await ctx.db
+      .query("deliveryPrices")
+      .withIndex("by_code", (q) => q.eq("wilayaCode", args.wilayaCode))
+      .unique();
+    const deliveryFee =
+      wilayaPrice && wilayaPrice.price > 0
+        ? wilayaPrice.price
+        : DEFAULT_DELIVERY_FEE;
     /*
      * The fee computed above is authoritative and the order total is always
-     * derived from it here, so a stale value sent by the browser (an item added
-     * before a delivery-price change, for instance) can never block a real
-     * order. The client mirrors this same per-product rule for its display.
+     * derived from it here, so a stale value sent by the browser (a wilaya
+     * price edited while the cart was open, for instance) can never block a
+     * real order. The client mirrors the same wilaya rule for its display.
      */
     const total = itemsTotal + deliveryFee;
 

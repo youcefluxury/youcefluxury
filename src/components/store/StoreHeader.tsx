@@ -1,6 +1,7 @@
 import {
   ChevronDown,
   Menu,
+  Palette,
   Search,
   ShoppingCart,
   User,
@@ -74,7 +75,7 @@ export function StoreHeader() {
   /* The dashboard shortcut in the navbar belongs to the signed-in admin only. */
   const isAdmin = useIsAdminSession();
   /* Live logo + social links — the admin edits all of them from the site. */
-  const { instagram, facebook } = useStoreBrand();
+  const { instagram, facebook, name } = useStoreBrand();
   /* Live number: the WhatsApp icon chats with it straight away. */
   const { phone } = useStorePhone();
   const [mobileSearch, setMobileSearch] = useState(false);
@@ -156,6 +157,7 @@ export function StoreHeader() {
   const navLinks = [
     { to: "/", label: t("common.home") },
     { to: "/shop", label: t("common.shop") },
+    { to: "/delivery", label: t("common.deliveryPrices") },
   ];
 
   return (
@@ -165,8 +167,8 @@ export function StoreHeader() {
       <div className="bg-background/85 border-b border-border/70 backdrop-blur-xl">
         <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-3 sm:h-16 sm:gap-3 sm:px-6">
           <div className="relative shrink-0">
-            <Link to="/" aria-label="HA Drip Boys">
-              <Brand />
+            <Link to="/" aria-label={name}>
+              <Brand responsive />
             </Link>
             {/* Admin only: swap the logo from here. */}
             <LogoEditButton className="absolute -top-1 -start-1" />
@@ -293,13 +295,24 @@ export function StoreHeader() {
             <AdminNotifications />
 
             {isAdmin ? (
-              <Link
-                to="/admin"
-                aria-label={t("common.account")}
-                className={iconButton}
-              >
-                <User className="size-5" />
-              </Link>
+              <>
+                {/* Admin only: jump straight to the site design screen. */}
+                <Link
+                  to="/admin/design"
+                  aria-label={t("admin.tabDesign")}
+                  title={t("admin.tabDesign")}
+                  className={iconButton}
+                >
+                  <Palette className="size-5" />
+                </Link>
+                <Link
+                  to="/admin"
+                  aria-label={t("common.account")}
+                  className={iconButton}
+                >
+                  <User className="size-5" />
+                </Link>
+              </>
             ) : null}
 
             <button

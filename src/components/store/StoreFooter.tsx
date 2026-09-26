@@ -18,8 +18,9 @@ export function StoreFooter() {
   const { t, lang, isAr } = useI18n();
   // Live phone number — whatever the admin saved from the storefront.
   const { phone, display } = useStorePhone();
-  // Live social links — editable by the admin from the icons themselves.
-  const { instagram, facebook } = useStoreBrand();
+  // Live identity — social links, store name and description, editable by the
+  // admin from the icons themselves or from the dashboard's design tab.
+  const { instagram, facebook, name } = useStoreBrand();
 
   // Live category list — admin edits appear here immediately.
   const categoryRows = useQuery(api.catalog.listCategories);
@@ -100,7 +101,14 @@ export function StoreFooter() {
             <ul className="mt-5 space-y-4 text-sm text-white/70">
               <li className="flex items-start gap-3">
                 <Truck className="mt-0.5 size-4 shrink-0" />
-                {t("footer.delivery")}
+                {/* Opens the per-wilaya price list. */}
+                <Link
+                  to="/delivery"
+                  title={t("footer.deliveryPrices")}
+                  className="hover:text-white"
+                >
+                  {t("footer.delivery")}
+                </Link>
               </li>
               <li className="flex items-start gap-3">
                 <ShieldCheck className="mt-0.5 size-4 shrink-0" />
@@ -132,7 +140,12 @@ export function StoreFooter() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[11px] tracking-wide text-white/40 sm:flex-row sm:items-center sm:justify-between">
-          <span>{t("footer.rights", { year: new Date().getFullYear() })}</span>
+          <span>
+            {t("footer.rights", {
+              year: new Date().getFullYear(),
+              store: name,
+            })}
+          </span>
           <Link to="/admin" className="hover:text-white/70">
             {t("footer.admin")}
           </Link>

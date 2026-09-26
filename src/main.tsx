@@ -1,6 +1,8 @@
 import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
+import { SiteThemeProvider } from "@/components/store/SiteThemeProvider";
 import { StoreLayout } from "@/components/store/StoreLayout";
+import { StoreMeta } from "@/components/store/StoreMeta";
 import { LanguageProvider } from "@/lib/i18n";
 import { CartProvider } from "@/lib/store-state";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
@@ -16,7 +18,9 @@ const Landing = lazy(() => import("./pages/Landing.tsx"));
 const Shop = lazy(() => import("./pages/Shop.tsx"));
 const ProductDetails = lazy(() => import("./pages/ProductDetails.tsx"));
 const CategoryPage = lazy(() => import("./pages/CategoryPage.tsx"));
+const DeliveryPrices = lazy(() => import("./pages/DeliveryPrices.tsx"));
 const Admin = lazy(() => import("./pages/Admin.tsx"));
+const AdminDesign = lazy(() => import("./pages/AdminDesign.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
@@ -199,25 +203,33 @@ if (!rootElement) {
             <VlyToolbar />
           </ToolbarErrorBoundary>
           <ConvexAuthProvider client={convex}>
-            <LanguageProvider>
-              <CartProvider>
-                <BrowserRouter>
-                  <RouteSyncer />
-                  <Suspense fallback={<RouteLoading />}>
-                    <Routes>
-                      <Route element={<StoreLayout />}>
-                        <Route path="/" element={<Landing />} />
-                        <Route path="/shop" element={<Shop />} />
-                        <Route path="/category/:slug" element={<CategoryPage />} />
-                        <Route path="/product/:id" element={<ProductDetails />} />
-                      </Route>
-                      <Route path="/admin" element={<Admin />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </BrowserRouter>
-              </CartProvider>
-            </LanguageProvider>
+            <SiteThemeProvider>
+              <LanguageProvider>
+                <CartProvider>
+                  <BrowserRouter>
+                    {/* Title, tab icon and shared-site description follow the
+                        live store identity saved in the dashboard. */}
+                    <StoreMeta />
+                    <RouteSyncer />
+                    <Suspense fallback={<RouteLoading />}>
+                      <Routes>
+                        <Route element={<StoreLayout />}>
+                          <Route path="/" element={<Landing />} />
+                          <Route path="/shop" element={<Shop />} />
+                          <Route path="/category/:slug" element={<CategoryPage />} />
+                          <Route path="/product/:id" element={<ProductDetails />} />
+                          <Route path="/delivery" element={<DeliveryPrices />} />
+                        </Route>
+                        <Route path="/admin" element={<Admin />} />
+                        {/* Site design: presets, store identity, R2 storage. */}
+                        <Route path="/admin/design" element={<AdminDesign />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
+                  </BrowserRouter>
+                </CartProvider>
+              </LanguageProvider>
+            </SiteThemeProvider>
             <Toaster />
           </ConvexAuthProvider>
         </RootErrorBoundary>

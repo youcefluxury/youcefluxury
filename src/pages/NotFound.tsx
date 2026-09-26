@@ -4,11 +4,13 @@ import { Link } from "react-router";
 
 import { HaMonogram } from "@/components/store/bits";
 import { Button } from "@/components/ui/button";
+import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export default function NotFound() {
   const { t, isAr } = useI18n();
+  const { name } = useStoreBrand();
 
   return (
     <motion.div
@@ -21,7 +23,7 @@ export default function NotFound() {
       <p className="font-display mt-8 text-6xl tracking-[0.2em]">404</p>
       <h1 className="mt-4 text-xl font-semibold">{t("notFound.title")}</h1>
       <p className="text-muted-foreground mt-2 max-w-sm text-sm leading-7">
-        {t("notFound.body")}
+        {t("notFound.body", { store: name })}
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button asChild className="h-11 px-6">

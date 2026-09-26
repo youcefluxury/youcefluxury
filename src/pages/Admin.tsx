@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   ExternalLink,
+  HardDrive,
   Image as ImageIcon,
   ImagePlus,
   KeyRound,
@@ -15,6 +16,7 @@ import {
   LogOut,
   MessageCircle,
   Package,
+  Palette,
   Phone,
   Pencil,
   Plus,
@@ -32,6 +34,7 @@ import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { Brand, HaMonogram, LanguageToggle, ProductImage } from "@/components/store/bits";
+import { SiteDesignTab } from "@/components/store/SiteDesignTab";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -71,8 +74,6 @@ const EMPTY_PRODUCT_FORM = {
   nameAr: "",
   price: "",
   oldPrice: "",
-  /** Per-product delivery price — empty means the shop-wide default. */
-  deliveryFee: "",
   /** Empty → the product form defaults to the first live category. */
   category: "",
   images: "",
@@ -492,7 +493,7 @@ function AdminField({
  * (salted hash on the server — nothing is hardcoded in the bundle), and the
  * factory password must be replaced before the dashboard opens.
  */
-function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
+export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
   const { t, isAr } = useI18n();
   const ensureAccount = useMutation(api.admin.ensureAdminAccount);
   const checkLogin = useMutation(api.admin.checkAdminLogin);
@@ -807,7 +808,6 @@ function ProductsManager({
       nameAr: product.nameAr,
       price: String(product.price),
       oldPrice: product.oldPrice ? String(product.oldPrice) : "",
-      deliveryFee: product.deliveryFee ? String(product.deliveryFee) : "",
       category: product.category,
       images: product.images.join("\n"),
       // Row 1 lists every size the piece comes in, row 2 marks the sold-out ones.
@@ -854,7 +854,6 @@ function ProductsManager({
         nameEn: form.nameAr.trim(),
         price: Number(form.price),
         oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
-        deliveryFee: form.deliveryFee.trim() ? Number(form.deliveryFee) : undefined,
         category: form.category,
         images: splitList(form.images),
         // One entry per picked size — a sold-out size stays a single row.
@@ -905,7 +904,7 @@ function ProductsManager({
   }
 
   const headClass = "px-3 py-2.5 text-start text-[10px] tracking-[0.14em] uppercase sm:px-4 sm:py-3 sm:text-[11px]";
-  const fieldClass = "grid gap-2";
+  const fieldClass = "grid gap-2"; /* probe */
 
   const pickedSizes = splitList(form.availableSizes);
   const soldOutList = splitList(form.soldOutSizes);
@@ -984,52 +983,36 @@ function ProductsManager({
               placeholder={t("admin.nameArPlaceholder")}
             />
           </div>
-          <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
-            <div className={fieldClass}>
-              <Label htmlFor="price">{t("admin.price")}</Label>
-              <Input
-                id="price"
-                inputMode="numeric"
-                dir="ltr"
-                value={form.price}
-                onChange={(event) => update("price", event.target.value)}
-                placeholder="0"
-              />
-            </div>
-            <div className={fieldClass}>
-              <Label htmlFor="deliveryFee">{t("admin.deliveryFee")}</Label>
-              <Input
-                id="deliveryFee"
-                inputMode="numeric"
-                dir="ltr"
-                value={form.deliveryFee}
-                onChange={(event) => update("deliveryFee", event.target.value)}
-                placeholder="0"
-              />
-              <p className="text-muted-foreground text-[10px] leading-4">
-                {t("admin.deliveryFeeHint")}
-              </p>
-            </div>
+          <div className={fieldClass}>
+            <Label htmlFor="price">{t("admin.price")}</Label>
+            <Input
+              id="price"
+              inputMode="numeric"
+              dir="ltr"
+              value={form.price}
+              onChange={(event) => update("price", event.target.value)}
+              placeholder="0"
+            />
           </div>
-          <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
-            <div className={fieldClass}>
-              <Label htmlFor="oldPrice">{t("admin.oldPrice")}</Label>
-              <Input
-                id="oldPrice"
-                inputMode="numeric"
-                dir="ltr"
-                value={form.oldPrice}
-                onChange={(event) => update("oldPrice", event.target.value)}
-                placeholder="0"
-              />
-              <p className="text-muted-foreground text-[10px] leading-4">
-                {form.oldPrice
-                  ? t("admin.discountOn", {
-                      save: formatDA(Math.max(0, Number(form.price || 0) - Number(form.oldPrice))),
-                    })
-                  : t("admin.discountOff")}
-              </p>
-            </div>
+          <div className={fieldClass}>
+            <Label htmlFor="oldPrice">{t("admin.oldPrice")}</Label>
+            <Input
+              id="oldPrice"
+              inputMode="numeric"
+              dir="ltr"
+              value={form.oldPrice}
+              onChange={(event) => update("oldPrice", event.target.value)}
+              placeholder="0"
+            />
+            <p className="text-muted-foreground text-[10px] leading-4">
+              {form.oldPrice
+                ? t("admin.discountOn", {
+                    save: formatDA(
+                      Math.max(0, Number(form.price || 0) - Number(form.oldPrice)),
+                    ),
+                  })
+                : t("admin.discountOff")}
+            </p>
           </div>
           {/* Photos come straight from the device — nothing to type. */}
           <div className={fieldClass}>

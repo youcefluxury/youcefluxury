@@ -47,26 +47,67 @@ export function HaMonogram({ className }: { className?: string }) {
   );
 }
 
+/**
+ * The live store signature: logo, then the name and tagline the dashboard
+ * saved. `responsive` keeps the header compact on phones (logo only) and
+ * `onDark` / `onBlack` switch the text for dark backgrounds.
+ */
 export function Brand({
   className,
   onDark = false,
+  onBlack = false,
+  responsive = false,
 }: {
   className?: string;
   onDark?: boolean;
-  compact?: boolean;
+  onBlack?: boolean;
+  /** Hides the name on phones and the tagline below the desktop width. */
+  responsive?: boolean;
 }) {
-  /* Same live logo the admin edits from the site. */
-  const { logo } = useStoreBrand();
+  /* Same live identity the admin edits — from the site or the dashboard. */
+  const { logo, name, tagline } = useStoreBrand();
+  const dark = onDark || onBlack;
+
   return (
-    <div className={cn("flex items-center", className)}>
+    <div className={cn("flex min-w-0 items-center gap-2.5", className)}>
       <img
         src={logo}
-        alt="HA Drip Boys — Man's Fashion · Boutique Boys"
+        alt={name}
         className={cn(
-          "size-9 object-contain",
-          onDark && "size-10 rounded-md bg-white p-0.5",
+          "shrink-0 rounded-md bg-white object-contain p-0.5 ring-1 ring-black/5",
+          dark ? "size-10" : "size-9",
         )}
       />
+      <span className="flex min-w-0 flex-col justify-center">
+        <span
+          className={cn(
+            "font-display truncate text-[14px] leading-tight font-semibold tracking-[0.12em] uppercase sm:text-[15px] sm:tracking-[0.14em]",
+            responsive && "hidden sm:block",
+            onBlack
+              ? "text-white"
+              : onDark
+                ? "text-background"
+                : "text-foreground",
+          )}
+        >
+          {name}
+        </span>
+        {tagline ? (
+          <span
+            className={cn(
+              "mt-0.5 truncate text-[9px] leading-tight tracking-[0.16em]",
+              responsive ? "hidden lg:block" : "hidden sm:block",
+              onBlack
+                ? "text-white/55"
+                : onDark
+                  ? "text-background/55"
+                  : "text-muted-foreground",
+            )}
+          >
+            {tagline}
+          </span>
+        ) : null}
+      </span>
     </div>
   );
 }

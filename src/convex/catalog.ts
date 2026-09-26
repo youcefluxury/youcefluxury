@@ -319,10 +319,14 @@ export const setPhone = mutation({
 });
 
 /* ------------------------------------------------------------------ */
-/* Store identity — logo & Instagram, editable from the site itself    */
+/* Store identity — name, tagline, description, logo, links and map     */
 /* ------------------------------------------------------------------ */
 
-/** Live logo + Instagram values; an empty string means “use the default”. */
+/**
+ * Live identity values; an empty string means “use the built-in default”,
+ * which every consumer (header, footer, tab title, loading screen, map) then
+ * falls back to on its own.
+ */
 export const getStoreSettings = query({
   args: {},
   handler: async (ctx) => {
@@ -330,20 +334,43 @@ export const getStoreSettings = query({
     const map = new Map(rows.map((row) => [row.key, row.value]));
     return {
       logo: map.get("logo") ?? "",
+      name: map.get("name") ?? "",
+      tagline: map.get("tagline") ?? "",
+      description: map.get("description") ?? "",
       instagram: map.get("instagram") ?? "",
       facebook: map.get("facebook") ?? "",
+      /** Whatever the admin pasted — coordinates or a Google Maps link. */
+      mapEmbedUrl: map.get("map") ?? "",
     };
   },
 });
 
-/** Saves one identity value (logo photo URL, Instagram or Facebook link). */
+/** Keys the dashboard is allowed to write through `setStoreSetting`. */
+const identityKeys = [
+  "logo",
+  "name",
+  "tagline",
+  "description",
+  "instagram",
+  "facebook",
+  "map",
+] as const;
+
+/** Keys that must be a usable link once they are not empty. */
+const LINK_KEYS: ReadonlySet<string> = new Set(["instagram", "facebook"]);
+
+/** Saves one identity value (name, tagline, description, logo, link, map). */
 export const setStoreSetting = mutation({
   args: {
     adminKey: v.string(),
     key: v.union(
       v.literal("logo"),
+      v.literal("name"),
+      v.literal("tagline"),
+      v.literal("description"),
       v.literal("instagram"),
       v.literal("facebook"),
+      v.literal("map"),
     ),
     value: v.string(),
   },
@@ -351,8 +378,16 @@ export const setStoreSetting = mutation({
     if (!isValidAdminKey(args.adminKey)) {
       throw new Error("UNAUTHORIZED");
     }
-    const value = args.value.trim();
-    if (args.key !== "logo" && value && !/^https?:\/\//i.test(value)) {
+    if (!identityKeys.includes(args.key)) {
+      throw new Error("INVALID_KEY");
+    }
+    // A blank description is allowed (it falls back to the default), but the
+    // store must never end up without a name of its own.
+    const value = args.value.trim().replace(/\s+/g, " ");
+    if (args.key === "name" && !value) {
+      throw new Error("INVALID_NAME");
+    }
+    if (LINK_KEYS.has(args.key) && value && !/^https?:\/\//i.test(value)) {
       throw new Error("INVALID_LINK");
     }
     const existing = await ctx.db
@@ -365,6 +400,72 @@ export const setStoreSetting = mutation({
       await ctx.db.insert("meta", { key: args.key, value });
     }
     return value;
+  },
+});
+
+/* ------------------------------------------------------------------ */
+/* Site design — the theme preset applied to the whole storefront       */
+/* ------------------------------------------------------------------ */
+
+/** Meta key holding the chosen site design. */
+const SITE_THEME_KEY = "site-theme";
+
+/** Every design the dashboard can apply (see src/lib/site-theme.ts). */
+export const SITE_THEME_IDS = [
+  "original",
+  "royal",
+  "sand",
+  "emerald",
+  "burgundy",
+  "slate",
+  "olive",
+  "ivory",
+  "midnight",
+] as const;
+
+/** The design the whole storefront wears right now. */
+export const getSiteTheme = query({
+  args: {},
+  handler: async (ctx) => {
+    const row = await ctx.db
+      .query("meta")
+      .withIndex("by_key", (q) => q.eq("key", SITE_THEME_KEY))
+      .unique();
+    const theme = row?.value ?? "original";
+    return { theme: SITE_THEME_IDS.includes(theme as never) ? theme : "original" };
+  },
+});
+
+/** Applies one design to every visitor — colours, tone and corner radius. */
+export const setSiteTheme = mutation({
+  args: {
+    adminKey: v.string(),
+    theme: v.union(
+      v.literal("original"),
+      v.literal("royal"),
+      v.literal("sand"),
+      v.literal("emerald"),
+      v.literal("burgundy"),
+      v.literal("slate"),
+      v.literal("olive"),
+      v.literal("ivory"),
+      v.literal("midnight"),
+    ),
+  },
+  handler: async (ctx, args) => {
+    if (!isValidAdminKey(args.adminKey)) {
+      throw new Error("UNAUTHORIZED");
+    }
+    const existing = await ctx.db
+      .query("meta")
+      .withIndex("by_key", (q) => q.eq("key", SITE_THEME_KEY))
+      .unique();
+    if (existing) {
+      await ctx.db.patch(existing._id, { value: args.theme });
+    } else {
+      await ctx.db.insert("meta", { key: SITE_THEME_KEY, value: args.theme });
+    }
+    return args.theme;
   },
 });
 

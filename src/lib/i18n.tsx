@@ -8,6 +8,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { STORE } from "@/lib/store-data";
+
 /* ------------------------------------------------------------------ */
 /* Languages                                                           */
 /* ------------------------------------------------------------------ */
@@ -57,13 +59,15 @@ const STRINGS = {
   "common.whatsappAria": { ar: "اتصل بنا على واتساب", en: "Contact us on WhatsApp" },
   "common.phone": { ar: "الهاتف", en: "Phone" },
   "common.phoneAria": { ar: "اتصل بنا هاتفياً", en: "Call us" },
+  "common.save": { ar: "حفظ", en: "Save" },
+  "common.deliveryPrices": { ar: "أسعار التوصيل", en: "Delivery prices" },
   "common.deliveryNote": {
     ar: "توصيل إلى 69 ولاية │ الدفع عند الاستلام",
     en: "Delivery to 69 wilayas │ Cash on delivery",
   },
   "meta.title": {
-    ar: "HA Drip Boys — ملابس وأزياء الرجال في الجزائر",
-    en: "HA Drip Boys — Men's fashion boutique in Algeria",
+    ar: "{store} — ملابس وأزياء الرجال في الجزائر",
+    en: "{store} — Men's fashion boutique in Algeria",
   },
 
   /* ---- hero slider ----------------------------------------------- */
@@ -216,6 +220,14 @@ const STRINGS = {
   "cart.emptyCta": { ar: "اكتشف المنتجات", en: "Browse products" },
   "cart.remove": { ar: "حذف", en: "Remove" },
   "cart.subtotal": { ar: "المجموع الفرعي", en: "Subtotal" },
+  "cart.deliveryByWilaya": {
+    ar: "يُحسب حسب الولاية",
+    en: "Calculated from your wilaya",
+  },
+  "cart.deliveryToWilaya": {
+    ar: "التوصيل إلى {wilaya}",
+    en: "Delivery to {wilaya}",
+  },
   "cart.deliveryNote": {
     ar: "رسوم التوصيل حسب الولاية",
     en: "Delivery fee depends on the wilaya",
@@ -238,8 +250,8 @@ const STRINGS = {
   },
   "cart.sent": { ar: "تم إرسال الطلب", en: "Order sent" },
   "cart.whatsappMessage": {
-    ar: "مرحبا HA Drip Boys، رقم طلبي هو {reference}",
-    en: "Hello HA Drip Boys, my order number is {reference}",
+    ar: "مرحبا {store}، رقم طلبي هو {reference}",
+    en: "Hello {store}, my order number is {reference}",
   },
   "cart.confirmInstagram": { ar: "إرسال الطلب عبر إنستغرام", en: "Send order via Instagram" },
   "cart.openedInstagram": {
@@ -308,14 +320,61 @@ const STRINGS = {
   "footer.service": { ar: "الخدمة", en: "Service" },
   "footer.contact": { ar: "تواصل", en: "Contact" },
   "footer.delivery": { ar: "توصيل إلى 69 ولاية", en: "Delivery to all 69 wilayas" },
+  "footer.deliveryPrices": {
+    ar: "تعرّف على أسعار التوصيل لكل ولاية",
+    en: "See the delivery price of every wilaya",
+  },
   "footer.cod": { ar: "الدفع عند الاستلام", en: "Cash on delivery" },
   "footer.hours": {
     ar: "من السبت إلى الخميس · 9:00 — 19:00",
     en: "Saturday to Thursday · 9:00 — 19:00",
   },
   "footer.rights": {
-    ar: "© {year} HA Drip Boys — كل الحقوق محفوظة",
-    en: "© {year} HA Drip Boys — All rights reserved",
+    ar: "© {year} {store} — كل الحقوق محفوظة",
+    en: "© {year} {store} — All rights reserved",
+  },
+
+  /* ---- delivery prices ------------------------------------------- */
+  "delivery.eyebrow": { ar: "التوصيل", en: "Delivery" },
+  "delivery.title": {
+    ar: "أسعار التوصيل إلى 69 ولاية",
+    en: "Delivery prices to 69 wilayas",
+  },
+  "delivery.lead": {
+    ar: "اختر ولايتك عند إتمام الطلب ويُحتسب سعر التوصيل تلقائياً مع المجموع النهائي، والدفع عند الاستلام في كل الولايات.",
+    en: "Pick your wilaya at checkout and the delivery fee is added to your total automatically. Cash on delivery in every wilaya.",
+  },
+  "delivery.defaultTitle": { ar: "السعر الافتراضي", en: "Default price" },
+  "delivery.defaultHint": {
+    ar: "يُطبّق على كل ولاية لم تُحدَّد لها تسعيرة خاصة.",
+    en: "Applies to every wilaya without its own price.",
+  },
+  "delivery.search": { ar: "ابحث عن ولايتك…", en: "Search your wilaya…" },
+  "delivery.results": { ar: "{n} ولاية", en: "{n} wilayas" },
+  "delivery.empty": {
+    ar: "لا توجد ولاية بهذا الاسم",
+    en: "No wilaya matches that name",
+  },
+  "delivery.defaultTag": { ar: "السعر الافتراضي", en: "Default price" },
+  "delivery.editTitle": { ar: "تعديل سعر التوصيل", en: "Edit delivery price" },
+  "delivery.editHint": {
+    ar: "اكتب السعر بالدينار الجزائري، أو 0 لإرجاع الولاية إلى السعر الافتراضي.",
+    en: "Type the price in Algerian dinars, or 0 to put the wilaya back on the default price.",
+  },
+  "delivery.pricePlaceholder": { ar: "مثال: 700", en: "e.g. 700" },
+  "delivery.saved": { ar: "تم تحديث سعر التوصيل", en: "Delivery price updated" },
+  "delivery.error": { ar: "تعذر حفظ السعر", en: "Could not save the price" },
+  "delivery.editDefault": {
+    ar: "تعديل السعر الافتراضي",
+    en: "Edit the default price",
+  },
+  "delivery.editWilaya": {
+    ar: "تعديل سعر {wilaya}",
+    en: "Edit the price of {wilaya}",
+  },
+  "delivery.orderHint": {
+    ar: "السعر النهائي للطلب = مجموع المنتجات + سعر التوصيل لولايتك.",
+    en: "Order total = products + the delivery price of your wilaya.",
   },
   "footer.admin": { ar: "لوحة التحكم", en: "Admin panel" },
 
@@ -356,8 +415,8 @@ const STRINGS = {
   /* ---- 404 ------------------------------------------------------- */
   "notFound.title": { ar: "الصفحة غير موجودة", en: "Page not found" },
   "notFound.body": {
-    ar: "الرابط الذي طلبته غير متوفر. عد إلى المتجر واكتشف تشكيلة HA Drip Boys.",
-    en: "This link is not available. Head back to the shop and explore the HA Drip Boys collection.",
+    ar: "الرابط الذي طلبته غير متوفر. عد إلى المتجر واكتشف تشكيلة {store}.",
+    en: "This link is not available. Head back to the shop and explore the {store} collection.",
   },
   "notFound.shop": { ar: "المتجر", en: "Shop" },
   "notFound.home": { ar: "الرئيسية", en: "Home" },
@@ -391,8 +450,8 @@ const STRINGS = {
   "admin.editLogo": { ar: "تعديل الشعار", en: "Edit the logo" },
   "admin.logoImage": { ar: "صورة الشعار", en: "Logo image" },
   "admin.logoHint": {
-    ar: "ارفع صورة شعار جديدة — تظهر في الشريط العلوي والتذييل وفي كل مكان في الموقع.",
-    en: "Upload a new logo — it appears in the header, the footer and everywhere on the site.",
+    ar: "ارفع صورة شعار جديدة — تظهر في الشريط العلوي والتذييل وفي كل مكان في الموقع، وتُحدَّث معها أيقونة التبويب (الفافيكون) وشاشة التحميل تلقائياً.",
+    en: "Upload a new logo — it appears in the header, the footer and everywhere on the site, and the browser tab icon (favicon) plus the loading screen follow automatically.",
   },
   "admin.logoReset": { ar: "الشعار الأصلي", en: "Default logo" },
   "admin.editInstagram": { ar: "تعديل رابط إنستغرام", en: "Edit the Instagram link" },
@@ -712,6 +771,119 @@ const STRINGS = {
     en: "No orders yet — they will appear here right after the first purchase.",
   },
   "admin.sizeShort": { ar: "المقاس {size}", en: "Size {size}" },
+
+  /* ---- admin: site design ---------------------------------------- */
+  "admin.tabDesign": { ar: "تصميم الموقع", en: "Site design" },
+  "admin.designLead": {
+    ar: "اختر تصميم موقعك — الألوان، لون الهيدر والفوتر، اللمسة المميزة واستدارة الحواف تتغيّر فوراً على كل صفحات الموقع، والمنتجات والعروض لا تتأثر.",
+    en: "Pick your store design — colours, header and footer tone, the accent and the corner radius change instantly on every page. Products and orders are never touched.",
+  },
+  "admin.designCurrent": {
+    ar: "التصميم المطبّق الآن",
+    en: "Design applied now",
+  },
+  "admin.designHint": {
+    ar: "اضغط أي تصميم ليُطبَّق فوراً على المتجر كله، ويظهر لك هنا مباشرة قبل أن يراه الزبائن. تصميمك القديم محفوظ دائماً باسم «الأصلي».",
+    en: "Tap any design to apply it to the whole store right away — you see it here before shoppers do. Your previous look is always saved as “Original”.",
+  },
+  "admin.designApply": { ar: "تطبيق هذا التصميم", en: "Apply this design" },
+  "admin.designApplied": { ar: "مطبّق حالياً", en: "Applied now" },
+  "admin.designOriginalBadge": { ar: "الأصلي", en: "Original" },
+  "admin.designDarkBadge": { ar: "داكن", en: "Dark" },
+  "admin.designRestore": {
+    ar: "استرجاع التصميم الأصلي",
+    en: "Restore original design",
+  },
+  "admin.designSaved": {
+    ar: "تم تطبيق التصميم على الموقع",
+    en: "Design applied to your store",
+  },
+  "admin.designFailed": {
+    ar: "تعذر تغيير التصميم، حاول مرة أخرى",
+    en: "Could not change the design — please try again",
+  },
+
+  /* ---- admin: store identity ------------------------------------- */
+  "admin.identity": { ar: "هوية المتجر", en: "Store identity" },
+  "admin.identityLead": {
+    ar: "الاسم، الوصف، النص التعريفي، الشعار وموقع المحل — تُحدَّث فوراً في الشريط العلوي والتذييل وعنوان التبويب وشاشة التحميل.",
+    en: "Name, description, tagline, logo and shop location — updated instantly in the header, the footer, the tab title and the loading screen.",
+  },
+  "admin.identitySaved": { ar: "تم تحديث هوية المتجر", en: "Store identity updated" },
+  "admin.identityReset": { ar: "استرجاع الأصلي", en: "Restore defaults" },
+  "admin.editIdentity": {
+    ar: "تعديل الشعار واسم المتجر",
+    en: "Edit the logo & store name",
+  },
+  "admin.editBrandName": { ar: "تعديل اسم المتجر", en: "Edit the store name" },
+  "admin.brandName": { ar: "اسم المتجر", en: "Store name" },
+  "admin.tagline": { ar: "النص التعريفي", en: "Tagline" },
+  "admin.brandNameHint": {
+    ar: "يظهر في الشريط العلوي والتذييل، وفي عنوان تبويب المتصفح وشاشة التحميل.",
+    en: "Shown in the header and the footer, plus the browser tab title and the loading screen.",
+  },
+  "admin.brandNameRequired": {
+    ar: "اكتب اسم المتجر أولاً",
+    en: "Enter the store name first",
+  },
+  "admin.taglineHint": {
+    ar: "السطر الصغير تحت الاسم — مثال: Man's Fashion · Boutique Boys",
+    en: "The small line under the name — e.g. Man's Fashion · Boutique Boys",
+  },
+  "admin.siteDescription": { ar: "وصف الموقع", en: "Site description" },
+  "admin.siteDescriptionHint": {
+    ar: "يظهر في نتائج Google و مشاركة الموقع. يجب أن يذكر التوصيل إلى 69 ولاية.",
+    en: "Used in Google results and when sharing the site. Mention delivery to 69 wilayas.",
+  },
+  "admin.editMap": {
+    ar: "تعديل موقع الخريطة",
+    en: "Edit the map location",
+  },
+  "admin.mapUrl": {
+    ar: "رابط الخريطة أو الإحداثيات",
+    en: "Map link or coordinates",
+  },
+  "admin.mapCoordinates": { ar: "إحداثيات المتجر", en: "Shop coordinates" },
+  "admin.mapInvalid": {
+    ar: "تعذر قراءة هذا الرابط — الصق رابط خرائط جوجل أو الإحداثيات",
+    en: "Could not read that link — paste a Google Maps link or coordinates",
+  },
+
+  /* ---- admin: image storage (Cloudflare R2) ---------------------- */
+  "admin.r2Title": {
+    ar: "تخزين الصور (Cloudflare R2)",
+    en: "Image storage (Cloudflare R2)",
+  },
+  "admin.r2Hint": {
+    ar: "اضغط الاختبار: تُرفع صورة صغيرة إلى R2 ثم تُقرأ من رابطها العام ثم تُحذف — للتأكد من أن المفاتيح تعمل.",
+    en: "Press test: a tiny image is uploaded to R2, read back from its public URL, then deleted — to prove the keys work.",
+  },
+  "admin.r2Test": { ar: "اختبار اتصال R2", en: "Test R2 connection" },
+  "admin.r2Testing": { ar: "جارٍ الاختبار…", en: "Testing…" },
+  "admin.r2Ok": {
+    ar: "R2 يعمل: تم الرفع والقراءة بنجاح",
+    en: "R2 works: upload and read-back succeeded",
+  },
+  "admin.r2ConfigMissing": {
+    ar: "R2 غير مُعدّ بعد — أضف المتغيّرات الناقصة في Keys / API keys",
+    en: "R2 is not set up yet — add the missing variables in Keys / API keys",
+  },
+  "admin.r2Failed": {
+    ar: "فشل الاتصال بـ R2 — راجع حالة PUT/GET أدناه",
+    en: "R2 connection failed — check the PUT/GET status below",
+  },
+  "admin.r2Waiting": {
+    ar: "لم يتم الاختبار بعد. إذا لم تُضبط المفاتيح، تُحفظ الصور مؤقتاً في تخزين Convex.",
+    en: "Not tested yet. Without the keys, images still go to Convex storage.",
+  },
+  "admin.r2OkDetail": {
+    ar: "الـ bucket: {bucket} — رفع {put}، قراءة {get} — تم حذف ملف الاختبار ({cleanup}).",
+    en: "Bucket: {bucket} — upload {put}, read {get} — probe deleted ({cleanup}).",
+  },
+  "admin.r2FailDetail": {
+    ar: "الرفع: {put} — القراءة العامة: {get} — رابط R2 العام يجب أن يكون مفتوحًا للقراءة على البكت.",
+    en: "Upload: {put} — public read: {get} — the public R2 URL must allow reads on the bucket.",
+  },
 } as const;
 
 export type TKey = keyof typeof STRINGS;
@@ -777,7 +949,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     root.lang = lang;
     root.dir = lang === "ar" ? "rtl" : "ltr";
-    document.title = STRINGS["meta.title"][lang];
+    // The live store name replaces {store} again in StoreMeta, as soon as the
+    // saved identity arrives from the database.
+    document.title = interpolate(STRINGS["meta.title"][lang], {
+      store: STORE.name,
+    });
     try {
       window.localStorage.setItem(STORAGE_KEY, lang);
     } catch {

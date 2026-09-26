@@ -94,8 +94,6 @@ export function ProductFormDialog({
   const [nameAr, setNameAr] = useState("");
   const [price, setPrice] = useState("");
   const [oldPrice, setOldPrice] = useState("");
-  /** Delivery price for this product — empty falls back to the shop default. */
-  const [deliveryFee, setDeliveryFee] = useState("");
   const [category, setCategory] = useState(defaultCategory);
   const [images, setImages] = useState<string[]>([]);
   /** One colour per photo, index-aligned with `images`. */
@@ -123,7 +121,6 @@ export function ProductFormDialog({
       setNameAr(product.nameAr);
       setPrice(String(product.price));
       setOldPrice(product.oldPrice ? String(product.oldPrice) : "");
-      setDeliveryFee(product.deliveryFee ? String(product.deliveryFee) : "");
       setImages(product.images);
       setImageColors(
         product.images.map((_, index) => product.imageColors?.[index] ?? ""),
@@ -146,7 +143,6 @@ export function ProductFormDialog({
     setNameAr("");
     setPrice("");
     setOldPrice("");
-    setDeliveryFee("");
     setImages([]);
     setImageColors([]);
     setSizes([]);
@@ -243,7 +239,6 @@ export function ProductFormDialog({
         nameEn: nameAr.trim(),
         price: Number(price),
         oldPrice: oldPrice ? Number(oldPrice) : undefined,
-        deliveryFee: deliveryFee.trim() ? Number(deliveryFee) : undefined,
         category,
         images,
         imageColors: images.map((_, index) => photoColorAt(index)),
@@ -362,7 +357,7 @@ export function ProductFormDialog({
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
+          <div className="grid gap-3">
             <div className="grid gap-2">
               <Label htmlFor="addPrice">{t("admin.price")}</Label>
               <Input
@@ -374,42 +369,26 @@ export function ProductFormDialog({
                 placeholder="0"
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="addDelivery">{t("admin.deliveryFee")}</Label>
-              <Input
-                id="addDelivery"
-                inputMode="numeric"
-                dir="ltr"
-                value={deliveryFee}
-                onChange={(event) => setDeliveryFee(event.target.value)}
-                placeholder="0"
-              />
-              <p className="text-muted-foreground text-[10px] leading-4">
-                {t("admin.deliveryFeeHint")}
-              </p>
-            </div>
           </div>
-          <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
-            <div className="grid gap-2">
-              <Label htmlFor="addOldPrice">{t("admin.oldPrice")}</Label>
-              <Input
-                id="addOldPrice"
-                inputMode="numeric"
-                dir="ltr"
-                value={oldPrice}
-                onChange={(event) => setOldPrice(event.target.value)}
-                placeholder="0"
-              />
-              <p className="text-muted-foreground text-[10px] leading-4">
-                {oldPrice
-                  ? t("admin.discountOn", {
-                      save: formatDA(
-                        Math.max(0, Number(price || 0) - Number(oldPrice)),
-                      ),
-                    })
-                  : t("admin.discountOff")}
-              </p>
-            </div>
+          <div className="grid gap-2">
+            <Label htmlFor="addOldPrice">{t("admin.oldPrice")}</Label>
+            <Input
+              id="addOldPrice"
+              inputMode="numeric"
+              dir="ltr"
+              value={oldPrice}
+              onChange={(event) => setOldPrice(event.target.value)}
+              placeholder="0"
+            />
+            <p className="text-muted-foreground text-[10px] leading-4">
+              {oldPrice
+                ? t("admin.discountOn", {
+                    save: formatDA(
+                      Math.max(0, Number(price || 0) - Number(oldPrice)),
+                    ),
+                  })
+                : t("admin.discountOff")}
+            </p>
           </div>
 
           {/* Photos straight from the device. */}

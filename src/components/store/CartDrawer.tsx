@@ -1,4 +1,4 @@
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import {
   ArrowLeft,
   Check,
@@ -78,11 +78,14 @@ type OrderConfirmation = {
 };
 
 /** Full order text pre-filled in the Instagram / WhatsApp chat. */
-function buildOrderMessage(confirmation: OrderConfirmation): string {
+function buildOrderMessage(
+  confirmation: OrderConfirmation,
+  storeName: string = STORE.name,
+): string {
   const lines: string[] = [
     confirmation.reference
-      ? `🛒 ${STORE.name} — ${confirmation.reference}`
-      : `🛒 ${STORE.name}`,
+      ? `🛒 ${storeName} — ${confirmation.reference}`
+      : `🛒 ${storeName}`,
     "",
   ];
   for (const item of confirmation.items) {
@@ -114,9 +117,11 @@ export function CartDrawer() {
     useCart();
   // Live shop phone — follows the number the admin saved from the storefront.
   const { display: storePhoneDisplay } = useStorePhone();
-  // Live Instagram profile — orders land in the account the admin saved.
-  const { instagram } = useStoreBrand();
+  // Live Instagram profile & name — orders land in the account the admin saved.
+  const { instagram, name: storeName } = useStoreBrand();
   const createOrder = useMutation(api.orders.createOrder);
+  // Per-wilaya delivery prices, editable by the admin on /delivery.
+  const deliveryPrices = useQuery(api.delivery.listDeliveryPrices);
 
   const [step, setStep] = useState<"cart" | "checkout">("cart");
   const [form, setForm] = useState(EMPTY_FORM);
@@ -130,25 +135,28 @@ export function CartDrawer() {
     }
   }, [isOpen, confirmation]);
 
+  const defaultDeliveryFee = deliveryPrices?.defaultPrice ?? STORE.deliveryFee;
+  const wilayaCode = form.wilayaCode ? Number(form.wilayaCode) : null;
+  const wilaya = wilayaCode
+    ? WILAYAS.find((item) => item.code === wilayaCode)
+    : undefined;
+
+  /** The wilaya's own price, or null when it rides the shop default. */
+  const wilayaPrice = useMemo(() => {
+    if (wilayaCode === null) return null;
+    const row = deliveryPrices?.prices.find((entry) => entry.code === wilayaCode);
+    return row && row.price > 0 ? row.price : null;
+  }, [deliveryPrices, wilayaCode]);
+
   /**
-   * Delivery is priced per product: every product carrying its own fee
-   * contributes it once, whatever the quantity — and the same product in two
-   * sizes/colours still counts once, exactly like the server recalculates it.
-   * Products without a fee fall back to the shop default.
+   * One fee per order: the price of the wilaya the customer chose, or the
+   * shop-wide default while no wilaya is picked — exactly what the server
+   * recomputes when the order is written.
    */
-  const deliveryFee = useMemo(() => {
-    const seen = new Set<string>();
-    let total = 0;
-    for (const item of items) {
-      if (seen.has(item.productId)) continue;
-      seen.add(item.productId);
-      total +=
-        item.deliveryFee && item.deliveryFee > 0
-          ? item.deliveryFee
-          : STORE.deliveryFee;
-    }
-    return items.length > 0 ? total : 0;
-  }, [items]);
+  const deliveryFee = useMemo(
+    () => (items.length === 0 ? 0 : (wilayaPrice ?? defaultDeliveryFee)),
+    [items.length, wilayaPrice, defaultDeliveryFee],
+  );
 
   function update<K extends keyof typeof EMPTY_FORM>(
     key: K,
@@ -184,7 +192,6 @@ export function CartDrawer() {
           color: item.color,
           quantity: item.quantity,
           image: item.image,
-          deliveryFee: item.deliveryFee,
         })),
         deliveryFee,
         total: subtotal + deliveryFee,
@@ -222,12 +229,15 @@ export function CartDrawer() {
    * Nothing is saved on the site, which is why no form comes first.
    */
   function orderViaInstagram() {
-    const message = buildOrderMessage({
-      items,
-      itemsTotal: subtotal,
-      deliveryFee,
-      total: subtotal + deliveryFee,
-    });
+    const message = buildOrderMessage(
+      {
+        items,
+        itemsTotal: subtotal,
+        deliveryFee,
+        total: subtotal + deliveryFee,
+      },
+      storeName,
+    );
     window.open(instagramOrderLink(message, instagram), "_blank", "noreferrer");
     copyOrderText(message);
     setChannelOpen(false);
@@ -343,10 +353,15 @@ export function CartDrawer() {
 
             <Button asChild className="w-full">
               <a
-                href={instagramOrderLink(buildOrderMessage(confirmation), instagram)}
+                href={instagramOrderLink(
+                  buildOrderMessage(confirmation, storeName),
+                  instagram,
+                )}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => copyOrderText(buildOrderMessage(confirmation))}
+                onClick={() =>
+                  copyOrderText(buildOrderMessage(confirmation, storeName))
+                }
               >
                 {t("cart.confirmInstagram")}
               </a>
@@ -481,13 +496,23 @@ export function CartDrawer() {
                         <SelectValue placeholder={t("form.wilayaPlaceholder")} />
                       </SelectTrigger>
                       <SelectContent className="max-h-72">
-                        {WILAYAS.map((wilaya) => (
-                          <SelectItem key={wilaya.code} value={String(wilaya.code)}>
-                            {wilayaLabel(wilaya, lang)}
+                        {WILAYAS.map((option) => (
+                          <SelectItem key={option.code} value={String(option.code)}>
+                            {wilayaLabel(option, lang)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {/* The chosen wilaya's own price, right under the field. */}
+                    {wilaya ? (
+                      <p className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
+                        <Truck className="size-3.5 shrink-0" />
+                        {t("cart.deliveryToWilaya", {
+                          wilaya: wilayaLabel(wilaya, lang),
+                        })}{" "}
+                        — {formatDA(wilayaPrice ?? defaultDeliveryFee)}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="address">{t("form.address")}</Label>
@@ -529,8 +554,22 @@ export function CartDrawer() {
                 <span className="text-base font-semibold">{formatDA(subtotal)}</span>
               </div>
               <div className="mt-1 flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("cart.delivery")}</span>
-                <span>{formatDA(deliveryFee)}</span>
+                <span className="text-muted-foreground">
+                  {t("cart.delivery")}
+                  {wilaya ? (
+                    <span className="ms-1 text-[11px]">
+                      ({wilayaLabel(wilaya, lang)})
+                    </span>
+                  ) : null}
+                </span>
+                {/* No wilaya yet → the fee still depends on where it ships. */}
+                {wilaya ? (
+                  <span className="font-medium">{formatDA(deliveryFee)}</span>
+                ) : (
+                  <span className="text-muted-foreground text-[11px]">
+                    {t("cart.deliveryByWilaya")}
+                  </span>
+                )}
               </div>
               <div className="mt-1 flex items-center justify-between border-t border-border/60 pt-2 text-sm font-semibold">
                 <span>{t("cart.total")}</span>

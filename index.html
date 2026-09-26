@@ -39,6 +39,15 @@
       color: #0a0a0a;
       font-family: "Cairo", ui-sans-serif, system-ui, -apple-system, sans-serif;
     }
+    #boot-logo {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 4px;
+      box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.5);
+    }
     #boot-brand {
       font-size: 13px;
       font-weight: 700;
@@ -94,6 +103,7 @@
       anything fails before React even starts.
     -->
     <div id="boot-splash">
+      <img id="boot-logo" src="/brand.svg" alt="" />
       <div id="boot-brand">HA DRIP BOYS</div>
       <div id="boot-sub">MAN'S FASHION · BOUTIQUE BOYS</div>
       <div id="boot-status">…جارٍ تحميل المتجر / Loading the store</div>
@@ -104,6 +114,36 @@
        leaving an empty page. Silenced as soon as the app reports it mounted. */
     (function () {
       var TIMEOUT_MS = 12000;
+
+      /*
+       * Loading screen identity: the app mirrors the live logo, name and
+       * tagline into localStorage (see src/lib/store-brand.ts), so this screen
+       * shows whatever the dashboard saved — never a hard-coded value. On the
+       * very first visit the built-in values above are used.
+       */
+      (function hydrateBrand() {
+        var brand;
+        try {
+          brand = JSON.parse(localStorage.getItem("hadrip.brand") || "");
+        } catch (error) {
+          brand = null;
+        }
+        if (!brand || typeof brand !== "object") return;
+
+        var brandNode = document.getElementById("boot-brand");
+        if (brandNode && brand.name) brandNode.textContent = String(brand.name);
+
+        var subNode = document.getElementById("boot-sub");
+        if (subNode && brand.tagline) subNode.textContent = String(brand.tagline);
+
+        if (!brand.logo) return;
+        var logoNode = document.getElementById("boot-logo");
+        if (logoNode) logoNode.src = String(brand.logo);
+
+        /* The tab icon follows the same logo. */
+        var icon = document.querySelector('link[rel="icon"]');
+        if (icon) icon.setAttribute("href", String(brand.logo));
+      })();
 
       function report(message) {
         if (document.documentElement.dataset.appMounted === "1") return;

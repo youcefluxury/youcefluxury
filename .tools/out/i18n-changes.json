@@ -1,0 +1,122 @@
+{
+  "changed": [
+    {
+      "key": "meta.title",
+      "old": {
+        "ar": "HA Drip Boys — ملابس وأزياء الرجال في الجزائر",
+        "en": "HA Drip Boys — Men's fashion boutique in Algeria"
+      },
+      "new": {
+        "ar": "{store} — ملابس وأزياء الرجال في الجزائر",
+        "en": "{store} — Men's fashion boutique in Algeria"
+      }
+    },
+    {
+      "key": "cart.whatsappMessage",
+      "old": {
+        "ar": "مرحبا HA Drip Boys، رقم طلبي هو {reference}",
+        "en": "Hello HA Drip Boys, my order number is {reference}"
+      },
+      "new": {
+        "ar": "مرحبا {store}، رقم طلبي هو {reference}",
+        "en": "Hello {store}, my order number is {reference}"
+      }
+    },
+    {
+      "key": "footer.rights",
+      "old": {
+        "ar": "© {year} HA Drip Boys — كل الحقوق محفوظة",
+        "en": "© {year} HA Drip Boys — All rights reserved"
+      },
+      "new": {
+        "ar": "© {year} {store} — كل الحقوق محفوظة",
+        "en": "© {year} {store} — All rights reserved"
+      }
+    },
+    {
+      "key": "notFound.body",
+      "old": {
+        "ar": "الرابط الذي طلبته غير متوفر. عد إلى المتجر واكتشف تشكيلة HA Drip Boys.",
+        "en": "This link is not available. Head back to the shop and explore the HA Drip Boys collection."
+      },
+      "new": {
+        "ar": "الرابط الذي طلبته غير متوفر. عد إلى المتجر واكتشف تشكيلة {store}.",
+        "en": "This link is not available. Head back to the shop and explore the {store} collection."
+      }
+    },
+    {
+      "key": "admin.logoHint",
+      "old": {
+        "ar": "ارفع صورة شعار جديدة — تظهر في الشريط العلوي والتذييل وفي كل مكان في الموقع.",
+        "en": "Upload a new logo — it appears in the header, the footer and everywhere on the site."
+      },
+      "new": {
+        "ar": "ارفع صورة شعار جديدة — تظهر في الشريط العلوي والتذييل وفي كل مكان في الموقع، وتُحدَّث معها أيقونة التبويب (الفافيكون) وشاشة التحميل تلقائياً.",
+        "en": "Upload a new logo — it appears in the header, the footer and everywhere on the site, and the browser tab icon (favicon) plus the loading screen follow automatically."
+      }
+    }
+  ],
+  "missing": [
+    "common.save",
+    "common.deliveryPrices",
+    "cart.deliveryByWilaya",
+    "cart.deliveryToWilaya",
+    "footer.deliveryPrices",
+    "admin.tabDesign",
+    "admin.designLead",
+    "admin.designCurrent",
+    "admin.designHint",
+    "admin.designApply",
+    "admin.designApplied",
+    "admin.designOriginalBadge",
+    "admin.designDarkBadge",
+    "admin.designRestore",
+    "admin.designSaved",
+    "admin.designFailed",
+    "admin.editIdentity",
+    "admin.editBrandName",
+    "admin.brandName",
+    "admin.tagline",
+    "admin.brandNameHint",
+    "admin.brandNameRequired",
+    "admin.taglineHint",
+    "admin.siteDescription",
+    "admin.siteDescriptionHint",
+    "admin.editMap",
+    "admin.mapUrl",
+    "admin.mapCoordinates",
+    "admin.mapInvalid",
+    "admin.identity",
+    "admin.identityLead",
+    "admin.identitySaved",
+    "admin.r2Title",
+    "admin.r2Hint",
+    "admin.r2Test",
+    "admin.r2Testing",
+    "admin.r2Ok",
+    "admin.r2ConfigMissing",
+    "admin.r2Failed",
+    "admin.r2Waiting",
+    "admin.r2OkDetail",
+    "admin.r2FailDetail",
+    "admin.identityReset",
+    "delivery.eyebrow",
+    "delivery.title",
+    "delivery.lead",
+    "delivery.defaultTitle",
+    "delivery.defaultHint",
+    "delivery.search",
+    "delivery.results",
+    "delivery.empty",
+    "delivery.defaultTag",
+    "delivery.editTitle",
+    "delivery.editHint",
+    "delivery.pricePlaceholder",
+    "delivery.saved",
+    "delivery.error",
+    "delivery.editDefault",
+    "delivery.editWilaya",
+    "delivery.orderHint"
+  ],
+  "dropped": []
+}

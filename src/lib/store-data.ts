@@ -9,6 +9,9 @@ import type { Lang } from "@/lib/i18n";
 export const STORE = {
   name: "HA Drip Boys",
   tagline: "Man's Fashion · Boutique Boys",
+  /** Shown in Google results and when the site is shared. */
+  description:
+    "HA Drip Boys — متجر ملابس وأزياء الرجال في الجزائر: تي شيرت أوفرسايز، سراويل واسعة، أطقم وأحذية. أسعار بالدينار وتوصيل لـ 69 ولاية.",
   phone: "0776105085",
   /** Surrounded by LTR marks (U+200E) so digit groups never flip in RTL. */
   phoneDisplay: "\u200E0776 10 50 85\u200E",
@@ -531,4 +534,112 @@ export function matchesSearch(haystack: string, query: string): boolean {
   if (words.length === 0) return true;
   const text = normalizeSearch(haystack);
   return words.every((word) => text.includes(word));
+}
+
+/* ------------------------------------------------------------------ */
+/* Shop location — the admin pastes a Maps link or plain coordinates   */
+/* ------------------------------------------------------------------ */
+
+/** Valid latitude/longitude pair — anything else is refused, not embedded. */
+function validPoint(lat: number, lng: number): boolean {
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    Math.abs(lat) <= 90 &&
+    Math.abs(lng) <= 180
+  );
+}
+
+/** Folds ٠-٩ / ۰-۹ digits and the many degree & quote glyphs people paste. */
+function normalizeCoordinates(value: string): string {
+  return value
+    .replace(/[\u0660-\u0669]/g, (digit) => String(digit.charCodeAt(0) - 0x0660))
+    .replace(/[\u06f0-\u06f9]/g, (digit) => String(digit.charCodeAt(0) - 0x06f0))
+    .replace(/[\u00ba\u02da\u2218]/g, "\u00b0")
+    .replace(/[\u2032\u2019\u2018`\u00b4]/g, "'")
+    .replace(/[\u2033\u201c\u201d\u00ab\u00bb]/g, '"')
+    .trim();
+}
+
+/**
+ * Any coordinate a human might paste — `35.18,1.49`, `36°45'30"N 3°4'20"E` or
+ * a Google Maps link — becomes a latitude/longitude pair, or `null` when the
+ * text simply is not a location.
+ */
+export function parseCoordinates(
+  value: string,
+): { lat: number; lng: number } | null {
+  const text = normalizeCoordinates(value);
+  if (!text) return null;
+
+  const decimal = text.match(
+    /^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/,
+  );
+  if (decimal) {
+    const lat = Number(decimal[1]);
+    const lng = Number(decimal[2]);
+    return validPoint(lat, lng) ? { lat, lng } : null;
+  }
+
+  // Degrees / minutes / seconds, with the hemisphere letter before or after.
+  const dms =
+    /([NSEW])?\s*(-?\d+(?:\.\d+)?)\s*\u00b0(?:\s*(\d+(?:\.\d+)?)\s*')?(?:\s*(\d+(?:\.\d+)?)\s*")?\s*([NSEW])?/gi;
+  let lat: number | null = null;
+  let lng: number | null = null;
+  for (const match of text.matchAll(dms)) {
+    const axis = (match[1] ?? match[5] ?? "").toUpperCase();
+    const degrees = Number(match[2]);
+    const minutes = match[3] ? Number(match[3]) : 0;
+    const seconds = match[4] ? Number(match[4]) : 0;
+    // A leading minus, “S” or “W” flips the sign.
+    const negative = degrees < 0 || axis === "S" || axis === "W";
+    const absolute = Math.abs(degrees) + minutes / 60 + seconds / 3600;
+    const signed = negative ? -absolute : absolute;
+    if (axis === "S" || axis === "N") lat = signed;
+    else if (axis === "E" || axis === "W") lng = signed;
+  }
+  if (lat !== null && lng !== null && validPoint(lat, lng)) return { lat, lng };
+  return null;
+}
+
+/** `35.180678,1.493835` → the short coordinates line shown in the popup. */
+export function mapCoordinates(value: string): string {
+  const fromQuery = value.match(
+    /[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+  );
+  if (fromQuery) return `${fromQuery[1]},${fromQuery[2]}`;
+  const point = parseCoordinates(value);
+  return point ? `${point.lat},${point.lng}` : "";
+}
+
+/**
+ * Turns whatever the admin typed into a Google Maps *embed* URL: plain
+ * coordinates, a “place” link, or a full `…&output=embed` URL pasted from
+ * Google Maps itself. Anything unrecognised returns `""`, so the storefront
+ * keeps its built-in map instead of showing a broken frame.
+ */
+export function toMapEmbedUrl(value: string, zoom = 15): string {
+  const text = value.trim();
+  if (!text) return "";
+
+  const point = parseCoordinates(text);
+  if (point) {
+    return `https://maps.google.com/maps?q=${point.lat},${point.lng}&z=${zoom}&output=embed`;
+  }
+
+  if (!/^https?:\/\//i.test(text)) return "";
+  if (/[?&]output=embed/i.test(text)) return text;
+
+  // “…/@35.180678,1.493835,17z” — the coordinates inside a Maps link.
+  const at = text.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+  if (at) {
+    return `https://maps.google.com/maps?q=${at[1]},${at[2]}&z=${zoom}&output=embed`;
+  }
+
+  // “…/maps?q=35.18,1.49” or a searched place name.
+  const query = text.match(/[?&]q=([^&]+)/);
+  if (/google\.[a-z.]+\/maps/i.test(text) && query) {
+    return `https://maps.google.com/maps?q=${query[1]}&z=${zoom}&output=embed`;
+  }
+  return "";
 }

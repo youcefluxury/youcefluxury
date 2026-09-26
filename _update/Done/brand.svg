@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#ffffff" />
+  <!-- H — heavy blocky letterform, right stem tucked under the A -->
+  <path d="M80 96h62v94h54V96h62v238h-62v-84h-54v84H80Z" fill="#0a0a0a" />
+  <!-- A — massive solid triangle overlapping the H -->
+  <path d="M315 96 432 334H198L315 96Z" fill="#0a0a0a" />
+  <!-- A counter -->
+  <path d="M315 206l37 78h-74l37-78Z" fill="#ffffff" />
+  <!-- White dot cut into the A's lower-right leg -->
+  <circle cx="394" cy="302" r="18" fill="#ffffff" />
+  <!-- MAN"S FASHION -->
+  <text x="256" y="398" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="42" letter-spacing="6" fill="#0a0a0a">MAN&quot;S FASHION</text>
+  <!-- BOUTIQUE BOYS -->
+  <text x="256" y="442" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" letter-spacing="9" fill="#0a0a0a">BOUTIQUE BOYS</text>
+</svg>
