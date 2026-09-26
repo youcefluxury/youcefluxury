@@ -26,7 +26,6 @@ import { ADMIN_API_KEY } from "@/lib/admin-key";
 import { pickLang, useI18n, type TKey } from "@/lib/i18n";
 import {
   SITE_THEME_MODES,
-  PURE_THEME_IDS,
   SITE_THEMES,
   applySiteTheme,
   normalizeSiteMode,
@@ -132,11 +131,6 @@ function SiteDesignPanel() {
     }
   }
 
-  function apply(id: SiteThemePreset["id"]) {
-    if (id === current || busy) return;
-    void commit(id, currentMode);
-  }
-
   /** Same design, the other tone. */
   function applyMode(mode: SiteThemeMode) {
     if (mode === currentMode || busy) return;
@@ -159,10 +153,7 @@ function SiteDesignPanel() {
             {pickLang(applied.nameAr, applied.nameEn, lang)}
           </p>
           <p className="text-muted-foreground mt-1 text-[11px]">
-            {t("admin.modeTitle")}:{" "}
-            {currentMode === "light"
-              ? t("admin.modeLight")
-              : t("admin.modeDark")}
+            {t("admin.modeTitle")}: {t(MODE_LABELS[currentMode])}
           </p>
           <p className="text-muted-foreground mt-1 text-xs leading-5">
             {t("admin.designLead")}
@@ -218,69 +209,25 @@ function SiteDesignPanel() {
         </div>
       </div>
 
-      {/* Unblended colours lead; the blended library follows. */}
-      {(
-        [
-          ["pure", t("admin.designPureGroup"), PURE_THEME_IDS],
-          ["mixed", t("admin.designMixedGroup"), null],
-        ] as const
-      ).map(([groupKey, groupLabel, only]) => {
-        const presets = SITE_THEMES.filter((preset) =>
-          only
-            ? only.includes(preset.id as never)
-            : !preset.id.startsWith("pure-"),
-        );
-        return (
-          <div key={groupKey} className="mt-2 grid gap-3">
-            <p className="text-muted-foreground text-[10px] tracking-[0.24em] uppercase">
-              {groupLabel}
-              <span className="ms-2 tracking-normal">({presets.length})</span>
+      {/* One design only, so it is shown as the store's identity rather
+          than as a list of things to choose between. */}
+      <div className="mt-2 grid gap-3 rounded-xl border border-border/70 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div className="flex min-w-0 items-center gap-3">
+          <ThemeSwatches preset={applied} mode={currentMode} />
+          <div className="min-w-0">
+            <p className="text-sm font-medium">
+              {pickLang(applied.nameAr, applied.nameEn, lang)}
             </p>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {presets.map((preset) => {
-                const isCurrent = preset.id === current;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    disabled={busy}
-                    onClick={() => void apply(preset.id)}
-                    className={cn(
-                      "grid gap-3 rounded-xl border p-4 text-start transition-colors",
-                      isCurrent
-                        ? "border-foreground bg-muted/40"
-                        : "border-border/70 hover:border-foreground/40",
-                      pending === preset.id && "opacity-60",
-                    )}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <ThemeSwatches preset={preset} mode={currentMode} />
-                      {isCurrent ? (
-                        <span className="bg-foreground text-background inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium">
-                          <Check className="size-3" />
-                          {t("admin.designApplied")}
-                        </span>
-                      ) : preset.id === "original" ? (
-                        <span className="text-muted-foreground border border-border/70 px-2 py-0.5 text-[10px]">
-                          {t("admin.designOriginalBadge")}
-                        </span>
-                      ) : null}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">
-                        {pickLang(preset.nameAr, preset.nameEn, lang)}
-                      </p>
-                      <p className="text-muted-foreground mt-1 text-[11px] leading-5">
-                        {pickLang(preset.blurbAr, preset.blurbEn, lang)}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+            <p className="text-muted-foreground mt-1 text-[11px] leading-5">
+              {pickLang(applied.blurbAr, applied.blurbEn, lang)}
+            </p>
           </div>
-        );
-      })}
+        </div>
+        <span className="bg-foreground text-background inline-flex items-center gap-1 self-start px-2 py-0.5 text-[10px] font-medium sm:self-auto">
+          <Check className="size-3" />
+          {t("admin.designApplied")}
+        </span>
+      </div>
     </div>
   );
 }

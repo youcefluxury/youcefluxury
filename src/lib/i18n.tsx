@@ -887,29 +887,18 @@ const STRINGS = {
   /* ---- admin: site design ---------------------------------------- */
   "admin.tabDesign": { ar: "تصميم الموقع", en: "Site design" },
   "admin.designLead": {
-    ar: "اختر تصميم موقعك — الألوان، لون الهيدر والفوتر، اللمسة المميزة واستدارة الحواف تتغيّر فوراً على كل صفحات الموقع، والمنتجات والعروض لا تتأثر.",
-    en: "Pick your store design — colours, header and footer tone, the accent and the corner radius change instantly on every page. Products and orders are never touched.",
+    ar: `تصميم المتجر: أسود عميق وكتابة بيضاء، بلا أي لون مدمج.`,
+    en: `The store design: deep black and white writing, with nothing mixed in.`,
   },
+  "admin.designApplied": { ar: "مطبّق حالياً", en: "Applied now" },
   "admin.designCurrent": {
     ar: "التصميم المطبّق الآن",
     en: "Design applied now",
   },
   "admin.designHint": {
-    ar: "اضغط أي تصميم ليُطبَّق فوراً على المتجر كله، ويظهر لك هنا مباشرة قبل أن يراه الزبائن. تصميمك القديم محفوظ دائماً باسم «الأصلي».",
-    en: "Tap any design to apply it to the whole store right away — you see it here before shoppers do. Your previous look is always saved as “Original”.",
+    ar: `اختر الوضع فوقه: فاتح أو عادي أو داكن — والتغيير يظهر في الموقع كله فوراً.`,
+    en: `Pick the tone above: light, normal or dark - the change shows across the whole store at once.`,
   },
-  "admin.designPureGroup": {
-    ar: "ألوان صافية \u2014 بلا مزج",
-    en: "Unblended colours \u2014 no mixing",
-  },
-  "admin.designMixedGroup": {
-    ar: "ألوان مدمجة \u2014 بتدرجات لونية",
-    en: "Blended colours \u2014 toned palettes",
-  },
-  "admin.designApply": { ar: "تطبيق هذا التصميم", en: "Apply this design" },
-  "admin.designApplied": { ar: "مطبّق حالياً", en: "Applied now" },
-  "admin.designOriginalBadge": { ar: "الأصلي", en: "Original" },
-  "admin.designDarkBadge": { ar: "داكن", en: "Dark" },
   "admin.modeTitle": {
     ar: "وضع الألوان",
     en: "Colour mode",

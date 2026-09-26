@@ -1,19 +1,19 @@
 /**
- * Site designs the admin picks from the dashboard (“Site design” tab).
+ * The store's one site design, plus the way it can be worn.
  *
- * Every preset is a list of CSS custom properties written straight onto
+ * The design is a list of CSS custom properties written straight onto
  * `<html>`, so the whole storefront — header, footer, buttons, cards, corner
- * radius — restyles at once without touching any product or order. The chosen
- * design is saved in the database *and* mirrored into localStorage, so the
- * first paint after a reload already wears it.
+ * radius — restyles at once without touching any product or order. It is saved
+ * in the database *and* mirrored into localStorage, so the first paint after a
+ * reload already wears it.
  */
 
-/** localStorage key shared with the instant-apply step in main.tsx. */
+/** localStorage key shared with the instant-apply step in the provider. */
 export const SITE_THEME_STORAGE_KEY = "store.site-theme";
 
 /**
- * How a design can be worn: a bright page, a deep one, or neither —
- * "auto" hands the choice to the visitor's operating system.
+ * How the design can be worn: a bright page, a deep one, or neither — "auto"
+ * hands the choice to the visitor's operating system.
  */
 export const SITE_THEME_MODES = ["light", "auto", "dark"] as const;
 export type SiteThemeMode = (typeof SITE_THEME_MODES)[number];
@@ -35,7 +35,10 @@ export function normalizeSiteMode(
 
 /** True when the device asks for a dark page. */
 export function prefersDarkScheme(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+  if (
+    typeof window === "undefined" ||
+    typeof window.matchMedia !== "function"
+  ) {
     return false;
   }
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -49,7 +52,10 @@ export function resolveSiteMode(mode: SiteThemeMode): "light" | "dark" {
 
 /** Fires when the device flips its colour preference. Returns a cleanup. */
 export function watchSystemColour(onChange: () => void): () => void {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+  if (
+    typeof window === "undefined" ||
+    typeof window.matchMedia !== "function"
+  ) {
     return () => {};
   }
   const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -57,7 +63,7 @@ export function watchSystemColour(onChange: () => void): () => void {
   return () => media.removeEventListener("change", onChange);
 }
 
-/** Every token a preset may set — cleared before the next one is applied. */
+/** Every token the design may set — cleared before it is applied. */
 export const SITE_THEME_TOKEN_KEYS = [
   "--background",
   "--foreground",
@@ -88,29 +94,24 @@ export type SiteThemePreset = {
   nameEn: string;
   blurbAr: string;
   blurbEn: string;
-  /**
-   * Both palettes for this design, built from the same hue spec:
-   * `light` is the bright page, `dark` the deep one. The admin picks
-   * which one the whole storefront wears.
-   */
+  /** Both palettes for this design. "auto" is a way of wearing one of them. */
   tokens: Record<"light" | "dark", Record<string, string>>;
 };
 
 /**
- * A design is described by its hue and how strongly it is chroma-saturated,
+ * The design is described by its hue and how strongly it is chroma-saturated,
  * never by twenty hand-picked colours.
  *
- * Surfaces stay dark and carry a real amount of the theme's hue, so a "yellow"
- * design actually reads yellow instead of grey. The action colour is a vivid,
- * saturated version of the hue carrying near-black writing — that is what makes
- * the palette feel strong while keeping every button readable.
+ * At chroma 0 nothing tints the greys, so the deep page really is black and the
+ * writing really is white. The action colour is the same tone one step away
+ * from the page, which keeps every button readable in both modes.
  */
 type VividSpec = {
-  /** Base hue of the surfaces and writing. */
+  /** Base hue of the surfaces and writing. 0 = no hue at all. */
   hue: number;
   /** Chroma of the surfaces — how much colour the whole page carries. */
   chroma: number;
-  /** Hue + chroma of the vivid action colour (buttons). */
+  /** Hue + chroma of the action colour (buttons). */
   actionHue: number;
   actionChroma: number;
   /** Hue + chroma of the store's signature accent. */
@@ -208,432 +209,22 @@ const V = (
   radius,
 });
 
-/* ------------------------------------------------------------------ */
-/* Unblended palettes: the colour exactly as it was written           */
-/* ------------------------------------------------------------------ */
-
-type Rgb = [number, number, number];
-
-function hexToRgb(hex: string): Rgb {
-  const clean = hex.replace("#", "");
-  return [
-    parseInt(clean.slice(0, 2), 16),
-    parseInt(clean.slice(2, 4), 16),
-    parseInt(clean.slice(4, 6), 16),
-  ];
-}
-
-function rgbToHex([r, g, b]: Rgb): string {
-  const part = (value: number) =>
-    Math.max(0, Math.min(255, Math.round(value)))
-      .toString(16)
-      .padStart(2, "0");
-  return `#${part(r)}${part(g)}${part(b)}`;
-}
-
-/** `amount` above zero walks towards white, below zero towards black. */
-function shade(hex: string, amount: number): string {
-  const [r, g, b] = hexToRgb(hex);
-  const target = amount > 0 ? 255 : 0;
-  const k = Math.abs(amount);
-  return rgbToHex([
-    r + (target - r) * k,
-    g + (target - g) * k,
-    b + (target - b) * k,
-  ]);
-}
-
-/** Plain perceived brightness — picks black or white writing on a colour. */
-function brightness(hex: string): number {
-  const [r, g, b] = hexToRgb(hex);
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-}
-
-function readableOn(hex: string): string {
-  return brightness(hex) > 0.5 ? "#000000" : "#ffffff";
-}
-
-type PureSpec = {
-  id: string;
-  nameAr: string;
-  nameEn: string;
-  /** Used byte-for-byte: no oklch, no rounding, no tint. */
-  hex: string;
-  radius: string;
-  /** White cards on a black page instead of near-black cards. */
-  whiteCards?: boolean;
-};
-
 /**
- * A palette with no mixing in it at all. The two ends of the page are true
- * #000000 and #ffffff, and the design's own colour is used exactly as written,
- * so a "black" design really is black on screen. Surfaces step away from the
- * page with real black or real white, never with a tinted grey.
+ * The store's only design: black and white, with nothing mixed into the greys.
+ * The dashboard still offers it as a card so the identity stays visible and
+ * documented, and the light / normal / dark switch chooses how it is worn.
  */
-function pureTokens(
-  spec: PureSpec,
-  mode: SiteThemeMode,
-): Record<string, string> {
-  const light = mode === "light";
-  const page = light ? "#ffffff" : "#000000";
-  const writing = light ? "#000000" : "#ffffff";
-  // A design that IS the page colour would vanish into it: flip the ends.
-  const base = spec.hex.toLowerCase() === page ? writing : spec.hex;
-  /* Some designs flip the cards instead of lifting them off the page. */
-  const inverted = Boolean(spec.whiteCards) && !light;
-  const card = inverted ? "#ffffff" : shade(page, light ? -0.04 : 0.08);
-  const cardWriting = inverted ? "#000000" : writing;
-  const popover = inverted ? "#ffffff" : shade(page, light ? -0.02 : 0.13);
-  const muted = inverted ? "#f0f0f0" : shade(page, light ? -0.06 : 0.12);
-  const secondary = shade(base, light ? 0.88 : -0.82);
-  const accent = shade(base, light ? 0.68 : -0.68);
-
-  return {
-    "--background": page,
-    "--card": card,
-    "--popover": popover,
-    "--foreground": writing,
-    "--card-foreground": cardWriting,
-    "--popover-foreground": cardWriting,
-    "--primary": base,
-    "--primary-foreground": readableOn(base),
-    "--secondary": secondary,
-    "--secondary-foreground": readableOn(secondary),
-    "--muted": muted,
-    "--muted-foreground": shade(base, light ? -0.62 : 0.48),
-    "--accent": accent,
-    "--accent-foreground": readableOn(accent),
-    "--border": light ? "rgba(0, 0, 0, 0.16)" : "rgba(255, 255, 255, 0.18)",
-    "--input": light ? "rgba(0, 0, 0, 0.13)" : "rgba(255, 255, 255, 0.2)",
-    "--ring": base,
-    "--ink": "#000000",
-    "--paper": "#ffffff",
-    "--brand": base,
-    "--radius": spec.radius,
-  };
-}
-
-const P = (
-  id: string,
-  nameAr: string,
-  nameEn: string,
-  hex: string,
-  radius: string,
-  whiteCards = false,
-): PureSpec => ({ id, nameAr, nameEn, hex, radius, whiteCards });
-
-/* Sixteen unblended colours, from true black and true white to the spectrum. */
-const PURE_SPECS: PureSpec[] = [
-  P("pure-black", "أسود خالص", "Pure Black", "#000000", "0.25rem"),
-  P("pure-white", "أبيض خالص", "Pure White", "#ffffff", "1.25rem", true),
-  P("pure-red", "أحمر خالص", "Pure Red", "#ff0000", "0.25rem"),
-  P("pure-orange", "برتقالي خالص", "Pure Orange", "#ff7a00", "0.375rem"),
-  P("pure-gold", "ذهبي خالص", "Pure Gold", "#ffd400", "0.625rem"),
-  P("pure-yellow", "أصفر خالص", "Pure Yellow", "#ffff00", "0.25rem"),
-  P("pure-lime", "ليموني خالص", "Pure Lime", "#7cff00", "0.75rem"),
-  P("pure-green", "أخضر خالص", "Pure Green", "#00a63e", "0.5rem"),
-  P("pure-emerald", "زمردي خالص", "Pure Emerald", "#00e08a", "0.875rem"),
-  P("pure-turquoise", "تركوازي خالص", "Pure Turquoise", "#00d7c0", "0.75rem"),
-  P("pure-cyan", "سماوي خالص", "Pure Cyan", "#00e5ff", "0.625rem"),
-  P("pure-blue", "أزرق خالص", "Pure Blue", "#0040ff", "0.5rem"),
-  P("pure-indigo", "نيلي خالص", "Pure Indigo", "#4b0082", "0.375rem"),
-  P("pure-purple", "بنفسجي خالص", "Pure Purple", "#8000ff", "1rem"),
-  P("pure-pink", "وردي خالص", "Pure Pink", "#ff0080", "1.125rem"),
-  P("pure-silver", "فضي خالص", "Pure Silver", "#c0c0c0", "0.25rem"),
-];
-
-const PURE_BLURB_AR =
-  "ألوان غير مدمجة: أسود يبقى أسود تماماً، وأبيض يبقى أبيض تماماً.";
-const PURE_BLURB_EN =
-  "Unblended colours: black stays perfectly black, white stays perfectly white.";
-
-/** Ids of the unblended designs, so the dashboard can list them first. */
-export const PURE_THEME_IDS: readonly string[] = PURE_SPECS.map(
-  (spec) => spec.id,
-);
-const PURE_THEMES: SiteThemePreset[] = PURE_SPECS.map((spec) => ({
-  id: spec.id,
-  nameAr: spec.nameAr,
-  nameEn: spec.nameEn,
-  blurbAr: PURE_BLURB_AR,
-  blurbEn: PURE_BLURB_EN,
-  tokens: {
-    light: pureTokens(spec, "light"),
-    dark: pureTokens(spec, "dark"),
-  },
-}));
-
 export const SITE_THEMES: SiteThemePreset[] = [
-  // Unblended colours first: the pure black / pure white / spectrum designs.
-  ...PURE_THEMES,
   {
     id: "original",
     nameAr: "أبيض وأسود",
     nameEn: "Black & White",
     blurbAr: "تصميم المتجر الأصلي: أسود عميق وكتابة بيضاء، بلا أي لون مدمج.",
-    blurbEn: "The store\u2019s own look: deep black and white writing, with no colour mixed in.",
+    blurbEn:
+      "The store’s own look: deep black and white writing, with no colour mixed in.",
     tokens: {
       light: vividTokens(V(0, 0, 0, 0, 0, 0, "0.625rem"), "light"),
       dark: vividTokens(V(0, 0, 0, 0, 0, 0, "0.625rem"), "dark"),
-    },
-  },
-  {
-    id: "honey",
-    nameAr: "عسلي",
-    nameEn: "Honey",
-    blurbAr: "أصفر عسلي قوي حقيقي — ليس باهتاً أبداً.",
-    blurbEn: "A real, strong honey yellow — never washed out.",
-    tokens: {
-      light: vividTokens(V(95, 0.055, 95, 0.175, 85, 0.16, "0.5rem"), "light"),
-      dark: vividTokens(V(95, 0.055, 95, 0.175, 85, 0.16, "0.5rem"), "dark"),
-    },
-  },
-  {
-    id: "royal",
-    nameAr: "كحلي ملكي",
-    nameEn: "Royal Navy",
-    blurbAr: "كحلي عميق مع ذهبي عتيق قوي وحواف حادة.",
-    blurbEn: "Deep navy with a rich antique gold and sharp corners.",
-    tokens: {
-      light: vividTokens(
-        V(262, 0.062, 85, 0.155, 85, 0.15, "0.25rem"),
-        "light",
-      ),
-      dark: vividTokens(V(262, 0.062, 85, 0.155, 85, 0.15, "0.25rem"), "dark"),
-    },
-  },
-  {
-    id: "forest",
-    nameAr: "غابة",
-    nameEn: "Forest",
-    blurbAr: "أخضر غابة مشبع وقوي مع ذهبي دافئ.",
-    blurbEn: "A saturated, confident forest green with warm gold.",
-    tokens: {
-      light: vividTokens(
-        V(155, 0.072, 152, 0.165, 90, 0.15, "0.625rem"),
-        "light",
-      ),
-      dark: vividTokens(
-        V(155, 0.072, 152, 0.165, 90, 0.15, "0.625rem"),
-        "dark",
-      ),
-    },
-  },
-  {
-    id: "emerald",
-    nameAr: "زمردي",
-    nameEn: "Emerald",
-    blurbAr: "أخضر زمردي غني ومشبّع مع حواف مستديرة.",
-    blurbEn: "Rich, saturated emerald with soft rounded corners.",
-    tokens: {
-      light: vividTokens(
-        V(162, 0.075, 158, 0.17, 150, 0.16, "0.75rem"),
-        "light",
-      ),
-      dark: vividTokens(V(162, 0.075, 158, 0.17, 150, 0.16, "0.75rem"), "dark"),
-    },
-  },
-  {
-    id: "crimson",
-    nameAr: "قرمزي",
-    nameEn: "Crimson",
-    blurbAr: "أحمر قرمزي قوي وحيوي بحواف حادة.",
-    blurbEn: "A bold, vivid crimson with sharp corners.",
-    tokens: {
-      light: vividTokens(V(22, 0.088, 25, 0.19, 30, 0.17, "0.25rem"), "light"),
-      dark: vividTokens(V(22, 0.088, 25, 0.19, 30, 0.17, "0.25rem"), "dark"),
-    },
-  },
-  {
-    id: "burgundy",
-    nameAr: "عنابي",
-    nameEn: "Burgundy",
-    blurbAr: "عنابي فاخر مشبع مع لمسة وردية قوية.",
-    blurbEn: "Saturated, luxurious burgundy with a strong rose note.",
-    tokens: {
-      light: vividTokens(V(15, 0.08, 18, 0.175, 20, 0.16, "0.2rem"), "light"),
-      dark: vividTokens(V(15, 0.08, 18, 0.175, 20, 0.16, "0.2rem"), "dark"),
-    },
-  },
-  {
-    id: "azure",
-    nameAr: "أزرق سماوي",
-    nameEn: "Azure",
-    blurbAr: "أزرق سماوي صافٍ ومشبّع مع فيروزي.",
-    blurbEn: "Clean, saturated azure blue with a turquoise note.",
-    tokens: {
-      light: vividTokens(
-        V(248, 0.075, 245, 0.155, 195, 0.14, "0.875rem"),
-        "light",
-      ),
-      dark: vividTokens(
-        V(248, 0.075, 245, 0.155, 195, 0.14, "0.875rem"),
-        "dark",
-      ),
-    },
-  },
-  {
-    id: "teal",
-    nameAr: "أزرق مخضر",
-    nameEn: "Teal",
-    blurbAr: "أزرق مخضر بحري عميق ومشبّع.",
-    blurbEn: "Deep, saturated ocean teal.",
-    tokens: {
-      light: vividTokens(V(200, 0.07, 195, 0.15, 85, 0.15, "0.75rem"), "light"),
-      dark: vividTokens(V(200, 0.07, 195, 0.15, 85, 0.15, "0.75rem"), "dark"),
-    },
-  },
-  {
-    id: "lavender",
-    nameAr: "لافندر",
-    nameEn: "Lavender",
-    blurbAr: "بنفسجي لافندر قوي مع وردي صارخ.",
-    blurbEn: "A bold lavender purple with a vivid rose accent.",
-    tokens: {
-      light: vividTokens(V(300, 0.078, 302, 0.17, 330, 0.17, "1rem"), "light"),
-      dark: vividTokens(V(300, 0.078, 302, 0.17, 330, 0.17, "1rem"), "dark"),
-    },
-  },
-  {
-    id: "plum-night",
-    nameAr: "برقوقي",
-    nameEn: "Plum Night",
-    blurbAr: "برقوقي ليلي مشبع مع وردي قوي.",
-    blurbEn: "Saturated night plum with a strong rose accent.",
-    tokens: {
-      light: vividTokens(
-        V(320, 0.082, 322, 0.175, 340, 0.17, "1.125rem"),
-        "light",
-      ),
-      dark: vividTokens(
-        V(320, 0.082, 322, 0.175, 340, 0.17, "1.125rem"),
-        "dark",
-      ),
-    },
-  },
-  {
-    id: "rose",
-    nameAr: "وردي",
-    nameEn: "Rose",
-    blurbAr: "وردي عميق ومشبّع مع توت داكن.",
-    blurbEn: "Deep, saturated rose with a dark berry note.",
-    tokens: {
-      light: vividTokens(V(8, 0.075, 6, 0.165, 340, 0.16, "1.125rem"), "light"),
-      dark: vividTokens(V(8, 0.075, 6, 0.165, 340, 0.16, "1.125rem"), "dark"),
-    },
-  },
-  {
-    id: "olive",
-    nameAr: "زيتوني",
-    nameEn: "Olive",
-    blurbAr: "أخضر زيتوني داكن وقوي بلمسة عسكرية.",
-    blurbEn: "A strong, dark olive with a military note.",
-    tokens: {
-      light: vividTokens(
-        V(118, 0.065, 112, 0.145, 100, 0.13, "0.5rem"),
-        "light",
-      ),
-      dark: vividTokens(V(118, 0.065, 112, 0.145, 100, 0.13, "0.5rem"), "dark"),
-    },
-  },
-  {
-    id: "sand",
-    nameAr: "رملي",
-    nameEn: "Sand",
-    blurbAr: "رملي ذهبي دافئ وقوي بنحاس متباين.",
-    blurbEn: "Warm, strong sand gold with contrasting copper.",
-    tokens: {
-      light: vividTokens(
-        V(60, 0.055, 50, 0.145, 45, 0.14, "0.375rem"),
-        "light",
-      ),
-      dark: vividTokens(V(60, 0.055, 50, 0.145, 45, 0.14, "0.375rem"), "dark"),
-    },
-  },
-  {
-    id: "cocoa",
-    nameAr: "كاكاو",
-    nameEn: "Cocoa",
-    blurbAr: "بني كاكاو غني ومشبّع مع نحاس دافئ.",
-    blurbEn: "Rich, saturated cocoa brown with warm copper.",
-    tokens: {
-      light: vividTokens(
-        V(52, 0.062, 48, 0.145, 45, 0.14, "0.625rem"),
-        "light",
-      ),
-      dark: vividTokens(V(52, 0.062, 48, 0.145, 45, 0.14, "0.625rem"), "dark"),
-    },
-  },
-  {
-    id: "ivory",
-    nameAr: "عاجي",
-    nameEn: "Ivory",
-    blurbAr: "عاجي دافئ مريح للعين مع بني موكا.",
-    blurbEn: "A warm, easy-on-the-eyes ivory with mocha brown.",
-    tokens: {
-      light: vividTokens(V(78, 0.05, 68, 0.13, 60, 0.12, "1.25rem"), "light"),
-      dark: vividTokens(V(78, 0.05, 68, 0.13, 60, 0.12, "1.25rem"), "dark"),
-    },
-  },
-  {
-    id: "midnight",
-    nameAr: "ليلي داكن",
-    nameEn: "Midnight",
-    blurbAr: "أسود ناعم مع ذهبي هادئ وقوي.",
-    blurbEn: "Soft black with a calm but rich gold.",
-    tokens: {
-      light: vividTokens(
-        V(262, 0.03, 82, 0.155, 82, 0.15, "0.625rem"),
-        "light",
-      ),
-      dark: vividTokens(V(262, 0.03, 82, 0.155, 82, 0.15, "0.625rem"), "dark"),
-    },
-  },
-  {
-    id: "forest-night",
-    nameAr: "غابة ليلية",
-    nameEn: "Forest Night",
-    blurbAr: "أخضر ليلي عميق ومشبّع مع ذهبي.",
-    blurbEn: "A deep, saturated night green with gold.",
-    tokens: {
-      light: vividTokens(
-        V(158, 0.078, 152, 0.165, 90, 0.15, "0.75rem"),
-        "light",
-      ),
-      dark: vividTokens(V(158, 0.078, 152, 0.165, 90, 0.15, "0.75rem"), "dark"),
-    },
-  },
-  {
-    id: "slate",
-    nameAr: "فحمي",
-    nameEn: "Graphite",
-    blurbAr: "فحمي بارد عميق مع أزرق فولاذي قوي.",
-    blurbEn: "Deep cool graphite with a strong steel blue.",
-    tokens: {
-      light: vividTokens(V(250, 0.032, 240, 0.115, 230, 0.11, "1rem"), "light"),
-      dark: vividTokens(V(250, 0.032, 240, 0.115, 230, 0.11, "1rem"), "dark"),
-    },
-  },
-  {
-    id: "charcoal",
-    nameAr: "فحمي أنيق",
-    nameEn: "Charcoal",
-    blurbAr: "فحمي بارد أنيق مع لمسة زرقية هادئة.",
-    blurbEn: "Elegant cool charcoal with a calm blue note.",
-    tokens: {
-      light: vividTokens(V(255, 0.028, 245, 0.105, 230, 0.1, "1rem"), "light"),
-      dark: vividTokens(V(255, 0.028, 245, 0.105, 230, 0.1, "1rem"), "dark"),
-    },
-  },
-  {
-    id: "noir",
-    nameAr: "أسود فاخر",
-    nameEn: "Luxe Noir",
-    blurbAr: "أسود نقي للموقع كله مع ذهب قوي.",
-    blurbEn: "Pure black across the store with a rich gold.",
-    tokens: {
-      light: vividTokens(V(0, 0.012, 82, 0.16, 82, 0.16, "0.375rem"), "light"),
-      dark: vividTokens(V(0, 0.012, 82, 0.16, 82, 0.16, "0.375rem"), "dark"),
     },
   },
 ];
@@ -645,9 +236,9 @@ export function siteThemeById(id: string | null | undefined): SiteThemePreset {
 }
 
 /**
- * Writes the preset onto `<html>`: previous tokens are removed first, so
- * switching back to the original really restores the built-in stylesheet.
- * Also mirrors the choice into localStorage for the next page load.
+ * Writes the design onto `<html>`: previous tokens are removed first, so the
+ * built-in stylesheet really is restored. Also mirrors the choice into
+ * localStorage for the next page load.
  */
 export function applySiteTheme(
   id: string | null | undefined,
@@ -692,7 +283,7 @@ export function readStoredSiteTheme(): string | null {
   }
 }
 
-/** The light/dark mode this browser saw last time, if any. */
+/** The light / auto / dark mode this browser saw last time, if any. */
 export function readStoredSiteMode(): SiteThemeMode | null {
   if (typeof window === "undefined") return null;
   try {
