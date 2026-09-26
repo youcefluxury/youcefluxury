@@ -36,7 +36,7 @@ export function StoreFooter() {
      * The footer sits on the palette's darkest tone, so it follows the chosen
      * design while staying the deepest band on the page.
      */
-    <footer className="on-ink bg-ink mt-24">
+    <footer className="on-ink bg-ink text-paper mt-24">
       <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
           <div>

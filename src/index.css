@@ -242,14 +242,13 @@
 
   /*
    * A deliberately black band (the footer, the dashboard header, the
-   * notifications header). It always keeps light writing whichever mode the
-   * site is in, by pointing the text tokens at the design's own paper tone.
+   * notifications header): it redirects the writing tokens to the design's
+   * own paper tone, so anything reaching for --foreground stays readable.
+   * Pair it with `bg-ink text-paper` for the band's own colour.
    */
   .on-ink {
     --foreground: var(--paper);
     --card-foreground: var(--paper);
     --popover-foreground: var(--paper);
-    /* Children that simply inherit the writing colour follow along. */
-    color: var(--foreground);
   }
 }

@@ -177,7 +177,7 @@ export function AdminNotifications({
         className="w-[min(23rem,calc(100vw-2rem))] gap-0 overflow-hidden rounded-2xl p-0 shadow-xl"
       >
         {/* Panel header — title, unread count and today's numbers */}
-        <div className="on-ink bg-ink px-4 pt-3.5 pb-4">
+        <div className="on-ink bg-ink text-paper px-4 pt-3.5 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="grid size-7 place-items-center rounded-full bg-foreground/10">
