@@ -140,7 +140,7 @@ export function StoreHeader() {
   function renderSuggestions() {
     if (!query.trim()) return null;
     return (
-      <div className="bg-card absolute inset-x-0 top-full z-50 mt-1 overflow-hidden rounded-md border border-border shadow-lg">
+      <div className="bg-card text-card-foreground absolute inset-x-0 top-full z-50 mt-1 overflow-hidden rounded-md border border-border shadow-lg">
         {suggestions.length === 0 ? (
           <p className="text-muted-foreground px-4 py-3 text-[11px]">
             {t("shop.emptyTitle")}
@@ -216,7 +216,7 @@ export function StoreHeader() {
                 {t("common.categories")}
                 <ChevronDown className="size-3.5 transition-transform group-hover:rotate-180" />
               </button>
-              <div className="invisible absolute start-0 top-full z-50 w-72 translate-y-2 rounded-2xl border border-border/70 bg-popover p-2 opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="invisible absolute start-0 top-full z-50 w-72 translate-y-2 rounded-2xl border border-border/70 bg-popover p-2 text-popover-foreground opacity-0 shadow-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                 {categories.map((category) => (
                   <Link
                     key={category._id}
@@ -259,8 +259,10 @@ export function StoreHeader() {
           </div>
 
           <div className="ms-auto flex shrink-0 items-center gap-0 sm:gap-1">
+            {/* onDark keeps the active pill white — the default black-on-black
+                version vanishes against the black bar. */}
             <div className="hidden sm:block">
-              <LanguageToggle />
+              <LanguageToggle onDark />
             </div>
 
             <button
@@ -413,7 +415,7 @@ export function StoreHeader() {
       </div>
 
       {menuOpen ? (
-        <div className="bg-background border-b border-border/70 px-4 pb-5 shadow-sm lg:hidden">
+        <div className="bg-background text-foreground border-b border-border/70 px-4 pb-5 shadow-sm lg:hidden">
           <nav className="grid gap-1 pt-4">
             <div className="sm:hidden">
               <LanguageToggle />
