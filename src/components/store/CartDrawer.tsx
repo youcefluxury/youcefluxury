@@ -113,8 +113,16 @@ function buildOrderMessage(
 
 export function CartDrawer() {
   const { t, lang, isAr } = useI18n();
-  const { items, isOpen, closeCart, subtotal, count, setQuantity, removeItem, clearCart } =
-    useCart();
+  const {
+    items,
+    isOpen,
+    closeCart,
+    subtotal,
+    count,
+    setQuantity,
+    removeItem,
+    clearCart,
+  } = useCart();
   // Live shop phone — follows the number the admin saved from the storefront.
   const { display: storePhoneDisplay } = useStorePhone();
   // Live Instagram profile & name — orders land in the account the admin saved.
@@ -127,7 +135,9 @@ export function CartDrawer() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [channelOpen, setChannelOpen] = useState(false);
-  const [confirmation, setConfirmation] = useState<OrderConfirmation | null>(null);
+  const [confirmation, setConfirmation] = useState<OrderConfirmation | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!isOpen && !confirmation) {
@@ -144,7 +154,9 @@ export function CartDrawer() {
   /** The wilaya's own price, or null when it rides the shop default. */
   const wilayaPrice = useMemo(() => {
     if (wilayaCode === null) return null;
-    const row = deliveryPrices?.prices.find((entry) => entry.code === wilayaCode);
+    const row = deliveryPrices?.prices.find(
+      (entry) => entry.code === wilayaCode,
+    );
     return row && row.price > 0 ? row.price : null;
   }, [deliveryPrices, wilayaCode]);
 
@@ -167,7 +179,9 @@ export function CartDrawer() {
 
   async function submitOrder(event: React.FormEvent) {
     event.preventDefault();
-    const wilaya = WILAYAS.find((item) => String(item.code) === form.wilayaCode);
+    const wilaya = WILAYAS.find(
+      (item) => String(item.code) === form.wilayaCode,
+    );
     if (!wilaya) {
       toast.error(t("cart.chooseWilaya"));
       return;
@@ -290,7 +304,9 @@ export function CartDrawer() {
                 <Check className="size-6" />
               </div>
               <h3 className="text-lg font-semibold">{t("cart.thanksTitle")}</h3>
-              <p className="text-muted-foreground text-sm">{t("cart.thanksBody")}</p>
+              <p className="text-muted-foreground text-sm">
+                {t("cart.thanksBody")}
+              </p>
             </div>
 
             <div className="rounded-none border border-border/70 p-4">
@@ -308,7 +324,8 @@ export function CartDrawer() {
                     className="text-muted-foreground flex items-center justify-between gap-3 text-xs"
                   >
                     <span className="text-foreground truncate font-medium">
-                      {pickLang(item.nameAr, item.nameEn, lang)} ({item.quantity}×)
+                      {pickLang(item.nameAr, item.nameEn, lang)} (
+                      {item.quantity}×)
                     </span>
                     <span className="shrink-0">
                       {formatDA(item.price * item.quantity)}
@@ -319,11 +336,15 @@ export function CartDrawer() {
 
               <div className="mt-3 space-y-1.5 border-t border-border/60 pt-3 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">{t("cart.subtotal")}</span>
+                  <span className="text-muted-foreground">
+                    {t("cart.subtotal")}
+                  </span>
                   <span>{formatDA(confirmation.itemsTotal)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">{t("cart.delivery")}</span>
+                  <span className="text-muted-foreground">
+                    {t("cart.delivery")}
+                  </span>
                   <span>{formatDA(confirmation.deliveryFee)}</span>
                 </div>
                 <div className="flex items-center justify-between font-semibold">
@@ -337,11 +358,15 @@ export function CartDrawer() {
                   <p className="text-muted-foreground text-[11px] tracking-[0.14em] uppercase">
                     {t("cart.deliveryAddress")}
                   </p>
-                  <p className="mt-1 text-sm font-medium">{confirmation.customerName}</p>
+                  <p className="mt-1 text-sm font-medium">
+                    {confirmation.customerName}
+                  </p>
                   <p dir="ltr" className="text-muted-foreground text-sm">
                     {confirmation.phone}
                   </p>
-                  <p className="text-muted-foreground text-sm">{confirmation.address}</p>
+                  <p className="text-muted-foreground text-sm">
+                    {confirmation.address}
+                  </p>
                 </div>
               ) : null}
             </div>
@@ -427,7 +452,9 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <p className="text-muted-foreground mt-1 text-[11px]">
-                          {t("cart.sizeLabel", { size: sizeLabel(item.size, lang) })}
+                          {t("cart.sizeLabel", {
+                            size: sizeLabel(item.size, lang),
+                          })}
                           {item.color && item.color !== "—"
                             ? ` · ${colorLabel(item.color, lang)}`
                             : ` · ${colorLabel("", lang)}`}
@@ -437,7 +464,9 @@ export function CartDrawer() {
                             <button
                               type="button"
                               aria-label={t("product.quantityMinus")}
-                              onClick={() => setQuantity(item.key, item.quantity - 1)}
+                              onClick={() =>
+                                setQuantity(item.key, item.quantity - 1)
+                              }
                               className="grid size-7 place-items-center rounded-full hover:bg-muted"
                             >
                               <Minus className="size-3.5" />
@@ -448,7 +477,9 @@ export function CartDrawer() {
                             <button
                               type="button"
                               aria-label={t("product.quantityPlus")}
-                              onClick={() => setQuantity(item.key, item.quantity + 1)}
+                              onClick={() =>
+                                setQuantity(item.key, item.quantity + 1)
+                              }
                               className="grid size-7 place-items-center rounded-full hover:bg-muted"
                             >
                               <Plus className="size-3.5" />
@@ -463,14 +494,20 @@ export function CartDrawer() {
                   ))}
                 </ul>
               ) : (
-                <form id="checkout-form" onSubmit={submitOrder} className="space-y-4">
+                <form
+                  id="checkout-form"
+                  onSubmit={submitOrder}
+                  className="space-y-4"
+                >
                   <div className="grid gap-2">
                     <Label htmlFor="customerName">{t("form.fullName")}</Label>
                     <Input
                       id="customerName"
                       required
                       value={form.customerName}
-                      onChange={(event) => update("customerName", event.target.value)}
+                      onChange={(event) =>
+                        update("customerName", event.target.value)
+                      }
                       placeholder={t("form.fullNamePlaceholder")}
                     />
                   </div>
@@ -493,11 +530,16 @@ export function CartDrawer() {
                       onValueChange={(value) => update("wilayaCode", value)}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t("form.wilayaPlaceholder")} />
+                        <SelectValue
+                          placeholder={t("form.wilayaPlaceholder")}
+                        />
                       </SelectTrigger>
                       <SelectContent className="max-h-72">
                         {WILAYAS.map((option) => (
-                          <SelectItem key={option.code} value={String(option.code)}>
+                          <SelectItem
+                            key={option.code}
+                            value={String(option.code)}
+                          >
                             {wilayaLabel(option, lang)}
                           </SelectItem>
                         ))}
@@ -521,7 +563,9 @@ export function CartDrawer() {
                       required
                       rows={2}
                       value={form.address}
-                      onChange={(event) => update("address", event.target.value)}
+                      onChange={(event) =>
+                        update("address", event.target.value)
+                      }
                       placeholder={t("form.addressPlaceholder")}
                     />
                   </div>
@@ -543,15 +587,18 @@ export function CartDrawer() {
                       {t("checkout.cod")}
                     </div>
                   </div>
-
                 </form>
               )}
             </div>
 
             <div className="border-t border-border/70 p-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("cart.subtotal")}</span>
-                <span className="text-base font-semibold">{formatDA(subtotal)}</span>
+                <span className="text-muted-foreground">
+                  {t("cart.subtotal")}
+                </span>
+                <span className="text-base font-semibold">
+                  {formatDA(subtotal)}
+                </span>
               </div>
               <div className="mt-1 flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
@@ -579,7 +626,9 @@ export function CartDrawer() {
               {wilaya ? (
                 <div className="mt-1 flex items-center justify-between border-t border-border/60 pt-2 text-sm font-semibold">
                   <span>{t("cart.total")}</span>
-                  <span className="text-base">{formatDA(subtotal + deliveryFee)}</span>
+                  <span className="text-base">
+                    {formatDA(subtotal + deliveryFee)}
+                  </span>
                 </div>
               ) : (
                 <p className="text-muted-foreground mt-2 flex items-center gap-1.5 border-t border-border/60 pt-2 text-[11px] leading-5">
@@ -590,7 +639,10 @@ export function CartDrawer() {
 
               {step === "cart" ? (
                 /* Checkout first asks how the order should reach us. */
-                <Button className="mt-4 h-11 w-full" onClick={() => setChannelOpen(true)}>
+                <Button
+                  className="mt-4 h-11 w-full"
+                  onClick={() => setChannelOpen(true)}
+                >
                   {t("cart.checkout")}
                   <ArrowLeft className={cn("size-4", !isAr && "rotate-180")} />
                 </Button>
@@ -654,7 +706,7 @@ export function CartDrawer() {
                   <ShoppingBag className="size-4" />
                   {t("cart.channelSite")}
                 </span>
-                <span className="text-[10px] font-normal opacity-70">
+                <span className="text-[10px] font-normal opacity-85">
                   {t("cart.channelSiteNote")}
                 </span>
               </Button>

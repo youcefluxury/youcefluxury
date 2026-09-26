@@ -151,7 +151,7 @@ export function AdminNotifications({
             "relative grid size-10 place-items-center rounded-full transition-colors",
             onDark
               ? "border border-white/20 text-white hover:bg-white/10"
-              : "text-foreground/80 hover:bg-muted hover:text-foreground",
+              : "text-foreground hover:bg-muted",
             className,
           )}
         >
@@ -193,7 +193,7 @@ export function AdminNotifications({
                 {t("notif.unread", { n: unseen.length })}
               </span>
             ) : (
-              <span className="text-[10px] text-foreground/60">
+              <span className="text-muted-foreground text-[10px]">
                 {t("notif.allRead")}
               </span>
             )}
@@ -201,13 +201,13 @@ export function AdminNotifications({
 
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-xl border border-foreground/10 bg-foreground/5 px-3 py-2">
-              <p className="text-[10px] text-foreground/60">
+              <p className="text-muted-foreground text-[10px]">
                 {t("notif.todayOrders")}
               </p>
               <p className="mt-0.5 text-sm font-semibold">{today.count}</p>
             </div>
             <div className="rounded-xl border border-foreground/10 bg-foreground/5 px-3 py-2">
-              <p className="text-[10px] text-foreground/60">
+              <p className="text-muted-foreground text-[10px]">
                 {t("notif.todaySales")}
               </p>
               <p className="mt-0.5 text-sm font-semibold">
@@ -293,7 +293,7 @@ export function AdminNotifications({
 
                       {/* Exactly the sizes that were ordered — one line per
                           piece, never the product's whole size list. */}
-                      <p className="text-foreground/80 mt-0.5 truncate text-[10px] font-medium">
+                      <p className="mt-0.5 truncate text-[10px] font-medium">
                         {order.items
                           .slice(0, 2)
                           .map(

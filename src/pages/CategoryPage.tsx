@@ -158,7 +158,7 @@ export default function CategoryPage() {
           <div>
             <p
               className={cn(
-                "text-[10px] text-white/70",
+                "text-[10px] text-white/85",
                 isAr ? "tracking-[0.2em]" : "tracking-[0.34em] uppercase",
               )}
             >
@@ -167,7 +167,7 @@ export default function CategoryPage() {
             <h1 className="font-display mt-2 text-2xl leading-tight tracking-[0.02em] sm:text-4xl">
               {name}
             </h1>
-            <p className="mt-2 text-[11px] text-white/75">
+            <p className="mt-2 text-[11px] text-white/85">
               {t("category.products", { n: items.length })}
             </p>
           </div>

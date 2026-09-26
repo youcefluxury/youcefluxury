@@ -245,7 +245,10 @@ export function HeroSlider() {
           frameHeight,
         )}
       >
-        <div className="bg-ink absolute inset-0 animate-pulse" aria-hidden="true" />
+        <div
+          className="bg-ink absolute inset-0 animate-pulse"
+          aria-hidden="true"
+        />
       </section>
     );
   }
@@ -258,7 +261,7 @@ export function HeroSlider() {
         className="bg-ink relative isolate flex h-[40vh] min-h-[280px] w-full items-center justify-center overflow-hidden text-white"
       >
         <div className="text-center">
-          <p className="font-display text-lg tracking-[0.08em] opacity-70">
+          <p className="font-display text-lg tracking-[0.08em] opacity-85">
             {t("hero.noSlides")}
           </p>
         </div>
@@ -278,16 +281,14 @@ export function HeroSlider() {
       {/* Slides — clickable photos, name + discover action pinned near the bottom.
           This container is the height-giving element in normal flow, so nothing
           sits above the slides and every click lands on the photo link. */}
-      <div
-        ref={frameRef}
-        className={cn("relative w-full", frameHeight)}
-      >
+      <div ref={frameRef} className={cn("relative w-full", frameHeight)}>
         {/* Calm canvas until the current photo is decoded — never a previous
             photo, never a broken half-loaded frame. */}
-        {activeReady ? (
-          null
-        ) : (
-          <div className="bg-ink absolute inset-0 animate-pulse" aria-hidden="true" />
+        {activeReady ? null : (
+          <div
+            className="bg-ink absolute inset-0 animate-pulse"
+            aria-hidden="true"
+          />
         )}
 
         {/* Only the active slide is mounted: when the index changes, the old
@@ -315,7 +316,8 @@ export function HeroSlider() {
                 alt=""
                 aria-hidden="true"
                 draggable={false}
-                loading="lazy"                  className={cn(
+                loading="lazy"
+                className={cn(
                   "pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-40 [filter:blur(28px)]",
                   fillFrame && "hidden",
                 )}
@@ -363,7 +365,11 @@ export function HeroSlider() {
           isAr ? "right-3 sm:right-7" : "left-3 sm:left-7",
         )}
       >
-        {isAr ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}
+        {isAr ? (
+          <ChevronRight className="size-5" />
+        ) : (
+          <ChevronLeft className="size-5" />
+        )}
       </button>
       <button
         type="button"
@@ -374,7 +380,11 @@ export function HeroSlider() {
           isAr ? "left-3 sm:left-7" : "right-3 sm:right-7",
         )}
       >
-        {isAr ? <ChevronLeft className="size-5" /> : <ChevronRight className="size-5" />}
+        {isAr ? (
+          <ChevronLeft className="size-5" />
+        ) : (
+          <ChevronRight className="size-5" />
+        )}
       </button>
 
       {/* Slide actions — edit / replace straight from the admin dashboard.
@@ -413,7 +423,9 @@ export function HeroSlider() {
           </DialogHeader>
           {confirming ? (
             <div className="p-4 text-center">
-              <p className="text-sm font-medium">{t("admin.slideDeleteConfirm")}</p>
+              <p className="text-sm font-medium">
+                {t("admin.slideDeleteConfirm")}
+              </p>
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"

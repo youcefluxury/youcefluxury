@@ -255,7 +255,7 @@ export function StoreHeader() {
             <div className="group relative">
               <button
                 type="button"
-                className="flex items-center gap-1.5 text-[12px] font-medium tracking-[0.08em]"
+                className="flex items-center gap-1.5 text-[12px] font-medium tracking-[0.08em] text-foreground transition-colors hover:opacity-70"
               >
                 {t("common.categories")}
                 <ChevronDown className="size-3.5 transition-transform group-hover:rotate-180" />

@@ -465,11 +465,11 @@ function AdminField({
   const isPassword = type === "password";
   return (
     <div className="grid gap-2">
-      <Label htmlFor={id} className="text-white/70">
+      <Label htmlFor={id} className="text-white/80">
         {label}
       </Label>
       <div className="relative">
-        <span className="pointer-events-none absolute top-1/2 start-3.5 -translate-y-1/2 text-white/30">
+        <span className="pointer-events-none absolute top-1/2 start-3.5 -translate-y-1/2 text-white/50">
           {isPassword ? (
             <KeyRound className="size-4" />
           ) : (
@@ -483,14 +483,14 @@ function AdminField({
           onChange={(event) => onChange(event.target.value)}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className="border-white/15 bg-white/5 px-10 text-white placeholder:text-white/30"
+          className="border-white/15 bg-white/5 px-10 text-white placeholder:text-white/50"
         />
         {isPassword ? (
           <button
             type="button"
             aria-label={reveal ? t("admin.pwHide") : t("admin.pwShow")}
             onClick={() => setReveal((current) => !current)}
-            className="absolute top-1/2 end-2.5 grid size-7 -translate-y-1/2 place-items-center rounded-full text-white/40 transition-colors hover:text-white"
+            className="absolute top-1/2 end-2.5 grid size-7 -translate-y-1/2 place-items-center rounded-full text-white/60 transition-colors hover:text-white"
           >
             {reveal ? (
               <EyeOff className="size-4" />
@@ -613,7 +613,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
             </h1>
             <p
               className={cn(
-                "mt-2 text-[11px] text-white/40",
+                "mt-2 text-[11px] text-white/60",
                 isAr ? "tracking-[0.08em]" : "tracking-[0.2em] uppercase",
               )}
             >
@@ -680,7 +680,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
                 setChangeOpen(false);
                 setChangeError("");
               }}
-              className="w-full text-center text-[11px] text-white/45 transition-colors hover:text-white"
+              className="w-full text-center text-[11px] text-white/60 transition-colors hover:text-white"
             >
               {t("admin.backToLogin")}
             </button>
@@ -718,7 +718,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
                 setChangeOpen(true);
                 setError("");
               }}
-              className="w-full text-center text-[11px] text-white/45 transition-colors hover:text-white"
+              className="w-full text-center text-[11px] text-white/60 transition-colors hover:text-white"
             >
               {t("admin.changePassword")}
             </button>
@@ -729,7 +729,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
           <LanguageToggle />
           <Link
             to="/"
-            className="text-center text-[11px] text-white/40 hover:text-white"
+            className="text-center text-[11px] text-white/60 hover:text-white"
           >
             {t("admin.backToStore")}
           </Link>
@@ -2554,7 +2554,7 @@ export default function Admin() {
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
             <Brand onDark />
-            <span className="hidden text-[10px] tracking-[0.24em] text-foreground/40 uppercase sm:block">
+            <span className="hidden text-[10px] tracking-[0.24em] text-foreground/60 uppercase sm:block">
               {t("admin.dashboard")}
             </span>
           </div>

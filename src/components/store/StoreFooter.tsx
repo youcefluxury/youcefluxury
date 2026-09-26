@@ -27,7 +27,7 @@ export function StoreFooter() {
   const categoryRows = useQuery(api.catalog.listCategories);
   const categories = categoryRows ?? [];
   const heading = cn(
-    "text-[10px] text-foreground/40",
+    "text-foreground/75 text-[10px]",
     isAr ? "tracking-[0.2em]" : "tracking-[0.3em] uppercase",
   );
 
@@ -41,7 +41,7 @@ export function StoreFooter() {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
           <div>
             <Brand onDark />
-            <p className="mt-5 max-w-sm text-sm leading-7 text-foreground/60">
+            <p className="mt-5 max-w-sm text-sm leading-7 text-foreground/85">
               {/* What the admin typed in the design tab, or the default. */}
               {footerAbout || t("footer.about")}
             </p>
@@ -92,7 +92,7 @@ export function StoreFooter() {
               <li>
                 <Link
                   to="/shop"
-                  className="text-foreground/70 hover:text-foreground"
+                  className="text-foreground/85 hover:text-foreground"
                 >
                   {t("common.allProducts")}
                 </Link>
@@ -101,7 +101,7 @@ export function StoreFooter() {
                 <li key={category._id}>
                   <Link
                     to={`/category/${category.slug}`}
-                    className="text-foreground/70 hover:text-foreground"
+                    className="text-foreground/85 hover:text-foreground"
                   >
                     {categoryName(category, lang)}
                   </Link>
@@ -112,7 +112,7 @@ export function StoreFooter() {
 
           <div>
             <h3 className={heading}>{t("footer.service")}</h3>
-            <ul className="mt-5 space-y-4 text-sm text-foreground/70">
+            <ul className="mt-5 space-y-4 text-sm text-foreground/85">
               <li className="flex items-start gap-3">
                 <Truck className="mt-0.5 size-4 shrink-0" />
                 {/* Opens the per-wilaya price list. */}
@@ -133,7 +133,7 @@ export function StoreFooter() {
 
           <div>
             <h3 className={heading}>{t("footer.contact")}</h3>
-            <ul className="mt-5 space-y-3 text-sm text-foreground/70">
+            <ul className="mt-5 space-y-3 text-sm text-foreground/85">
               <li>
                 <a href={`tel:${phone}`} className="hover:text-foreground">
                   {display}
@@ -153,14 +153,14 @@ export function StoreFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-foreground/10 pt-6 text-[11px] tracking-wide text-foreground/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-foreground/10 pt-6 text-[11px] tracking-wide text-foreground/60 sm:flex-row sm:items-center sm:justify-between">
           <span>
             {t("footer.rights", {
               year: new Date().getFullYear(),
               store: name,
             })}
           </span>
-          <Link to="/admin" className="hover:text-foreground/70">
+          <Link to="/admin" className="hover:text-foreground">
             {t("footer.admin")}
           </Link>
         </div>

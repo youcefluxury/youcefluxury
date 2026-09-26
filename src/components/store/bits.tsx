@@ -104,7 +104,7 @@ export function Brand({
               "mt-0.5 truncate text-[9px] leading-tight tracking-[0.16em]",
               responsive ? "hidden lg:block" : "hidden sm:block",
               // The name's own colour, just quieter.
-              onBlack ? "opacity-55" : "opacity-60",
+              onBlack ? "opacity-70" : "opacity-75",
             )}
           >
             {tagline}
@@ -434,7 +434,7 @@ export function LanguageToggle({ className }: { className?: string }) {
     >
       <Languages
         aria-hidden="true"
-        className="text-foreground/70 ms-1.5 me-0.5 size-3.5 shrink-0"
+        className="text-foreground ms-1.5 me-0.5 size-3.5 shrink-0"
       />
       {LANGS.map((option) => (
         <button
@@ -446,7 +446,7 @@ export function LanguageToggle({ className }: { className?: string }) {
             "grid h-6 min-w-8 place-items-center rounded-full px-2 text-[11px] font-semibold tracking-wide transition-colors",
             lang === option.code
               ? "bg-foreground text-background"
-              : "text-foreground/70 hover:text-foreground",
+              : "text-muted-foreground hover:text-foreground",
           )}
         >
           {option.label}
