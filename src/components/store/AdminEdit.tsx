@@ -68,7 +68,7 @@ export function AdminPencil({
         onClick();
       }}
       className={cn(
-        "border-foreground/20 bg-foreground text-background grid size-6 shrink-0 place-items-center rounded-full border shadow-sm transition-opacity",
+        "grid size-6 shrink-0 place-items-center rounded-full border border-black/20 bg-black text-white shadow-sm transition-opacity",
         "hover:opacity-80",
         className,
       )}
