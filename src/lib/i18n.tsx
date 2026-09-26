@@ -56,6 +56,10 @@ const STRINGS = {
   "addCategory.open": { ar: "إضافة تصنيف جديد", en: "Add a new category" },
   "addSlide.open": { ar: "إضافة شريحة جديدة للسلايدر", en: "Add a new slider slide" },
   "common.whatsapp": { ar: "واتساب", en: "WhatsApp" },
+  "home.map.openInMaps": {
+    ar: "افتح الموقع في خرائط جوجل",
+    en: "Open the location in Google Maps",
+  },
   "common.whatsappAria": { ar: "اتصل بنا على واتساب", en: "Contact us on WhatsApp" },
   "common.phone": { ar: "الهاتف", en: "Phone" },
   "common.phoneAria": { ar: "اتصل بنا هاتفياً", en: "Call us" },

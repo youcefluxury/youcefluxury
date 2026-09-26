@@ -49,254 +49,270 @@ export type SiteThemePreset = {
 };
 
 /**
- * A dark design is described by its hue rather than by twenty hand-picked
- * colours. Surfaces stay deep and carry only a trace of the hue, so every
- * design reads as rich and dark instead of pale, while the brand accent keeps
- * a contrasting hue for the store's signature mark.
+ * A design is described by its hue and how strongly it is chroma-saturated,
+ * never by twenty hand-picked colours.
+ *
+ * Surfaces stay dark and carry a real amount of the theme's hue, so a "yellow"
+ * design actually reads yellow instead of grey. The action colour is a vivid,
+ * saturated version of the hue carrying near-black writing — that is what makes
+ * the palette feel strong while keeping every button readable.
  */
-type DarkSpec = {
+type VividSpec = {
   /** Base hue of the surfaces and writing. */
   hue: number;
-  /** How much colour the surfaces carry — 0 is pure neutral. */
-  tint: number;
-  /** Hue of the brand accent, often a deliberate contrast. */
+  /** Chroma of the surfaces — how much colour the whole page carries. */
+  chroma: number;
+  /** Hue + chroma of the vivid action colour (buttons). */
+  actionHue: number;
+  actionChroma: number;
+  /** Hue + chroma of the store's signature accent. */
   brandHue: number;
-  /** Strength of the brand accent. */
   brandChroma: number;
   /** Card corner radius. */
   radius: string;
 };
 
-function darkTokens(s: DarkSpec): Record<string, string> {
-  const t = s.tint;
+function vividTokens(s: VividSpec): Record<string, string> {
+  const c = s.chroma;
   return {
-    /* Deep page and card surfaces. */
-    "--background": `oklch(0.165 ${(t * 0.3).toFixed(4)} ${s.hue})`,
-    "--card": `oklch(0.205 ${(t * 0.38).toFixed(4)} ${s.hue})`,
-    "--popover": `oklch(0.215 ${(t * 0.4).toFixed(4)} ${s.hue})`,
+    /* Deep, genuinely tinted surfaces. */
+    "--background": `oklch(0.17 ${(c * 0.85).toFixed(4)} ${s.hue})`,
+    "--card": `oklch(0.215 ${(c * 0.95).toFixed(4)} ${s.hue})`,
+    "--popover": `oklch(0.225 ${c.toFixed(4)} ${s.hue})`,
     /* Writing. */
-    "--foreground": `oklch(0.96 ${(t * 0.16).toFixed(4)} ${s.hue})`,
-    "--card-foreground": `oklch(0.96 ${(t * 0.16).toFixed(4)} ${s.hue})`,
-    "--popover-foreground": `oklch(0.96 ${(t * 0.16).toFixed(4)} ${s.hue})`,
-    /* The action colour is light, so its own label can be dark and crisp. */
-    "--primary": `oklch(0.93 ${(t * 0.4).toFixed(4)} ${s.hue})`,
-    "--primary-foreground": `oklch(0.2 ${(t * 0.5).toFixed(4)} ${s.hue})`,
-    /* Quiet fills sit clearly above the page. */
-    "--secondary": `oklch(0.265 ${(t * 0.45).toFixed(4)} ${s.hue})`,
-    "--secondary-foreground": `oklch(0.95 ${(t * 0.16).toFixed(4)} ${s.hue})`,
-    "--muted": `oklch(0.265 ${(t * 0.45).toFixed(4)} ${s.hue})`,
-    "--muted-foreground": `oklch(0.73 ${(t * 0.35).toFixed(4)} ${s.hue})`,
-    "--accent": `oklch(0.29 ${(t * 0.5).toFixed(4)} ${s.hue})`,
-    "--accent-foreground": `oklch(0.95 ${(t * 0.16).toFixed(4)} ${s.hue})`,
-    /* Hairlines read as a soft lift, never a hard line. */
-    "--border": "oklch(1 0 0 / 13%)",
-    "--input": "oklch(1 0 0 / 16%)",
-    "--ring": `oklch(0.6 ${(t * 0.7).toFixed(4)} ${s.hue})`,
+    "--foreground": `oklch(0.965 ${(c * 0.25).toFixed(4)} ${s.hue})`,
+    "--card-foreground": `oklch(0.965 ${(c * 0.25).toFixed(4)} ${s.hue})`,
+    "--popover-foreground": `oklch(0.965 ${(c * 0.25).toFixed(4)} ${s.hue})`,
+    /* The action colour: vivid and saturated, with dark writing on top. */
+    "--primary": `oklch(0.8 ${s.actionChroma} ${s.actionHue})`,
+    "--primary-foreground": `oklch(0.17 ${(c * 0.8).toFixed(4)} ${s.hue})`,
+    /* Quiet fills read clearly above the page. */
+    "--secondary": `oklch(0.28 ${c.toFixed(4)} ${s.hue})`,
+    "--secondary-foreground": `oklch(0.96 ${(c * 0.25).toFixed(4)} ${s.hue})`,
+    "--muted": `oklch(0.28 ${c.toFixed(4)} ${s.hue})`,
+    "--muted-foreground": `oklch(0.76 ${(c * 0.45).toFixed(4)} ${s.hue})`,
+    "--accent": `oklch(0.33 ${(c * 1.15).toFixed(4)} ${s.hue})`,
+    "--accent-foreground": `oklch(0.96 ${(c * 0.25).toFixed(4)} ${s.hue})`,
+    /* Hairlines stay a soft lift, never a hard line. */
+    "--border": "oklch(1 0 0 / 14%)",
+    "--input": "oklch(1 0 0 / 17%)",
+    "--ring": `oklch(0.68 ${(s.actionChroma * 0.7).toFixed(4)} ${s.actionHue})`,
     /* Darker than the page, for badges and inverted chips. */
-    "--ink": `oklch(0.115 ${(t * 0.25).toFixed(4)} ${s.hue})`,
-    "--paper": `oklch(0.205 ${(t * 0.38).toFixed(4)} ${s.hue})`,
-    "--brand": `oklch(0.78 ${s.brandChroma} ${s.brandHue})`,
+    "--ink": `oklch(0.115 ${(c * 0.6).toFixed(4)} ${s.hue})`,
+    "--paper": `oklch(0.215 ${(c * 0.95).toFixed(4)} ${s.hue})`,
+    /* The signature accent. */
+    "--brand": `oklch(0.8 ${s.brandChroma} ${s.brandHue})`,
     "--radius": s.radius,
   };
 }
 
-const D = (
+const V = (
   hue: number,
-  tint: number,
+  chroma: number,
+  actionHue: number,
+  actionChroma: number,
   brandHue: number,
   brandChroma: number,
   radius: string,
-): DarkSpec => ({ hue, tint, brandHue, brandChroma, radius });
+): VividSpec => ({
+  hue,
+  chroma,
+  actionHue,
+  actionChroma,
+  brandHue,
+  brandChroma,
+  radius,
+});
 
 export const SITE_THEMES: SiteThemePreset[] = [
   {
     id: "original",
     nameAr: "الأسود والذهبي",
     nameEn: "Black & Gold",
-    blurbAr: "هوية متجرك: أسود عميق مع لمسة ذهبية كلاسيكية.",
-    blurbEn: "Your store identity: deep black with a classic golden touch.",
+    blurbAr: "هوية متجرك: أسود عميق بلمسة ذهبية قويّة.",
+    blurbEn: "Your store identity: deep black with a strong golden accent.",
     dark: true,
-    tokens: darkTokens(D(70, 0.1, 82, 0.11, "0.625rem")),
+    tokens: vividTokens(V(70, 0.035, 82, 0.16, 82, 0.16, "0.625rem")),
+  },
+  {
+    id: "honey",
+    nameAr: "عسلي",
+    nameEn: "Honey",
+    blurbAr: "أصفر عسلي قوي حقيقي — ليس باهتاً أبداً.",
+    blurbEn: "A real, strong honey yellow — never washed out.",
+    dark: true,
+    tokens: vividTokens(V(95, 0.055, 95, 0.175, 85, 0.16, "0.5rem")),
   },
   {
     id: "royal",
     nameAr: "كحلي ملكي",
     nameEn: "Royal Navy",
-    blurbAr: "كحلي عميق مع ذهبي عتيق وحواف حادة أنيقة.",
-    blurbEn: "Deep navy with antique gold and crisp, sharp corners.",
+    blurbAr: "كحلي عميق مع ذهبي عتيق قوي وحواف حادة.",
+    blurbEn: "Deep navy with a rich antique gold and sharp corners.",
     dark: true,
-    tokens: darkTokens(D(262, 0.075, 85, 0.11, "0.25rem")),
+    tokens: vividTokens(V(262, 0.062, 85, 0.155, 85, 0.15, "0.25rem")),
   },
   {
-    id: "sand",
-    nameAr: "رملي دافئ",
-    nameEn: "Warm Sand",
-    blurbAr: "بني رملي دافئ مع لمسة نحاسية — بوتيك مسائي.",
-    blurbEn: "Warm sand brown with a copper accent — an evening boutique.",
+    id: "forest",
+    nameAr: "غابة",
+    nameEn: "Forest",
+    blurbAr: "أخضر غابة مشبع وقوي مع ذهبي دافئ.",
+    blurbEn: "A saturated, confident forest green with warm gold.",
     dark: true,
-    tokens: darkTokens(D(55, 0.06, 45, 0.1, "0.375rem")),
+    tokens: vividTokens(V(155, 0.072, 152, 0.165, 90, 0.15, "0.625rem")),
   },
   {
     id: "emerald",
     nameAr: "زمردي",
     nameEn: "Emerald",
-    blurbAr: "أخضر زمردي غني مع كريمي وحواف مستديرة ناعمة.",
-    blurbEn: "Rich emerald green with cream tones and soft round corners.",
+    blurbAr: "أخضر زمردي غني ومشبّع مع حواف مستديرة.",
+    blurbEn: "Rich, saturated emerald with soft rounded corners.",
     dark: true,
-    tokens: darkTokens(D(162, 0.075, 150, 0.12, "0.75rem")),
-  },
-  {
-    id: "burgundy",
-    nameAr: "عنابي",
-    nameEn: "Burgundy",
-    blurbAr: "عنابي فاخر داكن مع لمسة وردية وحواف أنيقة.",
-    blurbEn: "Deep, luxurious burgundy with a rose hint and elegant corners.",
-    dark: true,
-    tokens: darkTokens(D(15, 0.08, 20, 0.13, "0.2rem")),
-  },
-  {
-    id: "slate",
-    nameAr: "رمادي عصري",
-    nameEn: "Modern Graphite",
-    blurbAr: "رمادي فحمي عميق مع أزرق فولاذي وحواف دائرية.",
-    blurbEn: "Deep graphite with steel blue and clearly rounded corners.",
-    dark: true,
-    tokens: darkTokens(D(250, 0.03, 230, 0.09, "1rem")),
-  },
-  {
-    id: "olive",
-    nameAr: "زيتوني",
-    nameEn: "Olive",
-    blurbAr: "أخضر زيتوني داكن بلمسة عسكرية وشكل متوازن.",
-    blurbEn: "Dark streetwear olive with a military note and a balanced shape.",
-    dark: true,
-    tokens: darkTokens(D(118, 0.06, 100, 0.1, "0.5rem")),
-  },
-  {
-    id: "ivory",
-    nameAr: "عاجي داكن",
-    nameEn: "Dark Ivory",
-    blurbAr: "عاجي دافئ مريح للعين مع بني موكا وحواف دائرية.",
-    blurbEn: "A warm, easy-on-the-eyes ivory with mocha brown and round corners.",
-    dark: true,
-    tokens: darkTokens(D(75, 0.04, 60, 0.07, "1.25rem")),
-  },
-  {
-    id: "midnight",
-    nameAr: "ليلي داكن",
-    nameEn: "Midnight",
-    blurbAr: "أسود ناعم هادئ مع لمسة ذهبية هادئة.",
-    blurbEn: "Soft, quiet black with a calm gold touch.",
-    dark: true,
-    tokens: darkTokens(D(260, 0.02, 82, 0.11, "0.625rem")),
-  },
-  {
-    id: "honey",
-    nameAr: "عسلي دافئ",
-    nameEn: "Warm Honey",
-    blurbAr: "عسلي ذهبي داكن مع بنّي متباين وحواف مستديرة.",
-    blurbEn: "Dark honey gold with deep brown and softly rounded corners.",
-    dark: true,
-    tokens: darkTokens(D(68, 0.085, 80, 0.14, "0.5rem")),
-  },
-  {
-    id: "forest",
-    nameAr: "غابة هادئة",
-    nameEn: "Calm Forest",
-    blurbAr: "أخضر غابة عميق مع ذهبي هادئ — دفء وثقة.",
-    blurbEn: "Deep forest green with calm gold — warm and assured.",
-    dark: true,
-    tokens: darkTokens(D(155, 0.08, 90, 0.12, "0.625rem")),
+    tokens: vividTokens(V(162, 0.075, 158, 0.17, 150, 0.16, "0.75rem")),
   },
   {
     id: "crimson",
     nameAr: "قرمزي",
     nameEn: "Crimson",
-    blurbAr: "قرمزي عميق واثق مع ورد داكن وحواف حادة.",
-    blurbEn: "A deep, confident crimson with dark rose and sharp corners.",
+    blurbAr: "أحمر قرمزي قوي وحيوي بحواف حادة.",
+    blurbEn: "A bold, vivid crimson with sharp corners.",
     dark: true,
-    tokens: darkTokens(D(22, 0.09, 30, 0.15, "0.25rem")),
+    tokens: vividTokens(V(22, 0.088, 25, 0.19, 30, 0.17, "0.25rem")),
+  },
+  {
+    id: "burgundy",
+    nameAr: "عنابي",
+    nameEn: "Burgundy",
+    blurbAr: "عنابي فاخر مشبع مع لمسة وردية قوية.",
+    blurbEn: "Saturated, luxurious burgundy with a strong rose note.",
+    dark: true,
+    tokens: vividTokens(V(15, 0.08, 18, 0.175, 20, 0.16, "0.2rem")),
   },
   {
     id: "azure",
     nameAr: "أزرق سماوي",
     nameEn: "Azure",
-    blurbAr: "أزرق سماوي عميق مع فيروزي وحواف دائرية.",
-    blurbEn: "Deep azure blue with a turquoise note and round corners.",
+    blurbAr: "أزرق سماوي صافٍ ومشبّع مع فيروزي.",
+    blurbEn: "Clean, saturated azure blue with a turquoise note.",
     dark: true,
-    tokens: darkTokens(D(248, 0.075, 195, 0.12, "0.875rem")),
-  },
-  {
-    id: "lavender",
-    nameAr: "لافندر",
-    nameEn: "Lavender",
-    blurbAr: "بنفسجي لافندر ليلي مع وردي وحواف مستديرة.",
-    blurbEn: "Night lavender with a rose highlight and soft round corners.",
-    dark: true,
-    tokens: darkTokens(D(300, 0.075, 330, 0.13, "1rem")),
+    tokens: vividTokens(V(248, 0.075, 245, 0.155, 195, 0.14, "0.875rem")),
   },
   {
     id: "teal",
     nameAr: "أزرق مخضر",
     nameEn: "Teal",
-    blurbAr: "أزرق مخضر بحري عميق مع ذهبي وحواف متوازنة.",
-    blurbEn: "Deep ocean teal with gold and a balanced, easy shape.",
+    blurbAr: "أزرق مخضر بحري عميق ومشبّع.",
+    blurbEn: "Deep, saturated ocean teal.",
     dark: true,
-    tokens: darkTokens(D(200, 0.07, 85, 0.11, "0.75rem")),
+    tokens: vividTokens(V(200, 0.07, 195, 0.15, 85, 0.15, "0.75rem")),
   },
   {
-    id: "cocoa",
-    nameAr: "كاكاو",
-    nameEn: "Cocoa",
-    blurbAr: "بني كاكاو غني وداكن مع لمسة نحاسية دافئة.",
-    blurbEn: "Rich, dark cocoa brown with a warm copper highlight.",
+    id: "lavender",
+    nameAr: "لافندر",
+    nameEn: "Lavender",
+    blurbAr: "بنفسجي لافندر قوي مع وردي صارخ.",
+    blurbEn: "A bold lavender purple with a vivid rose accent.",
     dark: true,
-    tokens: darkTokens(D(52, 0.07, 45, 0.1, "0.625rem")),
-  },
-  {
-    id: "rose",
-    nameAr: "وردي داكن",
-    nameEn: "Deep Rose",
-    blurbAr: "وردي داكن راقٍ مع توت وحواف ناعمة.",
-    blurbEn: "Refined deep rose with a berry tone and soft corners.",
-    dark: true,
-    tokens: darkTokens(D(8, 0.07, 340, 0.13, "1.125rem")),
-  },
-  {
-    id: "noir",
-    nameAr: "أسود فاخر",
-    nameEn: "Luxe Noir",
-    blurbAr: "أسود نقي فاخر للموقع كله مع ذهب عميق.",
-    blurbEn: "Pure luxe black across the whole store with deep gold.",
-    dark: true,
-    tokens: darkTokens(D(0, 0, 82, 0.12, "0.375rem")),
-  },
-  {
-    id: "charcoal",
-    nameAr: "فحمي",
-    nameEn: "Charcoal",
-    blurbAr: "فحمي بارد عميق مع لمسة زرقاء هادئة.",
-    blurbEn: "Deep, cool charcoal with a restrained blue note.",
-    dark: true,
-    tokens: darkTokens(D(255, 0.025, 230, 0.1, "1rem")),
-  },
-  {
-    id: "forest-night",
-    nameAr: "غابة ليلية",
-    nameEn: "Forest Night",
-    blurbAr: "أخضر ليلي عميق مع ذهبي هادئ — دفء وأمان.",
-    blurbEn: "A deep night green with calm gold — warm and reassuring.",
-    dark: true,
-    tokens: darkTokens(D(158, 0.08, 90, 0.12, "0.75rem")),
+    tokens: vividTokens(V(300, 0.078, 302, 0.17, 330, 0.17, "1rem")),
   },
   {
     id: "plum-night",
     nameAr: "برقوقي",
     nameEn: "Plum Night",
-    blurbAr: "برقوقي ليلي فاخر مع وردي وحواف دائرية.",
-    blurbEn: "A luxurious night plum with a rose highlight and round corners.",
+    blurbAr: "برقوقي ليلي مشبع مع وردي قوي.",
+    blurbEn: "Saturated night plum with a strong rose accent.",
     dark: true,
-    tokens: darkTokens(D(320, 0.08, 340, 0.13, "1.125rem")),
+    tokens: vividTokens(V(320, 0.082, 322, 0.175, 340, 0.17, "1.125rem")),
+  },
+  {
+    id: "rose",
+    nameAr: "وردي",
+    nameEn: "Rose",
+    blurbAr: "وردي عميق ومشبّع مع توت داكن.",
+    blurbEn: "Deep, saturated rose with a dark berry note.",
+    dark: true,
+    tokens: vividTokens(V(8, 0.075, 6, 0.165, 340, 0.16, "1.125rem")),
+  },
+  {
+    id: "olive",
+    nameAr: "زيتوني",
+    nameEn: "Olive",
+    blurbAr: "أخضر زيتوني داكن وقوي بلمسة عسكرية.",
+    blurbEn: "A strong, dark olive with a military note.",
+    dark: true,
+    tokens: vividTokens(V(118, 0.065, 112, 0.145, 100, 0.13, "0.5rem")),
+  },
+  {
+    id: "sand",
+    nameAr: "رملي",
+    nameEn: "Sand",
+    blurbAr: "رملي ذهبي دافئ وقوي بنحاس متباين.",
+    blurbEn: "Warm, strong sand gold with contrasting copper.",
+    dark: true,
+    tokens: vividTokens(V(60, 0.055, 50, 0.145, 45, 0.14, "0.375rem")),
+  },
+  {
+    id: "cocoa",
+    nameAr: "كاكاو",
+    nameEn: "Cocoa",
+    blurbAr: "بني كاكاو غني ومشبّع مع نحاس دافئ.",
+    blurbEn: "Rich, saturated cocoa brown with warm copper.",
+    dark: true,
+    tokens: vividTokens(V(52, 0.062, 48, 0.145, 45, 0.14, "0.625rem")),
+  },
+  {
+    id: "ivory",
+    nameAr: "عاجي",
+    nameEn: "Ivory",
+    blurbAr: "عاجي دافئ مريح للعين مع بني موكا.",
+    blurbEn: "A warm, easy-on-the-eyes ivory with mocha brown.",
+    dark: true,
+    tokens: vividTokens(V(78, 0.05, 68, 0.13, 60, 0.12, "1.25rem")),
+  },
+  {
+    id: "midnight",
+    nameAr: "ليلي داكن",
+    nameEn: "Midnight",
+    blurbAr: "أسود ناعم مع ذهبي هادئ وقوي.",
+    blurbEn: "Soft black with a calm but rich gold.",
+    dark: true,
+    tokens: vividTokens(V(262, 0.03, 82, 0.155, 82, 0.15, "0.625rem")),
+  },
+  {
+    id: "forest-night",
+    nameAr: "غابة ليلية",
+    nameEn: "Forest Night",
+    blurbAr: "أخضر ليلي عميق ومشبّع مع ذهبي.",
+    blurbEn: "A deep, saturated night green with gold.",
+    dark: true,
+    tokens: vividTokens(V(158, 0.078, 152, 0.165, 90, 0.15, "0.75rem")),
+  },
+  {
+    id: "slate",
+    nameAr: "فحمي",
+    nameEn: "Graphite",
+    blurbAr: "فحمي بارد عميق مع أزرق فولاذي قوي.",
+    blurbEn: "Deep cool graphite with a strong steel blue.",
+    dark: true,
+    tokens: vividTokens(V(250, 0.032, 240, 0.115, 230, 0.11, "1rem")),
+  },
+  {
+    id: "charcoal",
+    nameAr: "فحمي أنيق",
+    nameEn: "Charcoal",
+    blurbAr: "فحمي بارد أنيق مع لمسة زرقية هادئة.",
+    blurbEn: "Elegant cool charcoal with a calm blue note.",
+    dark: true,
+    tokens: vividTokens(V(255, 0.028, 245, 0.105, 230, 0.1, "1rem")),
+  },
+  {
+    id: "noir",
+    nameAr: "أسود فاخر",
+    nameEn: "Luxe Noir",
+    blurbAr: "أسود نقي للموقع كله مع ذهب قوي.",
+    blurbEn: "Pure black across the store with a rich gold.",
+    dark: true,
+    tokens: vividTokens(V(0, 0.012, 82, 0.16, 82, 0.16, "0.375rem")),
   },
 ];
 

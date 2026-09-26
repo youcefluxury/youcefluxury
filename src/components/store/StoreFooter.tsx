@@ -7,6 +7,7 @@ import { InstagramIcon, Brand, LanguageToggle } from "@/components/store/bits";
 import {
   FacebookEditButton,
   InstagramEditButton,
+  WhatsAppEditButton,
 } from "@/components/store/AdminEdit";
 import { useStorePhone } from "@/hooks/use-store-phone";
 import { useStoreBrand } from "@/hooks/use-store-brand";
@@ -67,13 +68,17 @@ export function StoreFooter() {
                 {/* Admin only: edit the Facebook link from here too. */}
                 <FacebookEditButton className="absolute -top-1.5 -start-1.5" />
               </span>
-              <a
-                href={`tel:${phone}`}
-                aria-label={t("common.phone")}
-                className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
-              >
-                <Phone className="size-5" />
-              </a>
+              <span className="relative">
+                <a
+                  href={`tel:${phone}`}
+                  aria-label={t("common.phone")}
+                  className="grid size-10 place-items-center rounded-full border border-chrome-border transition-colors hover:bg-chrome-hover"
+                >
+                  <Phone className="size-5" />
+                </a>
+                {/* Admin only: change the number behind the call icon. */}
+                <WhatsAppEditButton className="absolute -top-1.5 -start-1.5" />
+              </span>
               <LanguageToggle onDark className="ms-1" />
             </div>
           </div>

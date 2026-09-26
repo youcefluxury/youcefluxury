@@ -1,6 +1,6 @@
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown, Plus } from "lucide-react";
+import { ArrowLeft, ChevronDown, ExternalLink, Plus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 
@@ -23,7 +23,7 @@ import { ProductCard } from "@/components/store/ProductCard";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useStoreClock } from "@/hooks/use-store-clock";
 import { useI18n } from "@/lib/i18n";
-import { categoryName, isHiddenFromStore } from "@/lib/store-data";
+import { categoryName, isHiddenFromStore, toMapLinkUrl } from "@/lib/store-data";
 import { cn } from "@/lib/utils";
 
 /**
@@ -96,6 +96,8 @@ export default function Landing() {
   const isAdmin = useIsAdminSession();
   // Live shop location — the dashboard can move the pin any time.
   const { mapEmbedUrl } = useStoreBrand();
+  /* Plain Maps link for the always-visible button over the frame. */
+  const mapLink = toMapLinkUrl(mapEmbedUrl);
   const products = useQuery(api.catalog.listProducts);
   const categoryRows = useQuery(api.catalog.listCategories);
   const categories = categoryRows ?? [];
@@ -244,7 +246,7 @@ export default function Landing() {
           title={t("home.map.title")}
           action={<MapEditButton />}
         />
-        <div className="mt-7 overflow-hidden rounded-none border border-border/70 bg-card">
+        <div className="relative mt-7 overflow-hidden rounded-none border border-border/70 bg-card">
           <iframe
             title={t("home.map.title")}
             /* Whatever the dashboard saved as the shop's location. */
@@ -253,6 +255,22 @@ export default function Landing() {
             referrerPolicy="no-referrer-when-downgrade"
             className="h-[320px] w-full sm:h-[420px]"
           />
+          {/*
+            Google's own frame only reveals its "view larger map" control on
+            hover, so the storefront carries its own. It is always visible and
+            sits above the frame, never inside it.
+          */}
+          {mapLink ? (
+            <a
+              href={mapLink}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground absolute bottom-3 end-3 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium shadow-lg transition-colors"
+            >
+              <ExternalLink className="size-3.5 shrink-0" />
+              {t("home.map.openInMaps")}
+            </a>
+          ) : null}
         </div>
       </section>
     </div>

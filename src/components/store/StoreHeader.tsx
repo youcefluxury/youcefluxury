@@ -340,7 +340,10 @@ export function StoreHeader() {
               <FacebookEditButton className="absolute -bottom-1 -start-1" />
             </span>
 
-            {/* Admin only, parked to the left of the social row. */}
+            {/* Admin only: live order notifications with the red counter. */}
+            <AdminNotifications tone="dark" />
+
+            {/* Admin only: the account menu, parked to the left of the bell. */}
             {isAdmin ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -371,9 +374,6 @@ export function StoreHeader() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : null}
-
-            {/* Admin only: live order notifications with the red counter. */}
-            <AdminNotifications tone="dark" />
 
             <button
               type="button"

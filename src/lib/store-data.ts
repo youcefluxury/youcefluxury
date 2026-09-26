@@ -618,6 +618,21 @@ export function mapCoordinates(value: string): string {
 }
 
 /**
+ * The plain, shareable Google Maps link for the saved location — the one a
+ * visitor taps to open the shop in the Maps app. The embed frame above only
+ * offers its own controls on hover, so the storefront shows this explicitly.
+ *
+ * Returns `""` when there is no usable location.
+ */
+export function toMapLinkUrl(value: string): string {
+  /* mapCoordinates also digs the pair out of an "?q=lat,lng" embed URL, which
+     is exactly what the brand hook hands us. */
+  const coordinates = mapCoordinates(value);
+  if (!coordinates) return "";
+  return `https://www.google.com/maps/search/?api=1&query=${coordinates}`;
+}
+
+/**
  * Turns whatever the admin typed into a Google Maps *embed* URL: plain
  * coordinates, a “place” link, or a full `…&output=embed` URL pasted from
  * Google Maps itself. Anything unrecognised returns `""`, so the storefront
