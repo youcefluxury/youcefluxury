@@ -774,7 +774,8 @@ function ProductsManager({
       if (order.status === "cancelled") continue;
       for (const item of order.items) {
         const sizes = map.get(item.productId) ?? [];
-        if (!sizes.includes(item.size)) sizes.push(item.size);
+        const size = item.size ?? "";
+        if (!sizes.includes(size)) sizes.push(size);
         map.set(item.productId, sizes);
       }
     }
@@ -2455,9 +2456,9 @@ function OrdersManager() {
                             </p>
                             <p className="text-muted-foreground text-[10px]">
                               {t("admin.sizeShort", {
-                                size: sizeLabel(item.size, lang),
+                                size: sizeLabel(item.size ?? "", lang),
                               })}
-                              {item.color !== "—"
+                              {item.color && item.color !== "—"
                                 ? ` · ${colorLabel(item.color, lang)}`
                                 : ""}
                               {` · ×${item.quantity}`}

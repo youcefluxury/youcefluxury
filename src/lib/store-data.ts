@@ -388,19 +388,49 @@ export const ORDER_STATUSES = [
 
 export type OrderStatusCode = (typeof ORDER_STATUSES)[number]["code"];
 
-/** Convex error codes → localized checkout messages. */
-export function orderErrorMessage(code: string, lang: Lang): string {
-  const messages: Record<string, { ar: string; en: string }> = {
-    INVALID_NAME: { ar: "الاسم غير مكتمل", en: "The name is incomplete" },
-    INVALID_PHONE: {
-      ar: "رقم الهاتف غير صحيح",
-      en: "The phone number is invalid",
-    },
-    INVALID_ADDRESS: { ar: "العنوان مطلوب", en: "An address is required" },
-    EMPTY_CART: { ar: "السلة فارغة", en: "Your bag is empty" },
-  };
-  const entry = messages[code.trim().toUpperCase()];
-  return entry ? entry[lang] : "";
+/** Every code the checkout can come back with, and what it means. */
+const ORDER_ERRORS: Record<string, { ar: string; en: string }> = {
+  INVALID_NAME: { ar: "الاسم غير مكتمل", en: "The name is incomplete" },
+  INVALID_PHONE: {
+    ar: "رقم الهاتف غير صحيح",
+    en: "The phone number is invalid",
+  },
+  INVALID_ADDRESS: { ar: "العنوان مطلوب", en: "An address is required" },
+  EMPTY_CART: { ar: "السلة فارغة", en: "Your bag is empty" },
+};
+
+/** Codes and the sentence behind them, ready for the checkout toast. */
+export function orderErrorMessage(message: string, lang: Lang): string {
+  const text = (message ?? "").toUpperCase();
+  for (const code of Object.keys(ORDER_ERRORS)) {
+    // The code is buried inside Convex's "Server Error / Uncaught Error: …"
+    // envelope, so it is searched for rather than compared.
+    if (text.includes(code)) return ORDER_ERRORS[code]![lang];
+  }
+  if (text.includes("ARGUMENTVALIDATIONERROR")) {
+    // The server refused the payload itself; name the field it choked on.
+    const field = /MISSING THE REQUIRED FIELD `([A-Z_]+)`/.exec(text)?.[1];
+    const named = field
+      ? {
+          image: "الصورة",
+          size: "المقاس",
+          color: "اللون",
+          nameAr: "الاسم",
+          nameEn: "الاسم",
+          productId: "المنتج",
+          price: "السعر",
+          quantity: "الكمية",
+        }[field.toLowerCase()]
+      : undefined;
+    return named
+      ? lang === "ar"
+        ? `تعذّر إرسال الطلب: حقل «${named}» ناقص في السلة. فرّغ السلة وأضف المنتج من جديد.`
+        : `Could not send the order: the bag is missing its ${field?.toLowerCase()}. Empty the bag and add the product again.`
+      : lang === "ar"
+        ? "تعذّر إرسال الطلب: بيانات السلة غير مكتملة. فرّغ السلة وأضف المنتج من جديد."
+        : "Could not send the order: the bag holds incomplete data. Empty it and add the product again.";
+  }
+  return "";
 }
 
 /** Payment method code ("cod") or legacy label → localized sentence. */

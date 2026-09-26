@@ -131,10 +131,11 @@ const schema = defineSchema(
           nameAr: v.string(),
           nameEn: v.string(),
           price: v.number(),
-          size: v.string(),
-          color: v.string(),
           quantity: v.number(),
-          image: v.string(),
+          /** Optional: a product saved without these is still orderable. */
+          size: v.optional(v.string()),
+          color: v.optional(v.string()),
+          image: v.optional(v.string()),
           /** Delivery price captured when the order was placed (if any). */
           deliveryFee: v.optional(v.number()),
         }),
@@ -160,7 +161,7 @@ const schema = defineSchema(
     meta: defineTable({
       key: v.string(),
       value: v.string(),
-    }).index("by_key", ["key"])
+    }).index("by_key", ["key"]),
   },
   {
     schemaValidation: false,

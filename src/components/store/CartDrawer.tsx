@@ -198,14 +198,14 @@ export function CartDrawer() {
         note: form.note || undefined,
         paymentMethod: "cod",
         items: items.map((item) => ({
-          productId: item.productId,
-          nameAr: item.nameAr,
-          nameEn: item.nameEn,
-          price: item.price,
-          size: item.size,
-          color: item.color,
-          quantity: item.quantity,
-          image: item.image,
+          productId: String(item.productId ?? ""),
+          nameAr: String(item.nameAr ?? ""),
+          nameEn: String(item.nameEn ?? ""),
+          price: Number(item.price) || 0,
+          size: String(item.size ?? ""),
+          color: String(item.color ?? ""),
+          quantity: Math.max(1, Number(item.quantity) || 1),
+          image: String(item.image ?? ""),
         })),
         deliveryFee,
         total: subtotal + deliveryFee,
@@ -229,7 +229,11 @@ export function CartDrawer() {
       const message =
         error instanceof Error ? orderErrorMessage(error.message, lang) : "";
       toast.error(message || t("cart.sendError"), {
-        description: t("cart.sendErrorHint"),
+        // The raw reason stays on the console so a failure is never a dead end.
+        description:
+          import.meta.env.DEV && error instanceof Error
+            ? error.message
+            : t("cart.sendErrorHint"),
       });
     } finally {
       setSubmitting(false);

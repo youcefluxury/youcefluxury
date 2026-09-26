@@ -300,7 +300,7 @@ export function AdminNotifications({
                             (item) =>
                               `${pickLang(item.nameAr, item.nameEn, lang)} · ${t(
                                 "admin.sizeShort",
-                                { size: sizeLabel(item.size, lang) },
+                                { size: sizeLabel(item.size ?? "", lang) },
                               )}`,
                           )
                           .join("  —  ")}

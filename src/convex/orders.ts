@@ -14,10 +14,16 @@ const orderItemValidator = v.object({
   nameAr: v.string(),
   nameEn: v.string(),
   price: v.number(),
-  size: v.string(),
-  color: v.string(),
   quantity: v.number(),
-  image: v.string(),
+  /**
+   * A line only has to identify the product and say how many. A product saved
+   * without a photo, a size or a colour still has to be orderable, so these
+   * three are optional and the dashboard falls back to a dash when one is
+   * missing. Requiring them used to reject a whole order over an empty string.
+   */
+  size: v.optional(v.string()),
+  color: v.optional(v.string()),
+  image: v.optional(v.string()),
   /**
    * Legacy per-product delivery price. Kept optional so orders placed before
    * the wilaya-based prices still read back exactly as they were saved.
@@ -76,6 +82,18 @@ export const createOrder = mutation({
      */
     const total = itemsTotal + deliveryFee;
 
+    /*
+     * The validator tolerates a line with no photo, size or colour, but the
+     * stored order is filled back in so the dashboard always has a string to
+     * render for each of them.
+     */
+    const items = args.items.map((item) => ({
+      ...item,
+      size: item.size ?? "",
+      color: item.color ?? "",
+      image: item.image ?? "",
+    }));
+
     const orderId = await ctx.db.insert("orders", {
       customerName: name,
       phone,
@@ -85,7 +103,7 @@ export const createOrder = mutation({
       address,
       note: args.note?.trim() || undefined,
       paymentMethod: args.paymentMethod,
-      items: args.items,
+      items,
       itemsTotal,
       deliveryFee,
       total,
@@ -150,7 +168,9 @@ export const setOrderNote = mutation({
     if (!isValidAdminKey(args.adminKey)) {
       throw new Error("UNAUTHORIZED");
     }
-    await ctx.db.patch(args.id, { adminNote: args.adminNote.trim() || undefined });
+    await ctx.db.patch(args.id, {
+      adminNote: args.adminNote.trim() || undefined,
+    });
     return args.id;
   },
 });
