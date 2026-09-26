@@ -35,7 +35,6 @@ import {
   MAP_COORDINATES_PLACEHOLDER,
   STORE,
   mapCoordinates,
-  parseCoordinates,
 } from "@/lib/store-data";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
@@ -347,9 +346,11 @@ function StoreIdentityPanel() {
       toast.error(t("admin.brandNameRequired"));
       return;
     }
-    // Coordinates only — a pasted link is refused here instead of leaving a
-    // broken frame on the home page. The value is stored as a plain "lat,lng".
-    if (map.trim() && !parseCoordinates(map)) {
+    // Read it with the same function that writes it, so a pair with a zoom
+    // level or a pasted Maps link is never mistaken for a broken value. The
+    // stored setting is always the plain "lat,lng" the storefront expects.
+    const point = map.trim() ? mapCoordinates(map) : "";
+    if (map.trim() && !point) {
       toast.error(t("admin.mapInvalid"));
       return;
     }
@@ -359,37 +360,10 @@ function StoreIdentityPanel() {
         name: name.trim(),
         tagline: tagline.trim(),
         description: description.trim(),
-        map: map.trim() ? (mapCoordinates(map) ?? "") : "",
+        map: point,
         footerAbout: footerAbout.trim(),
         logo,
       });
-      toast.success(t("admin.identitySaved"));
-    } catch {
-      toast.error(t("admin.saveFailed"));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  /** Empties the fields: the storefront goes back to its built-in identity. */
-  async function resetToDefaults() {
-    setBusy(true);
-    try {
-      // The name is the one value the server requires, so it resets to the
-      // built-in name instead of becoming empty.
-      await save({
-        name: STORE.name,
-        tagline: "",
-        description: "",
-        map: "",
-        logo: "",
-        footerAbout: "",
-      });
-      setName(STORE.name);
-      setTagline("");
-      setDescription("");
-      setMap("");
-      setLogo("");
       toast.success(t("admin.identitySaved"));
     } catch {
       toast.error(t("admin.saveFailed"));
@@ -498,15 +472,6 @@ function StoreIdentityPanel() {
           onClick={() => void submit()}
         >
           {t("admin.saveChanges")}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-11"
-          disabled={busy}
-          onClick={() => void resetToDefaults()}
-        >
-          {t("admin.identityReset")}
         </Button>
       </div>
     </div>

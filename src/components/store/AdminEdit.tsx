@@ -22,7 +22,6 @@ import {
   MAP_COORDINATES_PLACEHOLDER,
   STORE,
   mapCoordinates,
-  parseCoordinates,
 } from "@/lib/store-data";
 import { normalizeLogoImage } from "@/lib/image-compress";
 import { useUploadImage } from "@/lib/upload";
@@ -565,7 +564,9 @@ export function MapEditButton({ className }: { className?: string }) {
   }, [open, mapEmbedUrl]);
 
   async function save() {
-    const point = parseCoordinates(value);
+    // A bare pair, a pair with a zoom level, or a pasted Maps link: whatever
+    // reduces to a point is what gets stored.
+    const point = mapCoordinates(value);
     if (!point) {
       toast.error(t("admin.mapInvalid"));
       return;
@@ -575,7 +576,7 @@ export function MapEditButton({ className }: { className?: string }) {
       await setSetting({
         adminKey: ADMIN_API_KEY,
         key: "map",
-        value: `${point.lat},${point.lng}`,
+        value: point,
       });
       toast.success(t("admin.settingsSaved"));
       setOpen(false);

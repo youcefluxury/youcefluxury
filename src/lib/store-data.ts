@@ -557,7 +557,7 @@ export function matchesSearch(haystack: string, query: string): boolean {
  * Sample shown in the map field: degrees / minutes / seconds, the way a
  * person reads a location off their phone.
  */
-export const MAP_COORDINATES_PLACEHOLDER = `35\u00b022'02.7"N 1\u00b019'24.0"E`;
+export const MAP_COORDINATES_PLACEHOLDER = `35.180678,1.493835&z=15`;
 /** Valid latitude/longitude pair — anything else is refused, not embedded. */
 function validPoint(lat: number, lng: number): boolean {
   return (
@@ -598,6 +598,21 @@ export function parseCoordinates(
   if (decimal) {
     const lat = Number(decimal[1]);
     const lng = Number(decimal[2]);
+    return validPoint(lat, lng) ? { lat, lng } : null;
+  }
+
+  /*
+   * The same pair copied out of a Maps URL, still carrying what came after
+   * it: "35.180678,1.493835&z=15", "35.180678,1.493835?z=15" or a
+   * "#map=12/..." fragment. The extra query is dropped and the point is
+   * kept, so pasting straight from the address bar is never a mistake.
+   */
+  const withQuery = text.match(
+    /^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*(?:[?&#].*)?$/,
+  );
+  if (withQuery) {
+    const lat = Number(withQuery[1]);
+    const lng = Number(withQuery[2]);
     return validPoint(lat, lng) ? { lat, lng } : null;
   }
 
