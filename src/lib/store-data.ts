@@ -638,9 +638,58 @@ export function parseCoordinates(
 }
 
 /** `35.180678,1.493835` → the short coordinates line shown in the popup. */
+/** The place a Maps link names, when it carries no coordinates at all. */
+function placeNameFromLink(value: string): string {
+  const named = value.match(
+    /google\.[a-z.]+\/maps\/(?:place|search|dir)\/([^?#/]+)/i,
+  );
+  const query = value.match(/[?&]q=([^&]+)/);
+  const raw = named?.[1] ?? query?.[1] ?? "";
+  if (!raw) return "";
+  const name = decodeURIComponent(raw.replace(/\+/g, " "))
+    .replace(/\s+/g, " ")
+    .trim();
+  /* A bare pair is a point, not a name. */
+  return validPoint(...(name.split(",").map(Number) as [number, number]))
+    ? ""
+    : name;
+}
+/**
+ * The lat/lng pair hiding inside a Google Maps link. Maps writes the same
+ * point in several ways and the address bar hands over whichever one fits
+ * the page, so all of them are read here:
+ *
+ *   …?q=33.78,2.84            a searched point
+ *   …?api=1&query=33.78,2.84  the shareable search link
+ *   …?ll=33.78,2.84            the old embed parameter
+ *   …/@33.78,2.84,15z          the address-bar form
+ *   …!3d33.78!4d2.84          the unwrapped 3D form
+ */
+function coordinatesFromLink(value: string): string {
+  const patterns = [
+    /[?&](?:q|query|ll|destination)=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i,
+    /@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/,
+    /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/,
+  ];
+  for (const pattern of patterns) {
+    const hit = value.match(pattern);
+    if (!hit) continue;
+    const lat = Number(hit[1]);
+    const lng = Number(hit[2]);
+    if (validPoint(lat, lng)) return `${lat},${lng}`;
+  }
+  return "";
+}
+
+/**
+ * Every place the admin can type, reduced to a plain "lat,lng" line: a
+ * bare pair, a pair still carrying its zoom, degrees/minutes/seconds, or
+ * any of the Google Maps link shapes above. Empty when the text is not a
+ * location at all.
+ */
 export function mapCoordinates(value: string): string {
-  const fromQuery = value.match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
-  if (fromQuery) return `${fromQuery[1]},${fromQuery[2]}`;
+  const fromLink = coordinatesFromLink(value);
+  if (fromLink) return fromLink;
   const point = parseCoordinates(value);
   return point ? `${point.lat},${point.lng}` : "";
 }
@@ -656,8 +705,12 @@ export function toMapLinkUrl(value: string): string {
   /* mapCoordinates also digs the pair out of an "?q=lat,lng" embed URL, which
      is exactly what the brand hook hands us. */
   const coordinates = mapCoordinates(value);
-  if (!coordinates) return "";
-  return `https://www.google.com/maps/search/?api=1&query=${coordinates}`;
+  if (coordinates) {
+    return `https://www.google.com/maps/search/?api=1&query=${coordinates}`;
+  }
+  // A link that only names the place is still worth handing to the app.
+  const text = value.trim();
+  return /^https?:\/\//i.test(text) ? text : "";
 }
 
 /**
@@ -670,18 +723,19 @@ export function toMapEmbedUrl(value: string, zoom = 15): string {
   const text = value.trim();
   if (!text) return "";
 
-  const point = parseCoordinates(text);
-  if (point) {
-    return `https://maps.google.com/maps?q=${point.lat},${point.lng}&z=${zoom}&output=embed`;
+  // Any coordinate shape at all, link or not, goes through one reader.
+  const coordinates = mapCoordinates(text);
+  if (coordinates) {
+    return `https://maps.google.com/maps?q=${coordinates}&z=${zoom}&output=embed`;
   }
 
   if (!/^https?:\/\//i.test(text)) return "";
   if (/[?&]output=embed/i.test(text)) return text;
 
-  // “…/@35.180678,1.493835,17z” — the coordinates inside a Maps link.
-  const at = text.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
-  if (at) {
-    return `https://maps.google.com/maps?q=${at[1]},${at[2]}&z=${zoom}&output=embed`;
+  // A link that names the place instead of pointing at it.
+  const named = placeNameFromLink(text);
+  if (named) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(named)}&z=${zoom}&output=embed`;
   }
 
   // “…/maps?q=35.18,1.49” or a searched place name.
@@ -690,4 +744,18 @@ export function toMapEmbedUrl(value: string, zoom = 15): string {
     return `https://maps.google.com/maps?q=${query[1]}&z=${zoom}&output=embed`;
   }
   return "";
+}
+
+/**
+ * What the map field should store for a given input: the plain
+ * "lat,lng" whenever the text carries one, otherwise the link itself
+ * (Google resolves a place name from it on its own). Empty means the text
+ * is not a location — which is what the dashboard reports as an error.
+ */
+export function mapSettingValue(value: string): string {
+  const text = value.trim();
+  if (!text) return "";
+  const coordinates = mapCoordinates(text);
+  if (coordinates) return coordinates;
+  return toMapEmbedUrl(text) ? text : "";
 }

@@ -35,6 +35,7 @@ import {
   MAP_COORDINATES_PLACEHOLDER,
   STORE,
   mapCoordinates,
+  mapSettingValue,
 } from "@/lib/store-data";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
@@ -346,10 +347,9 @@ function StoreIdentityPanel() {
       toast.error(t("admin.brandNameRequired"));
       return;
     }
-    // Read it with the same function that writes it, so a pair with a zoom
-    // level or a pasted Maps link is never mistaken for a broken value. The
-    // stored setting is always the plain "lat,lng" the storefront expects.
-    const point = map.trim() ? mapCoordinates(map) : "";
+    // Coordinates or a pasted Maps link, both welcome. The setting keeps the
+    // plain "lat,lng" whenever there is one, and the link itself otherwise.
+    const point = mapSettingValue(map);
     if (map.trim() && !point) {
       toast.error(t("admin.mapInvalid"));
       return;

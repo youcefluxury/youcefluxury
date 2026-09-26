@@ -979,8 +979,8 @@ const STRINGS = {
     en: `Paste the coordinates only: decimal (35.180678,1.493835) or 35°22'02.7"N 1°19'24.0"E — the map jumps straight to that spot. Links are not accepted.`,
   },
   "admin.mapHint": {
-    ar: `الصق الإحداثيات فقط: 35.180678,1.493835 — ويُقبل أن يتبع ذلك Zoom أو محاذرة تُتجاهل تماماً.`,
-    en: `Paste coordinates only: 35.180678,1.493835 — a zoom level (&z=15) is fine and simply ignored.`,
+    ar: `الصق الإحداثيات (33.789497,2.841472) أو رابط خرائط جوجل كما هو — الرابط يُقرأ ويُختزل إلى الإحداثيات تلقائياً.`,
+    en: `Paste coordinates (33.789497,2.841472) or a Google Maps link as it is — the link is read and reduced to coordinates automatically.`,
   },
   "admin.mapInvalid": {
     ar: "تعذر قراءة هذا الرابط — الصق رابط خرائط جوجل أو الإحداثيات",
