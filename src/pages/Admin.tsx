@@ -726,7 +726,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
         )}
 
         <div className="mt-6 flex flex-col items-center gap-3">
-          <LanguageToggle onDark />
+          <LanguageToggle />
           <Link
             to="/"
             className="text-center text-[11px] text-white/40 hover:text-white"
@@ -2559,7 +2559,7 @@ export default function Admin() {
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-            <LanguageToggle onDark />
+            <LanguageToggle />
             <Button
               asChild
               variant="outline"

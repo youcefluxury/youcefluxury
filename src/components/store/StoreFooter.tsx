@@ -83,7 +83,7 @@ export function StoreFooter() {
                 {/* Admin only: change the number behind the call icon. */}
                 <WhatsAppEditButton className="absolute -top-1.5 -start-1.5" />
               </span>
-              <LanguageToggle onDark className="ms-1" />
+              <LanguageToggle className="ms-1" />
             </div>
           </div>
           <div>

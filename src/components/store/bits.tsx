@@ -413,13 +413,13 @@ const LANGS: { code: Lang; label: string }[] = [
 ];
 
 /** Compact segmented AR / EN control, placed in the header and the dashboard. */
-export function LanguageToggle({
-  className,
-  onDark = false,
-}: {
-  className?: string;
-  onDark?: boolean;
-}) {
+/**
+ * The ع / EN switch. Every colour is relative to the writing tokens, so it
+ * reads dark writing on a light navbar and light writing on a dark one without
+ * the caller having to declare which band it landed on — hardcoding white
+ * used to hide the letters on a white navbar.
+ */
+export function LanguageToggle({ className }: { className?: string }) {
   const { lang, setLang, t } = useI18n();
 
   return (
@@ -428,17 +428,13 @@ export function LanguageToggle({
       aria-label={t("common.language")}
       title={t("common.language")}
       className={cn(
-        "flex items-center gap-0.5 rounded-full border p-0.5",
-        onDark ? "border-white/20" : "border-border",
+        "border-foreground/20 flex items-center gap-0.5 rounded-full border p-0.5",
         className,
       )}
     >
       <Languages
         aria-hidden="true"
-        className={cn(
-          "ms-1.5 me-0.5 size-3.5 shrink-0",
-          onDark ? "text-white/45" : "text-muted-foreground",
-        )}
+        className="text-foreground/45 ms-1.5 me-0.5 size-3.5 shrink-0"
       />
       {LANGS.map((option) => (
         <button
@@ -449,12 +445,8 @@ export function LanguageToggle({
           className={cn(
             "grid h-6 min-w-8 place-items-center rounded-full px-2 text-[11px] font-semibold tracking-wide transition-colors",
             lang === option.code
-              ? onDark
-                ? "bg-white text-black"
-                : "bg-foreground text-background"
-              : onDark
-                ? "text-white/60 hover:text-white"
-                : "text-muted-foreground hover:text-foreground",
+              ? "bg-foreground text-background"
+              : "text-foreground/60 hover:text-foreground",
           )}
         >
           {option.label}

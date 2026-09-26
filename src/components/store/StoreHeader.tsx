@@ -263,10 +263,10 @@ export function StoreHeader() {
           </div>
 
           <div className="ms-auto flex shrink-0 items-center gap-0 sm:gap-1">
-            {/* onDark keeps the active pill white — the default black-on-black
-                version vanishes against the black bar. */}
+            {/* The pill follows the navbar on its own: dark writing on a light
+                bar, light writing on a dark one. */}
             <div className="hidden sm:block">
-              <LanguageToggle onDark />
+              <LanguageToggle />
             </div>
 
             <button
