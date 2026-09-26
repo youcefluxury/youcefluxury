@@ -66,115 +66,79 @@ export type SiteThemePreset = {
 };
 
 /**
- * The design is described by its hue and how strongly it is chroma-saturated,
- * never by twenty hand-picked colours.
+ * The store's one design, written out as plain black and white.
  *
- * At chroma 0 nothing tints the greys, so the deep page really is black and the
- * writing really is white. The action colour is the same tone one step away
- * from the page, which keeps every button readable in both modes.
+ * Earlier these tokens were computed as near-black / near-white greys
+ * (oklch(0.2) and oklch(0.975)). Those are only *almost* black, and on a
+ * monochrome design that reads as grey: nav links and the black action
+ * buttons looked washed out against the page. The design is exactly two
+ * values now — #000000 and #ffffff — and every quiet tone is a real grey
+ * that is meant to look grey, so the contrast between "the writing" and
+ * "the supporting copy" stays obvious.
  */
-type VividSpec = {
-  /** Base hue of the surfaces and writing. 0 = no hue at all. */
-  hue: number;
-  /** Chroma of the surfaces — how much colour the whole page carries. */
-  chroma: number;
-  /** Hue + chroma of the action colour (buttons). */
-  actionHue: number;
-  actionChroma: number;
-  /** Hue + chroma of the store's signature accent. */
-  brandHue: number;
-  brandChroma: number;
-  /** Card corner radius. */
-  radius: string;
-};
-
-function vividTokens(
-  s: VividSpec,
-  mode: SiteThemeMode,
-): Record<string, string> {
-  const c = s.chroma;
-
+function blackWhiteTokens(mode: SiteThemeMode): Record<string, string> {
   if (mode === "light") {
     return {
-      /* Bright, luminous surfaces: the page reads white, never grey. */
-      "--background": `oklch(0.975 ${(c * 0.35).toFixed(4)} ${s.hue})`,
-      "--card": `oklch(0.995 ${(c * 0.14).toFixed(4)} ${s.hue})`,
-      "--popover": `oklch(1 ${(c * 0.07).toFixed(4)} ${s.hue})`,
-      /* Deep writing, still carrying the design's hue. */
-      "--foreground": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue})`,
-      "--card-foreground": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue})`,
-      "--popover-foreground": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue})`,
-      /* The action colour is the deepest tone: a true black button. */
-      "--primary": `oklch(0.2 ${s.actionChroma.toFixed(4)} ${s.hue})`,
-      "--primary-foreground": `oklch(0.99 ${(c * 0.12).toFixed(4)} ${s.hue})`,
-      "--secondary": `oklch(0.93 ${(c * 0.55).toFixed(4)} ${s.hue})`,
-      "--secondary-foreground": `oklch(0.24 ${(c * 0.75).toFixed(4)} ${s.hue})`,
-      "--muted": `oklch(0.94 ${(c * 0.5).toFixed(4)} ${s.hue})`,
-      "--muted-foreground": `oklch(0.38 ${(c * 0.55).toFixed(4)} ${s.hue})`,
-      "--accent": `oklch(0.9 ${(c * 0.9).toFixed(4)} ${s.hue})`,
-      "--accent-foreground": `oklch(0.24 ${(c * 0.8).toFixed(4)} ${s.hue})`,
+      /* Pure white page, pure black writing. */
+      "--background": "#ffffff",
+      "--card": "#ffffff",
+      "--popover": "#ffffff",
+      "--foreground": "#000000",
+      "--card-foreground": "#000000",
+      "--popover-foreground": "#000000",
+      /* A true black button, with white writing on it. */
+      "--primary": "#000000",
+      "--primary-foreground": "#ffffff",
+      /* Quiet fills stay clearly grey so the black above still leads. */
+      "--secondary": "#f2f2f2",
+      "--secondary-foreground": "#000000",
+      "--muted": "#f2f2f2",
+      "--muted-foreground": "#4d4d4d",
+      "--accent": "#ebebeb",
+      "--accent-foreground": "#000000",
       /* Hairlines read as a soft shade, never a hard line. */
-      "--border": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue} / 16%)`,
-      "--input": `oklch(0.2 ${(c * 0.7).toFixed(4)} ${s.hue} / 14%)`,
-      "--ring": `oklch(0.2 ${(s.actionChroma * 0.85).toFixed(4)} ${s.actionHue})`,
-      /* The inverted band: near-black with light writing, both modes. */
-      "--ink": `oklch(0.18 ${(c * 0.75).toFixed(4)} ${s.hue})`,
-      "--paper": `oklch(0.985 ${(c * 0.12).toFixed(4)} ${s.hue})`,
-      /* The signature accent: the same true black as the action colour. */
-      "--brand": `oklch(0.2 ${(s.brandChroma * 1.1).toFixed(4)} ${s.brandHue})`,
-      "--radius": s.radius,
+      "--border": "rgba(0, 0, 0, 0.14)",
+      "--input": "rgba(0, 0, 0, 0.12)",
+      "--ring": "#000000",
+      /* The inverted band pair, identical in both faces. */
+      "--ink": "#000000",
+      "--paper": "#ffffff",
+      /* The signature accent is the same true black as the action colour. */
+      "--brand": "#000000",
+      "--radius": "0.625rem",
     };
   }
 
   return {
-    /* Deep, genuinely tinted surfaces. */
-    "--background": `oklch(0.175 ${(c * 0.95).toFixed(4)} ${s.hue})`,
-    "--card": `oklch(0.225 ${(c * 1.05).toFixed(4)} ${s.hue})`,
-    "--popover": `oklch(0.235 ${(c * 1.1).toFixed(4)} ${s.hue})`,
-    /* Writing. */
-    "--foreground": `oklch(0.975 ${(c * 0.22).toFixed(4)} ${s.hue})`,
-    "--card-foreground": `oklch(0.975 ${(c * 0.22).toFixed(4)} ${s.hue})`,
-    "--popover-foreground": `oklch(0.975 ${(c * 0.22).toFixed(4)} ${s.hue})`,
-    /* The action colour is the lightest tone: a true white button. */
-    "--primary": `oklch(0.975 ${(s.actionChroma * 1.05).toFixed(4)} ${s.actionHue})`,
-    "--primary-foreground": `oklch(0.18 ${(c * 0.8).toFixed(4)} ${s.hue})`,
-    /* Quiet fills read clearly above the page. */
-    "--secondary": `oklch(0.295 ${(c * 1.05).toFixed(4)} ${s.hue})`,
-    "--secondary-foreground": `oklch(0.97 ${(c * 0.22).toFixed(4)} ${s.hue})`,
-    "--muted": `oklch(0.295 ${(c * 1.05).toFixed(4)} ${s.hue})`,
-    "--muted-foreground": `oklch(0.79 ${(c * 0.5).toFixed(4)} ${s.hue})`,
-    "--accent": `oklch(0.35 ${(c * 1.25).toFixed(4)} ${s.hue})`,
-    "--accent-foreground": `oklch(0.97 ${(c * 0.22).toFixed(4)} ${s.hue})`,
+    /* Pure black page, pure white writing. */
+    "--background": "#000000",
+    "--card": "#0b0b0b",
+    "--popover": "#0b0b0b",
+    "--foreground": "#ffffff",
+    "--card-foreground": "#ffffff",
+    "--popover-foreground": "#ffffff",
+    /* A true white button, with black writing on it. */
+    "--primary": "#ffffff",
+    "--primary-foreground": "#000000",
+    /* Quiet fills read clearly above the black page. */
+    "--secondary": "#1a1a1a",
+    "--secondary-foreground": "#ffffff",
+    "--muted": "#1a1a1a",
+    "--muted-foreground": "#a6a6a6",
+    "--accent": "#262626",
+    "--accent-foreground": "#ffffff",
     /* Hairlines stay a soft lift, never a hard line. */
-    "--border": "oklch(1 0 0 / 16%)",
-    "--input": "oklch(1 0 0 / 19%)",
-    "--ring": `oklch(0.975 ${(s.actionChroma * 0.8).toFixed(4)} ${s.actionHue})`,
-    /* Darker than the page, for badges and inverted chips. */
-    "--ink": `oklch(0.12 ${(c * 0.65).toFixed(4)} ${s.hue})`,
-    "--paper": `oklch(0.975 ${(c * 0.1).toFixed(4)} ${s.hue})`,
-    /* The signature accent: the same true white as the action colour. */
-    "--brand": `oklch(0.975 ${(s.brandChroma * 1.05).toFixed(4)} ${s.brandHue})`,
-    "--radius": s.radius,
+    "--border": "rgba(255, 255, 255, 0.18)",
+    "--input": "rgba(255, 255, 255, 0.2)",
+    "--ring": "#ffffff",
+    /* The inverted band pair, identical in both faces. */
+    "--ink": "#000000",
+    "--paper": "#ffffff",
+    /* The signature accent is the same true white as the action colour. */
+    "--brand": "#ffffff",
+    "--radius": "0.625rem",
   };
 }
-
-const V = (
-  hue: number,
-  chroma: number,
-  actionHue: number,
-  actionChroma: number,
-  brandHue: number,
-  brandChroma: number,
-  radius: string,
-): VividSpec => ({
-  hue,
-  chroma,
-  actionHue,
-  actionChroma,
-  brandHue,
-  brandChroma,
-  radius,
-});
 
 /**
  * The store's only design: black and white, with nothing mixed into the greys.
@@ -190,8 +154,8 @@ export const SITE_THEMES: SiteThemePreset[] = [
     blurbEn:
       "The store’s own look: deep black and white writing, with no colour mixed in.",
     tokens: {
-      light: vividTokens(V(0, 0, 0, 0, 0, 0, "0.625rem"), "light"),
-      dark: vividTokens(V(0, 0, 0, 0, 0, 0, "0.625rem"), "dark"),
+      light: blackWhiteTokens("light"),
+      dark: blackWhiteTokens("dark"),
     },
   },
 ];
