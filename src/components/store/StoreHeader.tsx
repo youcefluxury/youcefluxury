@@ -50,6 +50,45 @@ import { useCart } from "@/lib/store-state";
 import { cn } from "@/lib/utils";
 
 /**
+ * The Algerian flag, drawn rather than typed.
+ *
+ * The flag emoji is half white, and a white half vanishes the moment this
+ * strip turns white - which is exactly what the dark mode does. Drawing it
+ * keeps every part readable on the black band and on the white one, because
+ * the outline gives the white half an edge of its own.
+ */
+function AlgeriaFlag({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 16"
+      role="presentation"
+      aria-hidden="true"
+      className={cn("h-[11px] w-[17px] shrink-0", className)}
+    >
+      <rect width="12" height="16" fill="#006233" />
+      <rect x="12" width="12" height="16" fill="#ffffff" />
+      <circle cx="10" cy="8" r="4.2" fill="#D21034" />
+      <circle cx="11.2" cy="8" r="3.4" fill="#ffffff" />
+      <path
+        d="M13.6 6.3 14.29 7.78 14.6 9.38 13.18 8.58 12.6 9.38 12.92 7.78 11.98 7.47 13.6 7.28Z"
+        fill="#D21034"
+      />
+      <rect
+        x="0.5"
+        y="0.5"
+        width="23"
+        height="15"
+        rx="1.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-opacity="0.45"
+        stroke-width="1"
+      />
+    </svg>
+  );
+}
+
+/**
  * Delivery note strip. It always wears the opposite of the page it sits on:
  * a black band with white writing on the light mode, a white band with black
  * writing on the dark one.
@@ -60,9 +99,7 @@ function AnnouncementBar() {
   return (
     <div className="bg-black text-white dark:bg-white dark:text-black">
       <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-center gap-2 px-3 py-1 text-center">
-        <span aria-hidden="true" className="text-[13px] leading-none">
-          🇩🇿
-        </span>
+        <AlgeriaFlag />
         <p
           className={cn(
             /* Wraps instead of overflowing on narrow phones. */
@@ -73,7 +110,10 @@ function AnnouncementBar() {
           {t("common.deliveryNote")}
         </p>
         {/* Colour delivery truck — the left-hand mark of the note. */}
-        <span aria-hidden="true" className="shrink-0 text-[13px] leading-none">
+        <span
+          aria-hidden="true"
+          className="shrink-0 text-[13px] leading-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)] dark:drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)]"
+        >
           🚚
         </span>
       </div>
