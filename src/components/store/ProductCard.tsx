@@ -6,9 +6,18 @@ import { Link } from "react-router";
 
 import { api } from "@/convex/_generated/api";
 import { ProductFormDialog } from "@/components/store/AddProductDialog";
-import { Badge, CardActionsMenu, Price, ProductImage } from "@/components/store/bits";
+import {
+  Badge,
+  CardActionsMenu,
+  Price,
+  ProductImage,
+} from "@/components/store/bits";
 import { pickLang, useI18n } from "@/lib/i18n";
-import { categoryBySlug, categoryName, liveCategoryBySlug } from "@/lib/store-data";
+import {
+  categoryBySlug,
+  categoryName,
+  liveCategoryBySlug,
+} from "@/lib/store-data";
 import type { Product } from "@/lib/store-types";
 import { cn } from "@/lib/utils";
 

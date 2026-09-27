@@ -50,13 +50,18 @@ const MIN_TOKEN_LENGTH = 32;
 function newToken(): string {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 /** Drops every session that has already run out. Cheap, runs on login. */
 async function pruneExpired(ctx: MutationCtx): Promise<void> {
   const now = Date.now();
-  const all = await ctx.db.query("adminSessions").withIndex("by_token").collect();
+  const all = await ctx.db
+    .query("adminSessions")
+    .withIndex("by_token")
+    .collect();
   for (const row of all) {
     if (row.expiresAt <= now) await ctx.db.delete(row._id);
   }
@@ -73,17 +78,16 @@ export async function isAdmin(
   ctx: QueryCtx | MutationCtx,
   token: unknown,
 ): Promise<boolean> {
-  if (typeof token !== "string" || token.length < MIN_TOKEN_LENGTH) return false;
+  if (typeof token !== "string" || token.length < MIN_TOKEN_LENGTH)
+    return false;
   const row = await ctx.db
     .query("adminSessions")
     .withIndex("by_token", (q) => q.eq("token", token))
     .unique();
   if (!row) return false;
-  if (row.expiresAt <= Date.now()) {
-    await ctx.db.delete(row._id);
-    return false;
-  }
-  return true;
+  // Expired sessions are only swept on the next sign-in (`pruneExpired`):
+  // this check also runs inside queries, where the database is read-only.
+  return row.expiresAt > Date.now();
 }
 
 /* ------------------------------------------------------------------ */
@@ -93,7 +97,9 @@ export async function isAdmin(
 function newSalt(): string {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 async function hashPassword(password: string, salt: string): Promise<string> {
@@ -136,7 +142,10 @@ export const ensureAdminAccount = mutation({
       .withIndex("by_key", (q) => q.eq("key", USERNAME_KEY))
       .unique();
     if (!username) {
-      await ctx.db.insert("meta", { key: USERNAME_KEY, value: DEFAULT_USERNAME });
+      await ctx.db.insert("meta", {
+        key: USERNAME_KEY,
+        value: DEFAULT_USERNAME,
+      });
     }
     const password = await ctx.db
       .query("meta")

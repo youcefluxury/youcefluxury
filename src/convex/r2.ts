@@ -2,8 +2,8 @@
 
 import { createHash, createHmac } from "node:crypto";
 import { v } from "convex/values";
-import { action } from "./_generated/server";
-import { isValidAdminKey } from "./admin";
+import { action, type ActionCtx } from "./_generated/server";
+import { api } from "./_generated/api";
 
 /**
  * Image storage on Cloudflare R2.
@@ -21,6 +21,18 @@ import { isValidAdminKey } from "./admin";
  *   R2_ACCOUNT_ID · R2_ACCESS_KEY_ID · R2_SECRET_ACCESS_KEY
  *   R2_BUCKET · R2_PUBLIC_URL
  */
+
+/**
+ * An action has no database, so it cannot read the session table itself. This
+ * asks `admin:verifySession` — a query, which does — and reports whether the
+ * token the browser sent is a live operator session.
+ */
+async function isLiveSession(ctx: ActionCtx, token: string): Promise<boolean> {
+  const { ok } = await ctx.runQuery(api.admin.verifySession, {
+    session: token,
+  });
+  return ok;
+}
 
 const REQUIRED_ENV = [
   "R2_ACCOUNT_ID",
@@ -43,12 +55,12 @@ type R2Config = {
 
 /** 1×1 transparent PNG — the probe image the connection test pushes. */
 const PROBE_PNG = new Uint8Array([
-  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-  0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00,
-  0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
-  0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
-  0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
+  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49,
+  0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06,
+  0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4, 0x89, 0x00, 0x00, 0x00, 0x0a, 0x49, 0x44,
+  0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00, 0x05, 0x00, 0x01, 0x0d,
+  0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42,
+  0x60, 0x82,
 ]);
 
 /** Reads the five variables, reporting exactly which ones are still missing. */
@@ -188,9 +200,9 @@ function safeFileName(fileName: string): string {
  * public URL, then delete it again — and report each step's status.
  */
 export const checkConnection = action({
-  args: { adminKey: v.string() },
-  handler: async (_ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+  args: { session: v.string() },
+  handler: async (ctx, args) => {
+    if (!(await isLiveSession(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const { config, missing } = readConfig();
@@ -231,14 +243,14 @@ export const checkConnection = action({
 /** Uploads one compressed image and returns the public URL it now lives at. */
 export const uploadImage = action({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     contentType: v.string(),
     fileName: v.string(),
     /** The raw file bytes, straight from the admin's device. */
     body: v.bytes(),
   },
-  handler: async (_ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+  handler: async (ctx, args) => {
+    if (!(await isLiveSession(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const { config } = readConfig();

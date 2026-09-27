@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { isValidAdminKey } from "./admin";
+import { isAdmin } from "./admin";
 
 import { SITE_THEMES } from "../lib/site-theme";
 
@@ -132,15 +132,15 @@ function buildSizes(labels: string[], soldOut: string[]) {
 }
 
 export const createProduct = mutation({
-  args: { adminKey: v.string(), ...productFields },
+  args: { session: v.string(), ...productFields },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     if (!args.nameAr.trim() || !args.nameEn.trim() || args.price <= 0) {
       throw new Error("INVALID_PRODUCT");
     }
-    const { adminKey: _adminKey, ...product } = args;
+    const { session: _session, ...product } = args;
     const photos = cleanPhotos(
       product.images,
       product.imageColors ?? [],
@@ -166,12 +166,12 @@ export const createProduct = mutation({
 });
 
 export const updateProduct = mutation({
-  args: { adminKey: v.string(), id: v.id("products"), ...productFields },
+  args: { session: v.string(), id: v.id("products"), ...productFields },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
-    const { adminKey: _adminKey, id, ...product } = args;
+    const { session: _session, id, ...product } = args;
     const existing = await ctx.db.get(id);
     /*
      * The 24-hour countdown starts the moment the product is switched to
@@ -221,9 +221,9 @@ export const updateProduct = mutation({
 });
 
 export const deleteProduct = mutation({
-  args: { adminKey: v.string(), id: v.id("products") },
+  args: { session: v.string(), id: v.id("products") },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     await ctx.db.delete(args.id);
@@ -239,7 +239,7 @@ export const deleteProduct = mutation({
  */
 export const setProductImages = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     id: v.id("products"),
     images: v.array(v.string()),
     /** One colour per photo, index-aligned with `images` ("" = no colour). */
@@ -252,7 +252,7 @@ export const setProductImages = mutation({
     imageSizes: v.optional(v.array(v.array(v.string()))),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const existing = await ctx.db.get(args.id);
@@ -280,9 +280,9 @@ export const setProductImages = mutation({
  * flag without touching the rest of the product.
  */
 export const setProductSoldOut = mutation({
-  args: { adminKey: v.string(), id: v.id("products"), soldOut: v.boolean() },
+  args: { session: v.string(), id: v.id("products"), soldOut: v.boolean() },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     await ctx.db.patch(args.id, {
@@ -315,9 +315,9 @@ export const getPhone = query({
 
 /** Saves the Algerian phone number (digits only) for the whole storefront. */
 export const setPhone = mutation({
-  args: { adminKey: v.string(), phone: v.string() },
+  args: { session: v.string(), phone: v.string() },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const digits = args.phone.replace(/\D+/g, "");
@@ -384,7 +384,7 @@ const LINK_KEYS: ReadonlySet<string> = new Set(["instagram", "facebook"]);
 /** Saves one identity value (name, tagline, description, logo, link, map). */
 export const setStoreSetting = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     key: v.union(
       v.literal("logo"),
       v.literal("name"),
@@ -398,7 +398,7 @@ export const setStoreSetting = mutation({
     value: v.string(),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     if (!identityKeys.includes(args.key)) {
@@ -457,11 +457,11 @@ export const getSiteTheme = query({
 /** Applies one design to every visitor — colours, tone and corner radius. */
 export const setSiteTheme = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     theme: v.union(...SITE_THEME_IDS.map((id) => v.literal(id))),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const existing = await ctx.db
@@ -495,7 +495,7 @@ export const listCategories = query({
 
 export const createCategory = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     slug: v.string(),
     nameAr: v.string(),
     nameEn: v.string(),
@@ -504,7 +504,7 @@ export const createCategory = mutation({
     hasSizeGuide: v.boolean(),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const slug = args.slug
@@ -541,7 +541,7 @@ export const createCategory = mutation({
 
 export const updateCategory = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     id: v.id("categories"),
     slug: v.string(),
     nameAr: v.string(),
@@ -551,7 +551,7 @@ export const updateCategory = mutation({
     hasSizeGuide: v.boolean(),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const slug = args.slug
@@ -608,9 +608,9 @@ export const updateCategory = mutation({
 });
 
 export const deleteCategory = mutation({
-  args: { adminKey: v.string(), id: v.id("categories") },
+  args: { session: v.string(), id: v.id("categories") },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     await ctx.db.delete(args.id);
@@ -635,14 +635,14 @@ export const listSliders = query({
 
 export const addSlider = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     image: v.string(),
     titleAr: v.string(),
     titleEn: v.string(),
     href: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     if (!args.image.trim()) {
@@ -660,7 +660,7 @@ export const addSlider = mutation({
 
 export const updateSlider = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     id: v.id("sliders"),
     image: v.string(),
     titleAr: v.string(),
@@ -668,7 +668,7 @@ export const updateSlider = mutation({
     href: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     if (!args.image.trim()) {
@@ -685,9 +685,9 @@ export const updateSlider = mutation({
 });
 
 export const deleteSlider = mutation({
-  args: { adminKey: v.string(), id: v.id("sliders") },
+  args: { session: v.string(), id: v.id("sliders") },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     await ctx.db.delete(args.id);
@@ -1021,10 +1021,18 @@ export const imageUrl = mutation({
   },
 });
 
-/** Hands out a short-lived upload URL for the browser to POST a file to. */
+/**
+ * Hands out a short-lived upload URL for the browser to POST a file to.
+ *
+ * Gated on a live operator session: without this, any visitor could ask for an
+ * upload URL and fill the store's storage with files of their choosing.
+ */
 export const generateUploadUrl = mutation({
-  args: {},
-  handler: async (ctx) => {
+  args: { session: v.string() },
+  handler: async (ctx, args) => {
+    if (!(await isAdmin(ctx, args.session))) {
+      throw new Error("UNAUTHORIZED");
+    }
     return await ctx.storage.generateUploadUrl();
   },
 });

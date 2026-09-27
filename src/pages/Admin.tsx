@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "convex/react";
+import { useConvex, useMutation, useQuery } from "convex/react";
 import {
   Boxes,
   Check,
@@ -53,7 +53,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { ADMIN_API_KEY, ADMIN_SESSION_KEY } from "@/lib/admin-key";
+import {
+  ADMIN_SESSION_KEY,
+  clearAdminSession,
+  getAdminSession,
+  setAdminSession,
+} from "@/lib/admin-key";
 import { pickLang, useI18n, type Lang } from "@/lib/i18n";
 import { useUploadImage } from "@/lib/upload";
 import {
@@ -514,7 +519,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
   /* The sign-in card wears the same live store name as the rest of the site. */
   const { name: brandName } = useStoreBrand();
   const ensureAccount = useMutation(api.admin.ensureAdminAccount);
-  const checkLogin = useMutation(api.admin.checkAdminLogin);
+  const signIn = useMutation(api.admin.login);
   const changePassword = useMutation(api.admin.changeAdminPassword);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -539,7 +544,7 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
     setBusy(true);
     setError("");
     try {
-      const result = await checkLogin({
+      const result = await signIn({
         username: username.trim(),
         password,
       });
@@ -549,8 +554,8 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
       }
       /* A plain sign-in: nobody is forced to change the password. The owner can
          open the password form from here (or from the dashboard) whenever he
-         wants. */
-      window.sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
+         wants. The server issued the token — the browser only stores it. */
+      setAdminSession(result.session);
       onSuccess();
     } catch {
       setError(t("admin.tryAgain"));
@@ -593,7 +598,15 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
         return;
       }
       toast.success(t("admin.pwChanged"));
-      window.sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
+      const fresh = await signIn({
+        username: username.trim(),
+        password: newPassword,
+      });
+      if (!fresh.ok) {
+        setChangeError(t("admin.tryAgain"));
+        return;
+      }
+      setAdminSession(fresh.session);
       onSuccess();
     } catch {
       setChangeError(t("admin.tryAgain"));
@@ -761,7 +774,9 @@ function ProductsManager({
   const { t, lang } = useI18n();
   const products = useQuery(api.catalog.listProducts);
   const categoryRows = useQuery(api.catalog.listCategories);
-  const orders = useQuery(api.orders.listOrders, { adminKey: ADMIN_API_KEY });
+  const orders = useQuery(api.orders.listOrders, {
+    session: getAdminSession(),
+  });
   /**
    * Sizes customers actually asked for, per product. The table shows these on
    * the first line of the sizes column, so the admin reads the size that was
@@ -871,7 +886,7 @@ function ProductsManager({
     setBusy(true);
     try {
       const payload = {
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         nameAr: form.nameAr.trim(),
         // Only the Arabic name is edited now — it is mirrored to the English
         // slot so English visitors read the same product name.
@@ -921,7 +936,7 @@ function ProductsManager({
 
   async function remove(id: Id<"products">) {
     try {
-      await deleteProduct({ adminKey: ADMIN_API_KEY, id });
+      await deleteProduct({ session: getAdminSession(), id });
       if (editingId === id) resetForm();
       toast.success(t("admin.deleted"));
     } catch {
@@ -1662,7 +1677,7 @@ function SliderManager({
     setBusy(true);
     try {
       const payload = {
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         image: form.image.trim(),
         // Only the Arabic title is edited — mirrored to the English slot so the
         // English view reads the same text (same pattern as product names).
@@ -1686,7 +1701,7 @@ function SliderManager({
 
   async function remove(id: Id<"sliders">) {
     try {
-      await deleteSlider({ adminKey: ADMIN_API_KEY, id });
+      await deleteSlider({ session: getAdminSession(), id });
       if (editingId === id) resetForm();
       toast.success(t("admin.slideDeleted"));
     } catch {
@@ -1900,7 +1915,7 @@ function CategoriesManager({
         ? categories?.find((category) => category._id === editingId)
         : undefined;
       const payload = {
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         slug,
         nameAr: label,
         nameEn: label,
@@ -1930,7 +1945,7 @@ function CategoriesManager({
 
   async function remove(id: Id<"categories">) {
     try {
-      await deleteCategory({ adminKey: ADMIN_API_KEY, id });
+      await deleteCategory({ session: getAdminSession(), id });
       if (editingId === id) resetForm();
       toast.success(t("admin.deleted"));
     } catch {
@@ -2079,7 +2094,9 @@ function CategoriesManager({
 
 function OrdersManager() {
   const { t, lang } = useI18n();
-  const orders = useQuery(api.orders.listOrders, { adminKey: ADMIN_API_KEY });
+  const orders = useQuery(api.orders.listOrders, {
+    session: getAdminSession(),
+  });
   const setStatus = useMutation(api.orders.setOrderStatus);
   const setNote = useMutation(api.orders.setOrderNote);
   const deleteOrder = useMutation(api.orders.deleteOrder);
@@ -2139,7 +2156,7 @@ function OrdersManager() {
   async function updateStatus(id: Id<"orders">, status: string) {
     setBusyId(id);
     try {
-      await setStatus({ adminKey: ADMIN_API_KEY, id, status });
+      await setStatus({ session: getAdminSession(), id, status });
     } finally {
       setBusyId(null);
     }
@@ -2148,7 +2165,7 @@ function OrdersManager() {
   async function saveNote(id: Id<"orders">) {
     setBusyId(id);
     try {
-      await setNote({ adminKey: ADMIN_API_KEY, id, adminNote: noteDraft });
+      await setNote({ session: getAdminSession(), id, adminNote: noteDraft });
       toast.success(t("admin.noteSaved"));
       setNoteDraft("");
     } finally {
@@ -2159,7 +2176,7 @@ function OrdersManager() {
   async function remove(id: Id<"orders">) {
     setBusyId(id);
     try {
-      await deleteOrder({ adminKey: ADMIN_API_KEY, id });
+      await deleteOrder({ session: getAdminSession(), id });
       toast.success(t("admin.deleted"));
     } finally {
       setBusyId(null);
@@ -2533,13 +2550,43 @@ export default function Admin() {
   }
   const [authenticated, setAuthenticated] = useState(false);
   const [ready, setReady] = useState(false);
+  const convex = useConvex();
+  const endSession = useMutation(api.admin.endSession);
   const categoryRows = useQuery(api.catalog.listCategories);
   const categories = liveCategories(categoryRows);
 
+  /**
+   * sessionStorage can hold a token the server has since thrown away (a
+   * password change, or the 7-day expiry). Trusting it blindly would show an
+   * empty dashboard instead of a sign-in screen, so the server is asked first.
+   */
   useEffect(() => {
-    setAuthenticated(window.sessionStorage.getItem(ADMIN_SESSION_KEY) === "1");
-    setReady(true);
-  }, []);
+    let cancelled = false;
+    const token = getAdminSession();
+    if (!token) {
+      setAuthenticated(false);
+      setReady(true);
+      return;
+    }
+    void (async () => {
+      let ok = false;
+      try {
+        const result = await convex.query(api.admin.verifySession, {
+          session: token,
+        });
+        ok = result.ok;
+      } catch {
+        ok = false;
+      }
+      if (cancelled) return;
+      if (!ok) clearAdminSession();
+      setAuthenticated(ok);
+      setReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [convex]);
 
   if (!ready) {
     return <div className="min-h-screen bg-foreground" />;
@@ -2577,8 +2624,10 @@ export default function Admin() {
             <Button
               size="sm"
               onClick={() => {
-                window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
+                const token = getAdminSession();
+                clearAdminSession();
                 setAuthenticated(false);
+                if (token) void endSession({ session: token });
               }}
             >
               <LogOut className="size-4" />

@@ -1,9 +1,8 @@
 /**
  * Admin session token — the only admin credential the browser ever holds.
  *
- * It used to be a fixed string ("storefront-admin-key") compiled into the
- * JavaScript bundle, which meant every visitor could read it and call the
- * admin-only Convex functions. Now the server issues a random token at
+ * It used to be a fixed string compiled into the JavaScript bundle, which
+ * meant every visitor could read it and call the admin-only Convex functions. Now the server issues a random token at
  * sign-in (see `admin:login` in src/convex/admin.ts), stores it, and every
  * admin call presents it instead. Nothing secret lives in this file any more —
  * only the name of the sessionStorage slot, which is not a secret.

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { useI18n } from "@/lib/i18n";
 import { STORE, WILAYAS, formatDA, matchesSearch } from "@/lib/store-data";
 import { cn } from "@/lib/utils";
@@ -67,7 +67,7 @@ export default function DeliveryPrices() {
     setBusy(true);
     try {
       await setDeliveryPrice({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         wilayaCode: editing.code,
         price,
       });
@@ -87,7 +87,10 @@ export default function DeliveryPrices() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6">
-      <SectionHeading eyebrow={t("delivery.eyebrow")} title={t("delivery.title")} />
+      <SectionHeading
+        eyebrow={t("delivery.eyebrow")}
+        title={t("delivery.title")}
+      />
       <p className="text-muted-foreground mt-5 max-w-2xl text-sm leading-7">
         {t("delivery.lead")}
       </p>
@@ -109,7 +112,9 @@ export default function DeliveryPrices() {
       </div>
 
       {results.length === 0 ? (
-        <p className="text-muted-foreground mt-10 text-sm">{t("delivery.empty")}</p>
+        <p className="text-muted-foreground mt-10 text-sm">
+          {t("delivery.empty")}
+        </p>
       ) : (
         <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((wilaya) => {
@@ -158,10 +163,15 @@ export default function DeliveryPrices() {
         {t("delivery.orderHint")}
       </p>
 
-      <Dialog open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
+      <Dialog
+        open={editing !== null}
+        onOpenChange={(open) => !open && setEditing(null)}
+      >
         <DialogContent className="w-[calc(100vw-2rem)] max-w-sm gap-0 rounded-none p-6 sm:rounded-lg">
           <DialogHeader>
-            <DialogTitle className="text-base">{t("delivery.editTitle")}</DialogTitle>
+            <DialogTitle className="text-base">
+              {t("delivery.editTitle")}
+            </DialogTitle>
             <DialogDescription className="text-xs">
               {editing?.label}
             </DialogDescription>
@@ -176,8 +186,9 @@ export default function DeliveryPrices() {
                 dir="ltr"
                 value={editing?.price ?? ""}
                 onChange={(event) =>
-                  setEditing((current) =>
-                    current && { ...current, price: event.target.value },
+                  setEditing(
+                    (current) =>
+                      current && { ...current, price: event.target.value },
                   )
                 }
                 placeholder={t("delivery.pricePlaceholder")}

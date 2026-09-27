@@ -25,7 +25,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY, ADMIN_SESSION_KEY } from "@/lib/admin-key";
+import {
+  ADMIN_SESSION_KEY,
+  clearAdminSession,
+  getAdminSession,
+  setAdminSession,
+} from "@/lib/admin-key";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -249,7 +254,7 @@ export function CardActionsMenu({
     setBusy(true);
     try {
       await setProductSoldOut({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         id: productId as never,
         soldOut: !soldOut,
       });
@@ -270,12 +275,12 @@ export function CardActionsMenu({
     try {
       if (tab === "categories") {
         await deleteCategory({
-          adminKey: ADMIN_API_KEY,
+          session: getAdminSession(),
           id: productId as never,
         });
       } else {
         await deleteProduct({
-          adminKey: ADMIN_API_KEY,
+          session: getAdminSession(),
           id: productId as never,
         });
       }

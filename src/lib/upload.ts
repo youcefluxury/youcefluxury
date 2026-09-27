@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { compressImage } from "@/lib/image-compress";
 
 /** True when Cloudflare R2 simply is not set up yet on this deployment. */
@@ -33,9 +33,7 @@ function isR2Missing(error: unknown): boolean {
  * transparency intact; re-encoding it would paint a white box behind it and
  * undo the whole point.
  */
-export function useUploadImage(
-  options: { alreadyNormalized?: boolean } = {},
-) {
+export function useUploadImage(options: { alreadyNormalized?: boolean } = {}) {
   const uploadToR2 = useAction(api.r2.uploadImage);
   const generateUploadUrl = useMutation(api.catalog.generateUploadUrl);
   const getUrl = useMutation(api.catalog.imageUrl);
@@ -49,7 +47,7 @@ export function useUploadImage(
 
       try {
         const { publicUrl } = await uploadToR2({
-          adminKey: ADMIN_API_KEY,
+          session: getAdminSession(),
           contentType,
           fileName: compressed.name || "image.jpg",
           body: await compressed.arrayBuffer(),
@@ -60,7 +58,7 @@ export function useUploadImage(
         console.warn("R2 is not configured — falling back to Convex storage.");
       }
 
-      const uploadUrl = await generateUploadUrl({});
+      const uploadUrl = await generateUploadUrl({ session: getAdminSession() });
       const response = await fetch(uploadUrl, {
         method: "POST",
         headers: { "Content-Type": contentType },

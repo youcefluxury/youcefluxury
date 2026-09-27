@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { ProductImage } from "@/components/store/bits";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,12 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n";
-import { COLOR_KEYS, colorLabel, colorSwatch, sizeLabel } from "@/lib/store-data";
+import {
+  COLOR_KEYS,
+  colorLabel,
+  colorSwatch,
+  sizeLabel,
+} from "@/lib/store-data";
 import type { Product } from "@/lib/store-types";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
@@ -156,7 +161,7 @@ export function ProductImagesDialog({
     setBusy(true);
     try {
       await saveImages({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         id: product._id,
         images,
         imageColors: colors,
@@ -324,7 +329,9 @@ export function ProductImagesDialog({
                                 type="button"
                                 aria-pressed={out}
                                 title={t("admin.colorStockHint")}
-                                onClick={() => togglePhotoSize(index, item.label)}
+                                onClick={() =>
+                                  togglePhotoSize(index, item.label)
+                                }
                                 className={cn(
                                   "grid h-7 min-w-9 place-items-center rounded-full border px-2 text-[11px] font-medium transition-colors",
                                   out

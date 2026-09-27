@@ -5,7 +5,7 @@ import { Outlet, useLocation } from "react-router";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { StoreFooter } from "@/components/store/StoreFooter";
 import { StoreHeader } from "@/components/store/StoreHeader";
@@ -50,7 +50,7 @@ function PhoneButton() {
     }
     setBusy(true);
     try {
-      await savePhone({ adminKey: ADMIN_API_KEY, phone: digits });
+      await savePhone({ session: getAdminSession(), phone: digits });
       toast.success(t("phone.saved"));
       setOpen(false);
     } catch {

@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { isValidAdminKey } from "./admin";
+import { isAdmin } from "./admin";
 
 /**
  * Shop-wide delivery price in DA, used for every wilaya that does not carry a
@@ -45,12 +45,12 @@ export const listDeliveryPrices = query({
  */
 export const setDeliveryPrice = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     wilayaCode: v.number(),
     price: v.number(),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const code = Math.round(args.wilayaCode);

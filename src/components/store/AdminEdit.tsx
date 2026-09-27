@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { ProductImage, useIsAdminSession } from "@/components/store/bits";
 import { Button } from "@/components/ui/button";
 import {
@@ -253,17 +253,17 @@ export function LogoEditButton({ className }: { className?: string }) {
     setBusy(true);
     try {
       await setSetting({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         key: "name",
         value: next.name.trim(),
       });
       await setSetting({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         key: "tagline",
         value: next.tagline.trim(),
       });
       await setSetting({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         key: "logo",
         value: next.logo,
       });
@@ -391,7 +391,7 @@ function SocialLinkEditButton({
     setBusy(true);
     try {
       await setSetting({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         key: settingKey,
         value: value.trim(),
       });
@@ -495,7 +495,7 @@ export function WhatsAppEditButton({ className }: { className?: string }) {
     }
     setBusy(true);
     try {
-      await setPhone({ adminKey: ADMIN_API_KEY, phone: digits });
+      await setPhone({ session: getAdminSession(), phone: digits });
       toast.success(t("admin.settingsSaved"));
       setOpen(false);
     } catch {
@@ -577,7 +577,7 @@ export function MapEditButton({ className }: { className?: string }) {
     setBusy(true);
     try {
       await setSetting({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         key: "map",
         value: point,
       });
@@ -681,7 +681,7 @@ export function CategoryEditDialog({
     try {
       const label = slugToLabel(slug.trim());
       await updateCategory({
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         id: category._id as never,
         slug: slug.trim(),
         nameAr: label,

@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { AddSlideButton } from "@/components/store/AddSlideDialog";
 import { pickLang, useI18n, type Lang, type TKey } from "@/lib/i18n";
 import { useIsAdminSession } from "@/components/store/bits";
@@ -442,7 +442,7 @@ export function HeroSlider() {
                   onClick={() => {
                     if (!slide.key.startsWith("kty")) {
                       void deleteSlider({
-                        adminKey: ADMIN_API_KEY,
+                        session: getAdminSession(),
                         id: slide.key as never,
                       })
                         .then(() => toast.success(t("admin.deleted")))

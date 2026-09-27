@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { ProductImage, useIsAdminSession } from "@/components/store/bits";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,14 +16,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useI18n } from "@/lib/i18n";
-import { COLOR_KEYS, colorLabel, colorSwatch, categoryName, formatDA, sizeLabel } from "@/lib/store-data";
+import {
+  COLOR_KEYS,
+  colorLabel,
+  colorSwatch,
+  categoryName,
+  formatDA,
+  sizeLabel,
+} from "@/lib/store-data";
 import type { Product } from "@/lib/store-types";
 import { useUploadImage } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 
 /* Same size catalogue the dashboard form offers. */
 const SIZE_LETTERS = ["S", "M", "L", "XL", "XXL", "3XL", "ONE SIZE"];
-const SIZE_NUMBERS = Array.from({ length: 19 }, (_, index) => String(28 + index));
+const SIZE_NUMBERS = Array.from({ length: 19 }, (_, index) =>
+  String(28 + index),
+);
 
 /**
  * The admin's “+” on a category page: opens the dashboard's product form as a
@@ -130,7 +139,9 @@ export function ProductFormDialog({
       );
       setSizes(product.sizes.map((size) => size.label));
       setSoldOutSizes(
-        product.sizes.filter((size) => !size.available).map((size) => size.label),
+        product.sizes
+          .filter((size) => !size.available)
+          .map((size) => size.label),
       );
       setColors(product.colors);
       setColorStock(
@@ -235,7 +246,7 @@ export function ProductFormDialog({
     setBusy(true);
     try {
       const payload = {
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         nameAr: nameAr.trim(),
         // Only the Arabic name is asked for — mirrored so the English view reads
         // the same, exactly like the dashboard form does.
@@ -274,7 +285,9 @@ export function ProductFormDialog({
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error && error.message ? error.message : t("admin.saveFailed"),
+        error instanceof Error && error.message
+          ? error.message
+          : t("admin.saveFailed"),
       );
     } finally {
       setBusy(false);
@@ -354,8 +367,12 @@ export function ProductFormDialog({
                           selected && "font-semibold",
                         )}
                       >
-                        {selected ? <Check className="size-3.5 shrink-0" /> : null}
-                        <span className="truncate">{categoryName(row, lang)}</span>
+                        {selected ? (
+                          <Check className="size-3.5 shrink-0" />
+                        ) : null}
+                        <span className="truncate">
+                          {categoryName(row, lang)}
+                        </span>
                       </span>
                     </button>
                   );
@@ -446,7 +463,8 @@ export function ProductFormDialog({
               disabled={uploading}
               className={cn(
                 "h-11 w-full",
-                dragOver && "border-primary bg-primary/10 ring-primary/30 ring-2",
+                dragOver &&
+                  "border-primary bg-primary/10 ring-primary/30 ring-2",
               )}
               onClick={() => fileRef.current?.click()}
             >
@@ -564,7 +582,9 @@ export function ProductFormDialog({
                       key={size}
                       type="button"
                       aria-pressed={out}
-                      onClick={() => setSoldOutSizes((current) => toggle(current, size))}
+                      onClick={() =>
+                        setSoldOutSizes((current) => toggle(current, size))
+                      }
                       className={cn(
                         "grid h-9 min-w-11 place-items-center rounded-full border px-3 text-xs font-medium transition-colors",
                         out
@@ -623,13 +643,18 @@ export function ProductFormDialog({
               {stockColors.map((color) => {
                 const outForColor = colorStock[color] ?? [];
                 return (
-                  <div key={color} className="grid gap-1.5 rounded-xl border border-border/70 p-3">
+                  <div
+                    key={color}
+                    className="grid gap-1.5 rounded-xl border border-border/70 p-3"
+                  >
                     <div className="flex items-center gap-2">
                       <span
                         className="size-3.5 shrink-0 rounded-full border border-border/60"
                         style={{ background: colorSwatch(color) }}
                       />
-                      <p className="text-xs font-medium">{colorLabel(color, "ar")}</p>
+                      <p className="text-xs font-medium">
+                        {colorLabel(color, "ar")}
+                      </p>
                     </div>
                     <div className="flex max-w-full flex-wrap gap-1.5">
                       {sizes.map((size) => {
@@ -643,7 +668,9 @@ export function ProductFormDialog({
                               setColorStock((current) => ({
                                 ...current,
                                 [color]: out
-                                  ? (current[color] ?? []).filter((item) => item !== size)
+                                  ? (current[color] ?? []).filter(
+                                      (item) => item !== size,
+                                    )
                                   : [...(current[color] ?? []), size],
                               }))
                             }

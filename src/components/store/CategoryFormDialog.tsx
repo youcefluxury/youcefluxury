@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { ProductImage, useIsAdminSession } from "@/components/store/bits";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,7 +98,7 @@ export function CategoryFormDialog({
     try {
       const label = slugToLabel(slug.trim());
       const payload = {
-        adminKey: ADMIN_API_KEY,
+        session: getAdminSession(),
         slug: slug.trim(),
         nameAr: label,
         nameEn: label,
@@ -175,7 +175,9 @@ export function CategoryFormDialog({
               void handleFiles(event.dataTransfer.files);
             }}
           >
-            <Label htmlFor="categoryFormImage">{t("admin.categoryImage")}</Label>
+            <Label htmlFor="categoryFormImage">
+              {t("admin.categoryImage")}
+            </Label>
             <div className="flex items-center gap-2">
               <Button
                 id="categoryFormImage"
@@ -184,7 +186,8 @@ export function CategoryFormDialog({
                 disabled={uploading}
                 className={cn(
                   "h-11 min-w-0 flex-1",
-                  dragOver && "border-primary bg-primary/10 ring-primary/30 ring-2",
+                  dragOver &&
+                    "border-primary bg-primary/10 ring-primary/30 ring-2",
                 )}
                 onClick={() => inputRef.current?.click()}
               >
@@ -216,7 +219,11 @@ export function CategoryFormDialog({
             />
           </div>
 
-          <Button type="submit" className="h-11 w-full" disabled={busy || uploading}>
+          <Button
+            type="submit"
+            className="h-11 w-full"
+            disabled={busy || uploading}
+          >
             <Plus className="size-4" />
             {category ? t("admin.saveChanges") : t("admin.addCategory")}
           </Button>

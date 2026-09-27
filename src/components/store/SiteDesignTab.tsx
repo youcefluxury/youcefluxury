@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useStoreBrand } from "@/hooks/use-store-brand";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { pickLang, useI18n } from "@/lib/i18n";
 import {
   applySiteTheme,
@@ -89,7 +89,7 @@ function SiteDesignPanel() {
     // Instant preview: the store restyles before the write comes back.
     applySiteTheme(id);
     try {
-      await setSiteTheme({ adminKey: ADMIN_API_KEY, theme: id as never });
+      await setSiteTheme({ session: getAdminSession(), theme: id as never });
       toast.success(t("admin.designSaved"));
     } catch {
       applySiteTheme(current);
@@ -267,7 +267,11 @@ function StoreIdentityPanel() {
 
   async function save(next: Record<string, string>): Promise<void> {
     for (const [key, value] of Object.entries(next)) {
-      await setSetting({ adminKey: ADMIN_API_KEY, key: key as never, value });
+      await setSetting({
+        session: getAdminSession(),
+        key: key as never,
+        value,
+      });
     }
   }
 
@@ -424,7 +428,7 @@ function R2StoragePanel() {
   async function test() {
     setTesting(true);
     try {
-      const result = await checkConnection({ adminKey: ADMIN_API_KEY });
+      const result = await checkConnection({ session: getAdminSession() });
       if (result.ok) {
         setStatus({
           kind: "ok",

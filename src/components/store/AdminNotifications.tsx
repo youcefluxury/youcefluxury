@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 
 import { api } from "@/convex/_generated/api";
-import { ADMIN_API_KEY } from "@/lib/admin-key";
+import { getAdminSession } from "@/lib/admin-key";
 import { ProductImage, useIsAdminSession } from "@/components/store/bits";
 import {
   Popover,
@@ -85,7 +85,9 @@ export function AdminNotifications({
 }) {
   const { t, lang, isAr } = useI18n();
   const isAdmin = useIsAdminSession();
-  const orders = useQuery(api.orders.listOrders, { adminKey: ADMIN_API_KEY });
+  const orders = useQuery(api.orders.listOrders, {
+    session: getAdminSession(),
+  });
   const [seenAt, setSeenAt] = useState(0);
   const [open, setOpen] = useState(false);
 

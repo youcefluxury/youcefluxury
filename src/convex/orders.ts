@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { isValidAdminKey } from "./admin";
+import { isAdmin } from "./admin";
 
 /**
  * Delivery fee in DA for one order. The price belongs to the wilaya (see
@@ -124,9 +124,9 @@ export const createOrder = mutation({
 
 /** Orders manager feed for the /admin dashboard. */
 export const listOrders = query({
-  args: { adminKey: v.string() },
+  args: { session: v.string() },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       return [];
     }
     return await ctx.db
@@ -140,12 +140,12 @@ export const listOrders = query({
 /** Moves an order through the workflow: new → confirmed → shipped → done. */
 export const setOrderStatus = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     id: v.id("orders"),
     status: v.string(),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     const allowed = ["new", "confirmed", "shipped", "delivered", "cancelled"];
@@ -160,12 +160,12 @@ export const setOrderStatus = mutation({
 /** Admin notes — delivery info, call outcome, anything worth remembering. */
 export const setOrderNote = mutation({
   args: {
-    adminKey: v.string(),
+    session: v.string(),
     id: v.id("orders"),
     adminNote: v.string(),
   },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     await ctx.db.patch(args.id, {
@@ -177,9 +177,9 @@ export const setOrderNote = mutation({
 
 /** Removes a test/spam order permanently. */
 export const deleteOrder = mutation({
-  args: { adminKey: v.string(), id: v.id("orders") },
+  args: { session: v.string(), id: v.id("orders") },
   handler: async (ctx, args) => {
-    if (!isValidAdminKey(args.adminKey)) {
+    if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
     await ctx.db.delete(args.id);
