@@ -1,5 +1,11 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
+import {
+  mutation,
+  query,
+  type MutationCtx,
+  type QueryCtx,
+} from "./_generated/server";
 import { isAdmin } from "./admin";
 
 import { SITE_THEMES } from "../lib/site-theme";
@@ -124,6 +130,108 @@ function photoValuesByUrl(
   return { colorsByUrl, sizesByUrl };
 }
 
+/**
+ * True for a URL this deployment serves out of Convex storage.
+ *
+ * R2 URLs and the local `/products/…` seed images must survive: there is no
+ * file of ours behind them, and deleting the path would break the storefront.
+ */
+function isConvexImageUrl(url: string): boolean {
+  return /^https:\/\/[^/\s]+\.convex\.cloud\/api\/storage\//i.test(url.trim());
+}
+
+/**
+ * The real storage key behind an image URL, looked up in the `uploads` table.
+ *
+ * The URL is not the key — Convex serves a file from an opaque handle, so
+ * "…/api/storage/5ade438b-…" points at a file stored as "kg21axs…". The
+ * browser reports the key once, at upload time, and this reads it back.
+ */
+async function storageIdOf(
+  ctx: QueryCtx | MutationCtx,
+  url: string,
+): Promise<Id<"_storage"> | null> {
+  if (!isConvexImageUrl(url)) return null;
+  const row = await ctx.db
+    .query("uploads")
+    .withIndex("by_url", (q) => q.eq("url", url.trim()))
+    .unique();
+  return row?.storageId ?? null;
+}
+
+/**
+ * Every image URL the shop still points at, anywhere.
+ *
+ * Checked before deleting a file so a photo used by two products — or by a
+ * product and a category — is never destroyed out from under the other one.
+ */
+async function urlsStillInUse(
+  ctx: QueryCtx | MutationCtx,
+  skip?: {
+    products?: Id<"products">;
+    categories?: Id<"categories">;
+    sliders?: Id<"sliders">;
+  },
+): Promise<Set<string>> {
+  const live = new Set<string>();
+  const note = (url: string | undefined) => {
+    const trimmed = url?.trim();
+    if (trimmed) live.add(trimmed);
+  };
+
+  for (const product of await ctx.db.query("products").collect()) {
+    if (skip?.products === product._id) continue;
+    product.images.forEach(note);
+  }
+  for (const category of await ctx.db.query("categories").collect()) {
+    if (skip?.categories === category._id) continue;
+    note(category.image);
+  }
+  for (const slider of await ctx.db.query("sliders").collect()) {
+    if (skip?.sliders === slider._id) continue;
+    note(slider.image);
+  }
+  for (const row of await ctx.db.query("meta").collect()) {
+    if (row.key === "logo") note(row.value);
+  }
+  return live;
+}
+
+/**
+ * Deletes the files behind `urls`, skipping any that are still in use.
+ *
+ * Deleting a product or swapping a photo only removed its database row; the
+ * image itself stayed in storage forever, quietly eating into the 1 GB the
+ * free plan allows — and never coming back. Returns how many files went.
+ */
+async function deleteStoredFiles(
+  ctx: MutationCtx,
+  urls: (string | undefined)[],
+  stillUsed: Set<string>,
+): Promise<number> {
+  let removed = 0;
+  for (const url of new Set(urls.filter((u): u is string => Boolean(u)))) {
+    const trimmed = url.trim();
+    if (stillUsed.has(trimmed)) continue;
+    const id = await storageIdOf(ctx, trimmed);
+    if (!id) continue;
+    try {
+      await ctx.storage.delete(id);
+      removed += 1;
+    } catch {
+      // Already gone, or not a file we own — a stale URL must never stop the
+      // delete the owner asked for.
+    }
+  }
+  return removed;
+}
+
+/** The URLs a photo edit dropped, i.e. the ones now unreferenced. */
+function removedUrls(before: string[] | undefined, after: string[]) {
+  const keep = new Set(after.map((url) => url.trim()));
+  return (before ?? []).filter((url) => url.trim() && !keep.has(url.trim()));
+}
+
 function buildSizes(labels: string[], soldOut: string[]) {
   return labels
     .map((label) => label.trim())
@@ -216,6 +324,12 @@ export const updateProduct = mutation({
         (row) => row.color.trim() && row.sizes.length > 0,
       ),
     });
+    // Saving the form can also drop a photo; free it instead of orphaning it.
+    const dropped = removedUrls(existing?.images, photos.images);
+    if (dropped.length) {
+      const stillUsed = await urlsStillInUse(ctx, { products: id });
+      await deleteStoredFiles(ctx, dropped, stillUsed);
+    }
     return id;
   },
 });
@@ -226,8 +340,17 @@ export const deleteProduct = mutation({
     if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
+    const product = await ctx.db.get(args.id);
+    // Collected before the row goes, so a photo another product still shares
+    // is left alone.
+    const stillUsed = await urlsStillInUse(ctx, { products: args.id });
     await ctx.db.delete(args.id);
-    return args.id;
+    const filesRemoved = await deleteStoredFiles(
+      ctx,
+      product?.images ?? [],
+      stillUsed,
+    );
+    return { id: args.id, filesRemoved };
   },
 });
 
@@ -270,7 +393,13 @@ export const setProductImages = mutation({
     if (photos.images.length === 0) {
       throw new Error("IMAGE_REQUIRED");
     }
+    // A photo the owner removed here would otherwise stay in storage forever.
+    const dropped = removedUrls(existing?.images, photos.images);
     await ctx.db.patch(args.id, photos);
+    if (dropped.length) {
+      const stillUsed = await urlsStillInUse(ctx, { products: args.id });
+      await deleteStoredFiles(ctx, dropped, stillUsed);
+    }
     return photos;
   },
 });
@@ -421,6 +550,12 @@ export const setStoreSetting = mutation({
       await ctx.db.patch(existing._id, { value });
     } else {
       await ctx.db.insert("meta", { key: args.key, value });
+    }
+    if (args.key === "logo" && existing && existing.value !== value) {
+      // The replaced logo would otherwise stay in storage with nothing
+      // pointing at it.
+      const stillUsed = await urlsStillInUse(ctx);
+      await deleteStoredFiles(ctx, [existing.value], stillUsed);
     }
     return value;
   },
@@ -613,8 +748,15 @@ export const deleteCategory = mutation({
     if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
+    const category = await ctx.db.get(args.id);
+    const stillUsed = await urlsStillInUse(ctx, { categories: args.id });
     await ctx.db.delete(args.id);
-    return args.id;
+    const filesRemoved = await deleteStoredFiles(
+      ctx,
+      [category?.image],
+      stillUsed,
+    );
+    return { id: args.id, filesRemoved };
   },
 });
 
@@ -690,8 +832,15 @@ export const deleteSlider = mutation({
     if (!(await isAdmin(ctx, args.session))) {
       throw new Error("UNAUTHORIZED");
     }
+    const slider = await ctx.db.get(args.id);
+    const stillUsed = await urlsStillInUse(ctx, { sliders: args.id });
     await ctx.db.delete(args.id);
-    return args.id;
+    const filesRemoved = await deleteStoredFiles(
+      ctx,
+      [slider?.image],
+      stillUsed,
+    );
+    return { id: args.id, filesRemoved };
   },
 });
 
@@ -1018,6 +1167,40 @@ export const imageUrl = mutation({
   args: { storageId: v.id("_storage") },
   handler: async (ctx, args) => {
     return await ctx.storage.getUrl(args.storageId);
+  },
+});
+
+/**
+ * Remembers which storage key sits behind a freshly uploaded image.
+ *
+ * The browser gets the key back from the upload response and the public URL
+ * from `imageUrl`; the two do not match on their own, and without this link
+ * neither the admin nor the server could ever free the file again. Recording
+ * it once, at upload time, is what makes a later delete possible.
+ */
+export const recordUpload = mutation({
+  args: { session: v.string(), storageId: v.id("_storage"), url: v.string() },
+  handler: async (ctx, args) => {
+    if (!(await isAdmin(ctx, args.session))) {
+      throw new Error("UNAUTHORIZED");
+    }
+    const url = args.url.trim();
+    if (!isConvexImageUrl(url)) {
+      return { recorded: false };
+    }
+    const existing = await ctx.db
+      .query("uploads")
+      .withIndex("by_url", (q) => q.eq("url", url))
+      .unique();
+    if (existing) {
+      return { recorded: true };
+    }
+    await ctx.db.insert("uploads", {
+      storageId: args.storageId,
+      url,
+      createdAt: Date.now(),
+    });
+    return { recorded: true };
   },
 });
 

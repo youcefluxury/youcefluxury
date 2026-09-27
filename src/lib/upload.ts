@@ -37,6 +37,7 @@ export function useUploadImage(options: { alreadyNormalized?: boolean } = {}) {
   const uploadToR2 = useAction(api.r2.uploadImage);
   const generateUploadUrl = useMutation(api.catalog.generateUploadUrl);
   const getUrl = useMutation(api.catalog.imageUrl);
+  const recordUpload = useMutation(api.catalog.recordUpload);
 
   return useCallback(
     async (file: File): Promise<string> => {
@@ -74,8 +75,11 @@ export function useUploadImage(options: { alreadyNormalized?: boolean } = {}) {
       if (!url) {
         throw new Error("UPLOAD_URL_FAILED");
       }
+      // The URL is an opaque handle, so the server needs the key once to be
+      // able to free this file when the photo is deleted later.
+      await recordUpload({ session: getAdminSession(), storageId, url });
       return url;
     },
-    [generateUploadUrl, getUrl, uploadToR2],
+    [generateUploadUrl, getUrl, recordUpload, uploadToR2],
   );
 }

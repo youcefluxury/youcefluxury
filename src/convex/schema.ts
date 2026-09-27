@@ -164,6 +164,20 @@ const schema = defineSchema(
      * dashboard sends with every admin call — a random value cannot be read
      * out of the browser bundle the way a hardcoded key could.
      */
+    /**
+     * Which storage key sits behind which public image URL.
+     *
+     * A Convex file URL does *not* contain the key — `/api/storage/<uuid>` is
+     * an opaque handle, and `storage.delete` needs the real id. Without this
+     * table an uploaded file could never be deleted, and every removed photo
+     * stayed in storage forever.
+     */
+    uploads: defineTable({
+      storageId: v.id("_storage"),
+      url: v.string(),
+      createdAt: v.number(),
+    }).index("by_url", ["url"]),
+
     adminSessions: defineTable({
       token: v.string(),
       createdAt: v.number(),
