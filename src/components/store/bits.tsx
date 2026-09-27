@@ -26,7 +26,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import {
-  ADMIN_SESSION_KEY,
   clearAdminSession,
   getAdminSession,
   setAdminSession,
@@ -201,7 +200,7 @@ export function FacebookIcon({ className }: { className?: string }) {
  */
 export function isAdminSession(): boolean {
   try {
-    return window.sessionStorage.getItem(ADMIN_SESSION_KEY) === "1";
+    return getAdminSession().length > 0;
   } catch {
     return false;
   }

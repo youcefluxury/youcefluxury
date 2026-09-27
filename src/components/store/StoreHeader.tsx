@@ -12,6 +12,8 @@ import { useQuery } from "convex/react";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+import { useMutation } from "convex/react";
+
 import { api } from "@/convex/_generated/api";
 import {
   FacebookIcon,
@@ -37,7 +39,7 @@ import {
   WhatsAppEditButton,
 } from "@/components/store/AdminEdit";
 import { useStoreBrand } from "@/hooks/use-store-brand";
-import { ADMIN_SESSION_KEY } from "@/lib/admin-key";
+import { clearAdminSession, getAdminSession } from "@/lib/admin-key";
 import { useStorePhone } from "@/hooks/use-store-phone";
 import { pickLang, useI18n } from "@/lib/i18n";
 import {
@@ -127,6 +129,7 @@ export function StoreHeader() {
   const { count, openCart } = useCart();
   /* The dashboard shortcut in the navbar belongs to the signed-in admin only. */
   const isAdmin = useIsAdminSession();
+  const endAdminSession = useMutation(api.admin.endSession);
   /* Live logo + social links — the admin edits all of them from the site. */
   const { instagram, facebook, name } = useStoreBrand();
   /* Live number: the WhatsApp icon chats with it straight away. */
@@ -163,11 +166,11 @@ export function StoreHeader() {
    * admin icon disappear right away instead of on the next page load.
    */
   function signOut() {
-    try {
-      window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
-    } catch {
-      /* storage unavailable — the icon still hides after the focus event */
-    }
+    // Revoke it server-side too, not just locally — otherwise the token stays
+    // valid for whoever captured it even after the owner signs out here.
+    const token = getAdminSession();
+    if (token) void endAdminSession({ session: token });
+    clearAdminSession();
     window.dispatchEvent(new Event("focus"));
     navigate("/");
   }
