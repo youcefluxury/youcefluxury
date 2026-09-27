@@ -23,7 +23,11 @@ import { ProductCard } from "@/components/store/ProductCard";
 import { useStoreBrand } from "@/hooks/use-store-brand";
 import { useStoreClock } from "@/hooks/use-store-clock";
 import { useI18n } from "@/lib/i18n";
-import { categoryName, isHiddenFromStore, toMapLinkUrl } from "@/lib/store-data";
+import {
+  categoryName,
+  isHiddenFromStore,
+  toMapLinkUrl,
+} from "@/lib/store-data";
 import { cn } from "@/lib/utils";
 
 /**
@@ -59,7 +63,11 @@ function CategoryCardActions({ category }: { category: CategoryRow }) {
         tab="categories"
         onEdit={() => setOpen(true)}
       />
-      <CategoryEditDialog open={open} onOpenChange={setOpen} category={category} />
+      <CategoryEditDialog
+        open={open}
+        onOpenChange={setOpen}
+        category={category}
+      />
     </>
   );
 }
@@ -162,10 +170,7 @@ export default function Landing() {
                 whileInView={lowPower ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.45, delay: index * 0.06 }}
-                className={cn(
-                  "relative",
-                  index === 0 ? "lg:col-span-2" : "",
-                )}
+                className={cn("relative", index === 0 ? "lg:col-span-2" : "")}
               >
                 <CategoryCardActions category={category} />
                 {/* Opens the category page — every card of that category only. */}
@@ -258,14 +263,14 @@ export default function Landing() {
           {/*
             Google's own frame only reveals its "view larger map" control on
             hover, so the storefront carries its own. It is always visible and
-            sits above the frame, never inside it.
+            sits above the frame, never inside it, in the top corner.
           */}
           {mapLink ? (
             <a
               href={mapLink}
               target="_blank"
               rel="noreferrer"
-              className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground absolute bottom-3 end-3 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium shadow-lg transition-colors"
+              className="bg-foreground text-background hover:bg-accent hover:text-accent-foreground absolute top-3 start-3 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium shadow-lg transition-colors"
             >
               <ExternalLink className="size-3.5 shrink-0" />
               {t("home.map.openInMaps")}
