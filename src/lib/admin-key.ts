@@ -1,22 +1,42 @@
 /**
- * Admin key + session marker, shared by the dashboard (browser) and the Convex
- * backend.
+ * Admin session token — the only admin credential the browser ever holds.
  *
- * This module must stay dependency-free. The dashboard used to import these
- * values from `src/convex/admin.ts`, which dragged the Convex *server* runtime
- * (`_generated/server.js`, whose `export const env = process.env` needs Node)
- * into the browser bundle — the whole store then died on load with
- * “ReferenceError: process is not defined”.
+ * It used to be a fixed string ("storefront-admin-key") compiled into the
+ * JavaScript bundle, which meant every visitor could read it and call the
+ * admin-only Convex functions. Now the server issues a random token at
+ * sign-in (see `admin:login` in src/convex/admin.ts), stores it, and every
+ * admin call presents it instead. Nothing secret lives in this file any more —
+ * only the name of the sessionStorage slot, which is not a secret.
+ *
+ * This module must stay dependency-free: the dashboard imports it in the
+ * browser, and pulling in Convex's server runtime (which reads `process.env`)
+ * crashed the store with "process is not defined".
  */
 
-/** Key the dashboard sends when it reads or writes admin-only data. */
-export const ADMIN_API_KEY = "storefront-admin-key";
-
-/** Session marker stored in sessionStorage after a successful login. */
+/** sessionStorage key holding the session token. A name, not a secret. */
 export const ADMIN_SESSION_KEY = "storefront-admin-session";
 
+/** The live session token, or "" when signed out. */
+export function getAdminSession(): string {
+  try {
+    return window.sessionStorage.getItem(ADMIN_SESSION_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
 
-/** True when the caller presents the dashboard key (checked server-side). */
-export function isValidAdminKey(key: string | undefined | null): boolean {
-  return key === ADMIN_API_KEY;
+export function setAdminSession(token: string): void {
+  try {
+    window.sessionStorage.setItem(ADMIN_SESSION_KEY, token);
+  } catch {
+    /* private mode / storage disabled — the dashboard just stays signed out */
+  }
+}
+
+export function clearAdminSession(): void {
+  try {
+    window.sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  } catch {
+    /* nothing to do */
+  }
 }

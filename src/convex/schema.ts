@@ -158,6 +158,18 @@ const schema = defineSchema(
       price: v.number(),
     }).index("by_code", ["wilayaCode"]),
 
+    /**
+     * Signed-in operator sessions. `admin:login` issues the token only after
+     * the username + password check, and it is the single credential the
+     * dashboard sends with every admin call — a random value cannot be read
+     * out of the browser bundle the way a hardcoded key could.
+     */
+    adminSessions: defineTable({
+      token: v.string(),
+      createdAt: v.number(),
+      expiresAt: v.number(),
+    }).index("by_token", ["token"]),
+
     meta: defineTable({
       key: v.string(),
       value: v.string(),
