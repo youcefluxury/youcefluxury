@@ -617,6 +617,31 @@ export const setSiteTheme = mutation({
 /* ------------------------------------------------------------------ */
 
 /** Public category feed used by the home page grid and the admin table. */
+/**
+ * Everything a search-engine sitemap needs, in one read.
+ *
+ * An HTTP action has no database of its own, but it can run a query — so the
+ * sitemap route asks for this and builds the XML from the answer. Keeping the
+ * read here also means the list is never stale: a product added this morning
+ * is in tomorrow's sitemap.
+ */
+export const sitemapEntries = query({
+  args: {},
+  handler: async (ctx) => {
+    const [products, categories] = await Promise.all([
+      ctx.db.query("products").collect(),
+      ctx.db.query("categories").collect(),
+    ]);
+    return {
+      products: products.map((product) => ({
+        id: product._id,
+        createdAt: product.createdAt,
+      })),
+      categories: categories.map((category) => ({ slug: category.slug })),
+    };
+  },
+});
+
 export const listCategories = query({
   args: {},
   handler: async (ctx) => {
