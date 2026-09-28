@@ -76,10 +76,22 @@ function upsertCanonical(href: string) {
 
 export function StoreMeta() {
   const { t, lang } = useI18n();
-  const { logo, name, tagline, description } = useStoreBrand();
+  const { logo, name, tagline, description, settingsLoaded } = useStoreBrand();
   const { pathname } = useLocation();
 
   useEffect(() => {
+    /*
+     * Wait for the dashboard values. Until the query answers, `logo`, `name`
+     * and `tagline` are the built-in placeholders — and the two things that
+     * survive a reload (localStorage, which index.html's loading screen reads
+     * before the bundle runs, and the tab icon) would latch onto those
+     * placeholders instead of what the admin saved. That is exactly the flash
+     * of the default logo on every page load. index.html already carries a
+     * correct static title and description for the pre-JS moment, so nothing
+     * is lost by waiting here.
+     */
+    if (!settingsLoaded) return;
+
     setFavicon(logo);
     // Read by index.html before the bundle even loads.
     cacheBrand({ name, tagline, logo });
@@ -144,7 +156,7 @@ export function StoreMeta() {
       "twitter:description",
       description,
     );
-  }, [logo, name, tagline, description, t, lang, pathname]);
+  }, [settingsLoaded, logo, name, tagline, description, t, lang, pathname]);
 
   return null;
 }
