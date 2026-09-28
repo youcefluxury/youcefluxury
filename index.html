@@ -142,12 +142,23 @@
             subNode.textContent = String(brand.tagline);
 
           if (!brand.logo) return;
+
+          /*
+           * Only trust a logo that can actually load. Older visitors cached
+           * a path to the default logo file this project no longer ships, and
+           * applying it would leave a broken image on every page load. The
+           * bundled /logo.png is the one local path that stays valid.
+           */
+          var cached = String(brand.logo);
+          var usable = /^https?:\/\//i.test(cached) || cached === "/logo.png";
+          if (!usable) return;
+
           var logoNode = document.getElementById("boot-logo");
-          if (logoNode) logoNode.src = String(brand.logo);
+          if (logoNode) logoNode.src = cached;
 
           /* The tab icon follows the same logo. */
           var icon = document.querySelector('link[rel="icon"]');
-          if (icon) icon.setAttribute("href", String(brand.logo));
+          if (icon) icon.setAttribute("href", cached);
         })();
 
         function report(message) {
