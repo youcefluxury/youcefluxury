@@ -18,7 +18,7 @@ function faviconType(url: string): string {
 /** Points every `<link rel="icon">` at the logo the admin saved. */
 function setFavicon(url: string): void {
   if (typeof document === "undefined") return;
-  const href = url.trim() ? url.trim() : "/brand.svg";
+  const href = url.trim() ? url.trim() : "/logo.png";
   const type = faviconType(href);
   const links = Array.from(document.querySelectorAll('link[rel="icon"]'));
   if (links.length === 0) {

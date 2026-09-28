@@ -315,7 +315,7 @@ export function LogoEditButton({ className }: { className?: string }) {
         <ImageField
           id="logoImage"
           label={t("admin.logoImage")}
-          value={value === "/brand.svg" ? "" : value}
+          value={value === "/logo.png" ? "" : value}
           hint={t("admin.logoHint")}
           onChange={setValue}
         />

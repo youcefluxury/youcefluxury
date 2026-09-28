@@ -243,7 +243,7 @@ function StoreIdentityPanel() {
   const [map, setMap] = useState(brand.mapEmbedUrl);
   const [footerAbout, setFooterAbout] = useState(brand.footerAbout);
   const [logo, setLogo] = useState(
-    brand.logo === "/brand.svg" ? "" : brand.logo,
+    brand.logo === "/logo.png" ? "" : brand.logo,
   );
   const [busy, setBusy] = useState(false);
 
@@ -253,7 +253,7 @@ function StoreIdentityPanel() {
     setTagline(brand.tagline);
     setDescription(brand.description);
     setMap(brand.mapEmbedUrl);
-    setLogo(brand.logo === "/brand.svg" ? "" : brand.logo);
+    setLogo(brand.logo === "/logo.png" ? "" : brand.logo);
   }, [
     brand.name,
     brand.tagline,
