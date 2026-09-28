@@ -104,8 +104,12 @@ export function ProductFormDialog({
   const [price, setPrice] = useState("");
   const [oldPrice, setOldPrice] = useState("");
   const [category, setCategory] = useState(defaultCategory);
-  /** Manual placement in the storefront; empty means "not placed". */
-  const [sort, setSort] = useState("");
+  /**
+   * Manual placement in the storefront. Not asked in this dialog on purpose —
+   * ordering belongs to the dashboard — but it still travels with the save so
+   * editing a product can never drop the order it was already given.
+   */
+  const sortRef = useRef<number | undefined>(undefined);
   const [images, setImages] = useState<string[]>([]);
   /** One colour per photo, index-aligned with `images`. */
   const [imageColors, setImageColors] = useState<string[]>([]);
@@ -129,7 +133,7 @@ export function ProductFormDialog({
     if (!open) return;
     if (product) {
       setCategory(product.category);
-      setSort(product.sort === undefined ? "" : String(product.sort));
+      sortRef.current = product.sort;
       setNameAr(product.nameAr);
       setPrice(String(product.price));
       setOldPrice(product.oldPrice ? String(product.oldPrice) : "");
@@ -154,6 +158,7 @@ export function ProductFormDialog({
       return;
     }
     setCategory(defaultCategory);
+    sortRef.current = undefined;
     setNameAr("");
     setPrice("");
     setOldPrice("");
@@ -255,7 +260,7 @@ export function ProductFormDialog({
         oldPrice: oldPrice ? Number(oldPrice) : undefined,
         category,
         // Undefined keeps the product unplaced instead of storing 0.
-        sort: sort.trim() === "" ? undefined : Number(sort),
+        sort: sortRef.current,
         images,
         imageColors: images.map((_, index) => photoColorAt(index)),
         sizes: sizes.map((label) => ({
@@ -380,22 +385,6 @@ export function ProductFormDialog({
               </div>
             </div>
           )}
-
-          <div className="grid gap-2">
-            <Label htmlFor="addSort">{t("admin.sort")}</Label>
-            <Input
-              id="addSort"
-              type="number"
-              inputMode="numeric"
-              dir="ltr"
-              value={sort}
-              onChange={(event) => setSort(event.target.value)}
-              placeholder="0"
-            />
-            <p className="text-muted-foreground text-[10px] leading-4">
-              {t("admin.sortHint")}
-            </p>
-          </div>
 
           <div className="grid gap-2">
             <Label htmlFor="addNameAr">{t("admin.nameAr")}</Label>
